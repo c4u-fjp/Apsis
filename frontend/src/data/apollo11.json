@@ -1,0 +1,645 @@
+{
+ "mision": "Apollo 11",
+ "vehiculo": "Saturn V AS-506",
+ "csm": "Columbia",
+ "lm": "Eagle",
+ "lanzamiento_utc": "1969-07-16T13:32:00Z",
+ "fuente": "NASA SP-4029 'Apollo by the Numbers' (Apollo 11 Timeline, Ascent Phase, Lunar Orbit Phase)",
+ "pad": {
+  "nombre": "LC-39A",
+  "lat": 28.6083,
+  "lon": -80.6041,
+  "azimut_vuelo_deg": 72.058
+ },
+ "sitio": {
+  "id": "apollo11",
+  "nombre": "Base Tranquilidad",
+  "lat": 0.6741,
+  "lon": 23.473
+ },
+ "ascenso_columnas": [
+  "get_s",
+  "altitud_km",
+  "rango_km"
+ ],
+ "ascenso": [
+  [
+   0.0,
+   0.0,
+   0.0
+  ],
+  [
+   0.63,
+   0.0,
+   0.0
+  ],
+  [
+   6.0,
+   0.012,
+   0.0
+  ],
+  [
+   12.0,
+   0.13,
+   0.0
+  ],
+  [
+   30.0,
+   1.25,
+   0.02
+  ],
+  [
+   45.0,
+   3.4,
+   0.25
+  ],
+  [
+   66.3,
+   7.845,
+   1.933
+  ],
+  [
+   83.0,
+   13.568,
+   5.578
+  ],
+  [
+   135.2,
+   44.005,
+   46.424
+  ],
+  [
+   161.63,
+   66.118,
+   93.58
+  ],
+  [
+   162.3,
+   66.726,
+   95.05
+  ],
+  [
+   460.62,
+   180.163,
+   1114.308
+  ],
+  [
+   548.22,
+   187.315,
+   1618.437
+  ],
+  [
+   549.0,
+   187.376,
+   1623.371
+  ],
+  [
+   699.33,
+   191.13,
+   2633.468
+  ],
+  [
+   709.33,
+   191.082,
+   2705.211
+  ]
+ ],
+ "eventos": [
+  {
+   "get": "-000:00:15",
+   "id": "cuenta",
+   "titulo": "Cuenta regresiva",
+   "texto": "Saturn V AS-506 en la plataforma 39A del Centro Espacial Kennedy. A bordo: Armstrong, Collins y Aldrin."
+  },
+  {
+   "get": "-000:00:08.9",
+   "id": "ignicion",
+   "titulo": "Ignición de los F-1",
+   "texto": "Arrancan los cinco motores F-1 de la primera etapa S-IC."
+  },
+  {
+   "get": "000:00:00.63",
+   "id": "despegue",
+   "titulo": "¡Despegue!",
+   "texto": "Se liberan los brazos de sujeción. 2.900 toneladas dejan la plataforma."
+  },
+  {
+   "get": "000:00:13.2",
+   "id": "alabeo",
+   "titulo": "Maniobra de alabeo y cabeceo",
+   "texto": "El cohete gira de 90° a un azimut de vuelo de 72°."
+  },
+  {
+   "get": "000:01:06.3",
+   "id": "mach1",
+   "titulo": "Mach 1",
+   "texto": "El Saturn V supera la velocidad del sonido a ~7,8 km de altura."
+  },
+  {
+   "get": "000:01:23.0",
+   "id": "maxq",
+   "titulo": "Máxima presión dinámica",
+   "texto": "Max Q: el momento de mayor esfuerzo aerodinámico."
+  },
+  {
+   "get": "000:02:15.2",
+   "id": "cecoS1",
+   "titulo": "Apagado del motor central S-IC",
+   "texto": ""
+  },
+  {
+   "get": "000:02:41.63",
+   "id": "oecoS1",
+   "titulo": "Apagado de la S-IC",
+   "texto": "La primera etapa agota su combustible a 66 km de altura."
+  },
+  {
+   "get": "000:02:42.30",
+   "id": "sepS1",
+   "titulo": "Separación S-IC",
+   "texto": "ABANDONADA: la S-IC cae al Atlántico (impacto ~T+9 min, a 630 km de la costa)."
+  },
+  {
+   "get": "000:02:44.0",
+   "id": "ignS2",
+   "titulo": "Ignición S-II",
+   "texto": "Cinco motores J-2 de la segunda etapa."
+  },
+  {
+   "get": "000:03:12.3",
+   "id": "interetapa",
+   "titulo": "Expulsión del anillo interetapa",
+   "texto": ""
+  },
+  {
+   "get": "000:03:17.9",
+   "id": "les",
+   "titulo": "Expulsión de la torre de escape",
+   "texto": "La torre de escape (LES) ya no es necesaria."
+  },
+  {
+   "get": "000:07:40.62",
+   "id": "cecoS2",
+   "titulo": "Apagado del motor central S-II",
+   "texto": ""
+  },
+  {
+   "get": "000:09:08.22",
+   "id": "oecoS2",
+   "titulo": "Apagado de la S-II",
+   "texto": ""
+  },
+  {
+   "get": "000:09:09.00",
+   "id": "sepS2",
+   "titulo": "Separación S-II",
+   "texto": "ABANDONADA: la S-II también caerá al Atlántico."
+  },
+  {
+   "get": "000:09:12.20",
+   "id": "ignS4B",
+   "titulo": "Ignición S-IVB",
+   "texto": "Primer encendido de la tercera etapa."
+  },
+  {
+   "get": "000:11:39.33",
+   "id": "apagadoS4B",
+   "titulo": "Apagado S-IVB",
+   "texto": ""
+  },
+  {
+   "get": "000:11:49.33",
+   "id": "orbita",
+   "titulo": "Inserción en órbita terrestre",
+   "texto": "Órbita de aparcamiento de 191 km, 88 minutos por vuelta."
+  },
+  {
+   "get": "002:44:16.2",
+   "id": "tli",
+   "titulo": "Inyección translunar (TLI)",
+   "texto": "La S-IVB se enciende de nuevo durante 5 min 47 s."
+  },
+  {
+   "get": "002:50:13.03",
+   "id": "tliFin",
+   "titulo": "Rumbo a la Luna",
+   "texto": "10,8 km/s. Apollo 11 abandona la órbita terrestre."
+  },
+  {
+   "get": "003:15:23.0",
+   "id": "sepCSM",
+   "titulo": "Separación del CSM",
+   "texto": "Columbia se separa; se abren los paneles del adaptador (SLA)."
+  },
+  {
+   "get": "003:24:03.7",
+   "id": "acople",
+   "titulo": "Transposición y acople",
+   "texto": "Columbia gira 180° y se acopla con el LM Eagle."
+  },
+  {
+   "get": "004:17:03.0",
+   "id": "extraccion",
+   "titulo": "Extracción del LM",
+   "texto": "Columbia + Eagle se separan de la S-IVB."
+  },
+  {
+   "get": "005:37:47.6",
+   "id": "honda",
+   "titulo": "S-IVB a órbita solar",
+   "texto": "ABANDONADA: la S-IVB usa la gravedad lunar para escapar a órbita alrededor del Sol."
+  },
+  {
+   "get": "026:44:58.64",
+   "id": "mcc2",
+   "titulo": "Corrección de trayectoria",
+   "texto": "Único ajuste de rumbo necesario en la ida (MCC-2)."
+  },
+  {
+   "get": "061:39:55",
+   "id": "equigravisfera",
+   "titulo": "Equigravisfera",
+   "texto": "A partir de aquí manda la gravedad de la Luna."
+  },
+  {
+   "get": "075:49:50.37",
+   "id": "loi1",
+   "titulo": "Inserción en órbita lunar (LOI-1)",
+   "texto": "Encendido del motor SPS detrás de la Luna, sin contacto con la Tierra."
+  },
+  {
+   "get": "075:55:47.90",
+   "id": "loi1Fin",
+   "titulo": "En órbita lunar",
+   "texto": "Órbita de 111 x 314 km."
+  },
+  {
+   "get": "080:11:36.75",
+   "id": "loi2",
+   "titulo": "Circularización (LOI-2)",
+   "texto": "Órbita casi circular de unos 100 x 120 km."
+  },
+  {
+   "get": "100:12:00.0",
+   "id": "desacople",
+   "titulo": "Desacople",
+   "texto": "\"The Eagle has wings\": Eagle se separa de Columbia."
+  },
+  {
+   "get": "101:36:14",
+   "id": "doi",
+   "titulo": "Inserción en órbita de descenso",
+   "texto": "Eagle baja su órbita a 15 km de altura mínima."
+  },
+  {
+   "get": "102:33:05.01",
+   "id": "pdi",
+   "titulo": "Descenso propulsado (PDI)",
+   "texto": "Ignición del motor de descenso a 15 km de altura y 1,7 km/s."
+  },
+  {
+   "get": "102:37:59",
+   "id": "caraArriba",
+   "titulo": "Giro cara arriba",
+   "texto": "Eagle rota para que el radar de aterrizaje vea la superficie."
+  },
+  {
+   "get": "102:38:22",
+   "id": "a1202",
+   "titulo": "Alarma 1202",
+   "texto": "Sobrecarga del computador. Houston: \"We're go on that alarm\"."
+  },
+  {
+   "get": "102:39:02",
+   "id": "a1202b",
+   "titulo": "Alarma 1202",
+   "texto": ""
+  },
+  {
+   "get": "102:41:32",
+   "id": "p64",
+   "titulo": "Fase de aproximación (P64)",
+   "texto": "El computador apunta a una zona llena de rocas junto al cráter West."
+  },
+  {
+   "get": "102:42:18",
+   "id": "a1201",
+   "titulo": "Alarma 1201",
+   "texto": ""
+  },
+  {
+   "get": "102:42:43",
+   "id": "a1202c",
+   "titulo": "Alarma 1202",
+   "texto": ""
+  },
+  {
+   "get": "102:42:58",
+   "id": "a1202d",
+   "titulo": "Alarma 1202",
+   "texto": ""
+  },
+  {
+   "get": "102:43:09",
+   "id": "redesignacion",
+   "titulo": "Redesignación del punto de aterrizaje",
+   "texto": ""
+  },
+  {
+   "get": "102:43:22",
+   "id": "p66",
+   "titulo": "Control semimanual (P66)",
+   "texto": "Armstrong toma el control y vuela más allá del campo de rocas."
+  },
+  {
+   "get": "102:44:28",
+   "id": "combustibleBajo",
+   "titulo": "Luz de combustible bajo",
+   "texto": ""
+  },
+  {
+   "get": "102:44:35",
+   "id": "polvo",
+   "titulo": "Primer polvo levantado",
+   "texto": ""
+  },
+  {
+   "get": "102:45:39.9",
+   "id": "alunizaje",
+   "titulo": "Alunizaje",
+   "texto": "\"Houston, Tranquility Base here. The Eagle has landed.\""
+  },
+  {
+   "get": "109:24:15",
+   "id": "paso",
+   "titulo": "Primer paso",
+   "texto": "\"That's one small step for man, one giant leap for mankind.\""
+  },
+  {
+   "get": "124:22:00.79",
+   "id": "despegueLunar",
+   "titulo": "Despegue lunar",
+   "texto": "La etapa de ascenso parte. La etapa de descenso se queda para siempre."
+  }
+ ],
+ "fases": [
+  {
+   "id": "PRE_LANZAMIENTO",
+   "nombre": "Cuenta regresiva",
+   "inicio": "-000:00:15",
+   "escena": "plataforma"
+  },
+  {
+   "id": "PRIMERA_ETAPA",
+   "nombre": "Ascenso: S-IC",
+   "inicio": "000:00:00",
+   "escena": "plataforma"
+  },
+  {
+   "id": "SEGUNDA_ETAPA",
+   "nombre": "Ascenso: S-II",
+   "inicio": "000:02:42.30",
+   "escena": "espacio"
+  },
+  {
+   "id": "TERCERA_ETAPA",
+   "nombre": "Ascenso: S-IVB",
+   "inicio": "000:09:09.00",
+   "escena": "espacio"
+  },
+  {
+   "id": "ORBITA_TERRESTRE",
+   "nombre": "Órbita terrestre",
+   "inicio": "000:11:49.33",
+   "escena": "espacio"
+  },
+  {
+   "id": "TLI",
+   "nombre": "Inyección translunar",
+   "inicio": "002:44:16.2",
+   "escena": "espacio"
+  },
+  {
+   "id": "TRANSPOSICION",
+   "nombre": "Transposición y acople",
+   "inicio": "002:50:13.03",
+   "escena": "espacio"
+  },
+  {
+   "id": "TRANSITO_LUNAR",
+   "nombre": "Tránsito a la Luna",
+   "inicio": "004:20:00",
+   "escena": "espacio"
+  },
+  {
+   "id": "LOI",
+   "nombre": "Inserción en órbita lunar",
+   "inicio": "075:49:50.37",
+   "escena": "espacio"
+  },
+  {
+   "id": "ORBITA_LUNAR",
+   "nombre": "Órbita lunar",
+   "inicio": "075:55:47.90",
+   "escena": "espacio"
+  },
+  {
+   "id": "DESACOPLE",
+   "nombre": "Desacople y DOI",
+   "inicio": "100:12:00.0",
+   "escena": "espacio"
+  },
+  {
+   "id": "DESCENSO_LUNAR",
+   "nombre": "Descenso propulsado",
+   "inicio": "102:33:05.01",
+   "escena": "espacio"
+  },
+  {
+   "id": "APROXIMACION",
+   "nombre": "Aproximación final",
+   "inicio": "102:41:32",
+   "escena": "superficie"
+  },
+  {
+   "id": "ALUNIZAJE_COMPLETADO",
+   "nombre": "Base Tranquilidad",
+   "inicio": "102:45:39.9",
+   "escena": "superficie"
+  },
+  {
+   "id": "EPILOGO",
+   "nombre": "Abandonado, no olvidado",
+   "inicio": "124:22:00.79",
+   "escena": "superficie"
+  }
+ ],
+ "warp": [
+  [
+   "-000:00:15",
+   1
+  ],
+  [
+   "000:01:30",
+   2
+  ],
+  [
+   "000:03:30",
+   4
+  ],
+  [
+   "000:11:30",
+   200
+  ],
+  [
+   "002:43:30",
+   15
+  ],
+  [
+   "002:50:30",
+   60
+  ],
+  [
+   "003:15:00",
+   10
+  ],
+  [
+   "003:24:30",
+   100
+  ],
+  [
+   "004:16:30",
+   4
+  ],
+  [
+   "004:20:00",
+   5000
+  ],
+  [
+   "075:45:00",
+   20
+  ],
+  [
+   "075:57:00",
+   2000
+  ],
+  [
+   "099:45:00",
+   150
+  ],
+  [
+   "102:32:30",
+   5
+  ],
+  [
+   "102:41:32",
+   1
+  ],
+  [
+   "102:46:05",
+   1
+  ],
+  [
+   "102:46:20",
+   3000
+  ],
+  [
+   "109:23:50",
+   15
+  ],
+  [
+   "109:24:40",
+   3000
+  ],
+  [
+   "124:21:45",
+   1
+  ],
+  [
+   "124:23:30",
+   2000
+  ]
+ ],
+ "encendidos": [
+  [
+   "S-IC",
+   "-000:00:06.4",
+   "000:02:41.63"
+  ],
+  [
+   "S-II",
+   "000:02:44.0",
+   "000:09:08.22"
+  ],
+  [
+   "S-IVB",
+   "000:09:12.20",
+   "000:11:39.33"
+  ],
+  [
+   "S-IVB",
+   "002:44:16.2",
+   "002:50:03.03"
+  ],
+  [
+   "SPS",
+   "075:49:50.37",
+   "075:55:47.90"
+  ],
+  [
+   "SPS",
+   "080:11:36.75",
+   "080:11:53.63"
+  ],
+  [
+   "DPS",
+   "101:36:14",
+   "101:36:44"
+  ],
+  [
+   "DPS",
+   "102:33:05.01",
+   "102:45:41.40"
+  ]
+ ],
+ "abandonados": [
+  {
+   "objeto": "S-IC (1ª etapa)",
+   "destino": "Océano Atlántico, ~T+9 min"
+  },
+  {
+   "objeto": "S-II (2ª etapa)",
+   "destino": "Océano Atlántico, ~T+20 min"
+  },
+  {
+   "objeto": "S-IVB (3ª etapa)",
+   "destino": "Órbita alrededor del Sol"
+  },
+  {
+   "objeto": "Paneles del SLA",
+   "destino": "Órbita solar / espacio cislunar"
+  },
+  {
+   "objeto": "Eagle, etapa de descenso",
+   "destino": "Base Tranquilidad (0,674°N 23,473°E)"
+  },
+  {
+   "objeto": "Eagle, etapa de ascenso",
+   "destino": "Abandonada en órbita lunar tras el reencuentro"
+  },
+  {
+   "objeto": "EASEP: sismómetro pasivo",
+   "destino": "Base Tranquilidad (dejó de transmitir en 1969)"
+  },
+  {
+   "objeto": "Retrorreflector LRRR",
+   "destino": "Base Tranquilidad, aún se usa para medir la distancia Tierra-Luna"
+  }
+ ],
+ "fin_simulacion": "124:30:00",
+ "lm_p64": {
+  "dryMass": 6850,
+  "fuel": 1150,
+  "nota": "Masa aproximada de Eagle al inicio de la P64; el combustible da ~4 min de vuelo estacionario"
+ }
+}

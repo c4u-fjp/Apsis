@@ -1,0 +1,22 @@
+# Dependencias y entornos
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Builds
+frontend/dist/
+
+# Kernels SPICE: se descargan con  python backend/scripts/download_kernels.py  (~45 MB)
+backend/nasa_data/kernels/
+
+# Modelos duplicados (tierra.glb == luna.glb, ambos son la Luna; se usa luna1.glb)
+frontend/public/models/luna.glb
+frontend/public/models/tierra.glb
+
+# Local
+.env
+.DS_Store
+*.log

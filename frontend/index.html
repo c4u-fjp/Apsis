@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Abandoned but not Forgotten · Apollo 11</title>
+</head>
+<body>
+  <!-- Panel lateral de telemetría (consola del operador, de nasa_space_apps) -->
+  <aside id="panel-control">
+    <header>
+      <div class="status-indicator parpadeo">● LIVE</div>
+      <h1 id="titulo-panel">FLIGHT DYNAMICS</h1>
+      <div class="subtitulo">Abandoned but not Forgotten</div>
+      <div class="linea-divisoria"></div>
+    </header>
+
+    <section class="bloque-datos">
+      <h3>DATOS DE VUELO</h3>
+      <div class="fila-dato"><span>FASE:</span> <span id="hud-fase" class="valor">—</span></div>
+      <div class="fila-dato"><span>MET:</span> <span id="reloj-mision" class="valor">T-000:00:15</span></div>
+      <div class="fila-dato"><span>UTC:</span> <span id="reloj-gmt" class="valor">16 JUL 13:31:45</span></div>
+      <div class="fila-dato"><span id="hud-alt-et">ALTITUD (km):</span> <span id="hud-altitud" class="valor">0</span></div>
+      <div class="fila-dato"><span id="hud-vel-et">VELOCIDAD (km/s):</span> <span id="hud-velocidad" class="valor">0</span></div>
+      <div class="fila-dato"><span id="hud-luna-et">DIST. A LA LUNA (km):</span> <span id="hud-luna" class="valor">—</span></div>
+      <div class="fila-dato"><span>VEHÍCULO:</span> <span id="hud-config" class="valor">—</span></div>
+    </section>
+
+    <section class="bloque-datos">
+      <h3>PRÓXIMO EVENTO</h3>
+      <div id="hud-siguiente" class="siguiente">—</div>
+    </section>
+
+    <section class="consola-eventos">
+      <h3>LOG DEL SISTEMA</h3>
+      <ul id="event-log">
+        <li>[SYS] Conexión establecida...</li>
+      </ul>
+    </section>
+
+    <div id="timeline-container">
+      <input type="range" id="time-slider" min="0" max="1000" value="0" step="1" aria-label="Tiempo de misión">
+      <div class="controles-tiempo">
+        <button id="btn-anterior" title="Evento anterior (B)">⏮</button>
+        <button id="btn-pausa" title="Pausa (P)">⏸</button>
+        <button id="btn-siguiente" title="Siguiente evento (N)">⏭</button>
+        <button id="btn-lento" title="Más lento (,)">−</button>
+        <span id="hud-warp" class="warp">×1</span>
+        <button id="btn-rapido" title="Más rápido (.)">+</button>
+        <button id="btn-historia" title="Velocidad automática del modo historia (H)" class="activo">HISTORIA</button>
+      </div>
+      <div class="controles-vista">
+        <button id="btn-camara" title="Cambiar cámara (V)">CÁMARA: AUTO</button>
+        <button id="btn-sala" title="Ver desde el Control de Misión (C)">CONTROL DE MISIÓN</button>
+      </div>
+      <label id="hud-fuente">EFEMÉRIDES: …</label>
+    </div>
+  </aside>
+
+  <!-- Monitor principal (aquí se inyecta Three.js) -->
+  <main id="monitor-3d">
+    <div class="crosshair"></div>
+    <div id="banner"></div>
+    <div id="aviso"></div>
+    <div id="hud-lm" class="oculto">
+      <div class="lm-fila"><span>ALT</span><b id="lm-alt">0</b><i>m</i></div>
+      <div class="lm-fila"><span>V. VERT</span><b id="lm-vv">0</b><i>m/s</i></div>
+      <div class="lm-fila"><span>V. HORIZ</span><b id="lm-vh">0</b><i>m/s</i></div>
+      <div class="lm-fila"><span>COMB.</span><b id="lm-fuel">0</b><i id="lm-fuel-s">0 s</i></div>
+      <div class="lm-fila"><span>DISTANCIA</span><b id="lm-dist">0</b><i>m</i></div>
+      <div class="lm-fila"><span>MODO</span><b id="lm-modo">AUTO</b><i id="lm-rod"></i></div>
+      <div id="lm-luces"><span id="luz-alarma">PROG</span><span id="luz-comb">LOW FUEL</span><span id="luz-contacto">CONTACT</span></div>
+    </div>
+    <div id="epilogo" class="oculto"></div>
+    <div id="ayuda">P pausa · N/B eventos · ,/. velocidad · V cámara · C control de misión · M modo de pilotaje · W/S descenso · A/D inclinación</div>
+    <!-- Pantalla de inicio: sala de control y selección de destino -->
+    <div id="inicio" class="oculto">
+      <div class="inicio-marca">APSIS<span>Abandoned but not Forgotten</span></div>
+      <div class="inicio-centro">
+        <h1>¿A DÓNDE VIAJAMOS?</h1>
+        <p>Elige un destino para visitar lo que dejamos allí.</p>
+        <div class="destinos">
+          <button class="destino" data-destino="luna">
+            <span class="destino-nombre">LUNA</span>
+            <span class="destino-mision">Apollo 11 · Saturn V · 1969</span>
+            <span class="destino-restos">Etapa de descenso de Eagle, sismómetro, retrorreflector</span>
+          </button>
+          <div class="destino" data-destino="marte" tabindex="0">
+            <span class="destino-nombre">MARTE</span>
+            <span class="destino-mision">Delta II · elige la misión</span>
+            <span class="rovers" id="lista-rovers"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Pantalla de lanzamiento -->
+    <div id="lanzamiento" class="oculto">
+      <div class="lz-info">
+        <div class="lz-destino" id="lz-destino">EXPLORA EL SISTEMA SOLAR</div>
+        <div class="lz-mision" id="lz-mision"></div>
+        <button id="btn-lanzar" class="btn-lanzar">LANZAMIENTO <span>→</span></button>
+        <button id="btn-volver" class="btn-volver">← Cambiar destino</button>
+      </div>
+      <div id="lz-cuenta" class="lz-cuenta"></div>
+    </div>
+    <div id="carga"><div class="carga-caja"><h2>APOLLO 11</h2><p id="carga-texto">Cargando modelos…</p><div class="barra"><div id="carga-barra"></div></div></div></div>
+    <div id="fundido"></div>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+name: Error
+description: Algo no funciona
+labels: ["bug"]
+body:
+  - type: input
+    id: url
+    attributes: { label: Instante, description: "Enlace con ?t=..., p. ej. https://localhost:5173/?t=003:20:00", placeholder: "?t=" }
+  - type: dropdown
+    id: disp
+    attributes: { label: Dispositivo, multiple: true, options: [Escritorio Linux, Escritorio Windows, Móvil Android, iPhone, Quest 2] }
+    validations: { required: true }
+  - type: textarea
+    id: pasa
+    attributes: { label: Qué pasa y qué esperabas }
+    validations: { required: true }
+  - type: textarea
+    id: consola
+    attributes: { label: Errores de la consola, description: "F12 en escritorio; chrome://inspect para el Quest", render: text }

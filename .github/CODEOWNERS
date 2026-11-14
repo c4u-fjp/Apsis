@@ -1,0 +1,11 @@
+# Responsables de revisar cada área: GitHub pide su revisión automáticamente en los PR.
+# Quita el "#" y pon el usuario de GitHub de cada persona (con @ delante del nombre real).
+# /backend/                          USUARIO_BACKEND
+# /frontend/src/mision/              USUARIO_TRAYECTORIA
+# /frontend/src/escenas/plataforma.js USUARIO_TIERRA
+# /frontend/src/escenas/espacio.js   USUARIO_TRAYECTORIA
+# /frontend/src/escenas/superficie.js USUARIO_SUPERFICIE
+# /frontend/src/simulation/          USUARIO_SUPERFICIE
+# /frontend/src/core/                USUARIO_UI
+# /frontend/public/models/           USUARIO_MODELOS
+# /frontend/src/data/  /backend/nasa_data/  USUARIO_CONTENIDO

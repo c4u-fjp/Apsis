@@ -1,0 +1,320 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    height: 100vh;
+    height: 100dvh;
+    background-color: #050505;
+    font-family: 'Courier New', Courier, monospace;
+    color: #4af626; /* Verde fósforo clásico de terminal */
+    overflow: hidden;
+}
+
+/* Panel Lateral Fijo */
+#panel-control {
+    width: 380px;
+    flex-shrink: 0;
+    background-color: #0a0a0c;
+    border-right: 2px solid #1a3a22;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+    z-index: 10;
+}
+
+header h1 {
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    margin: 10px 0;
+}
+
+.status-indicator {
+    color: #ff3333;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.parpadeo {
+    animation: parpadeo 1.5s infinite;
+}
+
+@keyframes parpadeo {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+.linea-divisoria {
+    height: 1px;
+    background: #4af626;
+    opacity: 0.5;
+    margin-bottom: 20px;
+}
+
+.bloque-datos {
+    margin-bottom: 25px;
+}
+
+.bloque-datos h3 {
+    font-size: 0.9rem;
+    color: #32a852;
+    border-bottom: 1px dashed #32a852;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.fila-dato {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.valor {
+    font-weight: bold;
+    color: #fff; /* Destaca los números en blanco */
+    text-align: right;
+}
+
+.consola-eventos {
+    flex-grow: 1;
+    min-height: 0;            /* sin esto el log no hace scroll dentro del panel flex */
+    border: 1px solid #1a3a22;
+    background: #000;
+    padding: 10px;
+    margin-bottom: 20px;
+    overflow-y: auto;
+}
+
+.consola-eventos ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.consola-eventos li {
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+
+/* El evento más reciente (hud.js lo agrega arriba) */
+.consola-eventos li:first-child {
+    color: #fff;
+    opacity: 1;
+}
+
+#timeline-container {
+    padding-top: 15px;
+    border-top: 1px solid #1a3a22;
+}
+
+#timeline-container label {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+#time-slider {
+    width: 100%;
+    accent-color: #4af626;
+}
+
+#time-slider:focus-visible {
+    outline: 2px solid #4af626;
+    outline-offset: 4px;
+}
+
+/* Área del Motor 3D */
+#monitor-3d {
+    flex-grow: 1;             /* Toma todo el espacio restante */
+    min-width: 0;             /* deja que se encoja al redimensionar la ventana */
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+    background-color: #020205;
+}
+
+#monitor-3d canvas {
+    display: block;           /* quita el hueco inferior de los elementos en línea */
+}
+
+/* Botón "ENTER VR" de three.js (usa estilos en línea, por eso !important) */
+#VRButton {
+    font-family: inherit !important;
+    font-size: 0.8rem !important;
+    color: #4af626 !important;
+    background: rgba(5, 10, 6, 0.85) !important;
+    border: 1px solid #1a3a22 !important;
+    border-radius: 0 !important;
+    opacity: 1 !important;
+}
+
+/* Mira de estilo cámara en el centro de la pantalla 3D */
+.crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(74, 246, 38, 0.3);
+    pointer-events: none; /* Los clics pasan a través de ella hacia Three.js */
+}
+.crosshair::before { content: ''; position: absolute; top: 19px; left: -10px; width: 60px; height: 1px; background: rgba(74, 246, 38, 0.3); }
+.crosshair::after { content: ''; position: absolute; left: 19px; top: -10px; width: 1px; height: 60px; background: rgba(74, 246, 38, 0.3); }
+
+/* Móvil / pantallas angostas: el panel pasa abajo en vez de comerse media pantalla */
+@media (max-width: 800px) {
+    body { flex-direction: column-reverse; }
+    #panel-control {
+        width: 100%;
+        height: 36dvh;
+        border-right: none;
+        border-top: 2px solid #1a3a22;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.8);
+        padding: 12px;
+        overflow-y: auto;
+    }
+    .bloque-datos { margin-bottom: 12px; }
+    .consola-eventos { min-height: 80px; margin-bottom: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .parpadeo { animation: none; }
+}
+
+/* ───────── Ampliaciones Apsis: simulador Apollo 11 ───────── */
+html, body { touch-action: none; }
+.subtitulo { font-size: 0.75rem; opacity: 0.7; letter-spacing: 1px; margin-bottom: 6px; }
+.siguiente { font-size: 0.85rem; line-height: 1.35; color: #fff; min-height: 2.6em; }
+.siguiente small { color: #4af626; opacity: 0.8; }
+.controles-tiempo, .controles-vista { display: flex; gap: 6px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+#panel-control button, #epilogo button {
+    font-family: inherit; font-size: 0.8rem; color: #4af626; background: rgba(5, 10, 6, .85);
+    border: 1px solid #1a3a22; padding: 6px 9px; cursor: pointer;
+}
+#panel-control button:hover, #epilogo button:hover { border-color: #4af626; }
+#panel-control button.activo { background: #17501a; color: #fff; }
+.controles-vista button { flex: 1; }
+.warp { min-width: 58px; text-align: center; color: #fff; font-weight: bold; }
+#hud-fuente { margin-top: 10px; }
+.consola-eventos li.importante { color: #ffb020; }
+.consola-eventos li.abandonado { color: #ff7a5c; }
+
+#banner {
+    position: absolute; top: 9%; left: 50%; transform: translateX(-50%); text-align: center;
+    color: #fff; font-size: clamp(1.1rem, 2.6vw, 2.2rem); letter-spacing: 3px; text-shadow: 0 0 12px #000, 0 0 3px #000;
+    pointer-events: none; opacity: 0; transition: opacity .6s; width: 90%; z-index: 20;
+}
+#banner small { display: block; font-size: 0.5em; color: #4af626; letter-spacing: 1px; margin-top: 8px; }
+#banner.visible { opacity: 1; }
+#aviso {
+    position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); padding: 10px 16px;
+    background: rgba(5, 10, 6, .85); border: 1px solid #4af626; color: #fff; font-size: 0.95rem;
+    display: none; z-index: 21; text-align: center; max-width: 80%;
+}
+#aviso.visible { display: block; animation: parpadeo 1.6s infinite; }
+
+#hud-lm {
+    position: absolute; top: 16px; right: 16px; width: 230px; padding: 12px; z-index: 15;
+    background: rgba(3, 8, 4, 0.82); border: 1px solid #1a3a22; font-size: 0.85rem;
+}
+#hud-lm.oculto, #epilogo.oculto { display: none; }
+.lm-fila { display: grid; grid-template-columns: 80px 1fr 46px; align-items: baseline; margin-bottom: 4px; }
+.lm-fila b { color: #fff; text-align: right; font-size: 1.15rem; padding-right: 6px; }
+.lm-fila i { font-style: normal; opacity: 0.75; font-size: 0.75rem; }
+#lm-luces { display: flex; gap: 6px; margin-top: 8px; }
+#lm-luces span { flex: 1; text-align: center; font-size: 0.68rem; padding: 4px 0; border: 1px solid #333; color: #555; background: #111; }
+#lm-luces span.on { color: #000; background: #ffb020; border-color: #ffb020; }
+#lm-luces #luz-alarma.on { background: #ff4d4d; border-color: #ff4d4d; }
+#lm-luces #luz-contacto.on { background: #5cf; border-color: #5cf; }
+
+#epilogo {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(620px, 90%);
+    max-height: 72%; overflow-y: auto; padding: 22px 26px; background: rgba(4, 8, 6, 0.92);
+    border: 1px solid #4af626; color: #cfe; z-index: 30; font-size: 0.9rem; line-height: 1.45;
+}
+#epilogo h2 { color: #fff; margin: 0 0 6px; letter-spacing: 2px; font-size: 1.3rem; }
+#epilogo h4 { color: #4af626; margin: 16px 0 6px; font-size: 0.85rem; letter-spacing: 1px; }
+#epilogo ul { margin: 0; padding-left: 18px; }
+#epilogo .botones { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+#epilogo .historia { font-style: italic; color: #fff; }
+
+#ayuda {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); font-size: 0.7rem;
+    color: rgba(74, 246, 38, 0.65); pointer-events: none; white-space: nowrap; z-index: 5;
+}
+#carga {
+    position: absolute; inset: 0; background: #020205; display: flex; align-items: center; justify-content: center; z-index: 100;
+    transition: opacity 0.8s;
+}
+#carga.fuera { opacity: 0; pointer-events: none; }
+.carga-caja { width: 320px; text-align: center; }
+.carga-caja h2 { letter-spacing: 6px; color: #fff; }
+.barra { height: 6px; border: 1px solid #1a3a22; margin-top: 12px; }
+#carga-barra { height: 100%; width: 0; background: #4af626; transition: width .3s; }
+#fundido { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 40; transition: opacity 0.45s; }
+#fundido.negro { opacity: 1; }
+
+@media (max-width: 800px) {
+    #ayuda { display: none; }
+    #hud-lm { width: 170px; font-size: 0.72rem; top: 8px; right: 8px; padding: 8px; }
+    .lm-fila { grid-template-columns: 62px 1fr 34px; }
+    .lm-fila b { font-size: 0.95rem; }
+    #aviso { bottom: 110px; font-size: 0.8rem; }
+}
+.btn-inicio {
+    margin-top: 22px; font-family: inherit; font-size: 1rem; letter-spacing: 2px; color: #000; background: #4af626;
+    border: none; padding: 12px 22px; cursor: pointer;
+}
+.btn-inicio:hover { background: #7dff5c; }
+.consola-eventos h3 { font-size: 0.9rem; color: #32a852; margin: 0 0 8px; }
+#ayuda { top: 8px; bottom: auto; }
+
+/* ───────── Inicio y pantalla de lanzamiento ───────── */
+body.pantalla-completa #panel-control, body.pantalla-completa #ayuda, body.pantalla-completa .crosshair { display: none; }
+#inicio, #lanzamiento { position: absolute; inset: 0; z-index: 35; color: #fff; }
+#inicio.oculto, #lanzamiento.oculto { display: none; }
+#inicio { background: radial-gradient(ellipse at 50% 35%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.75) 100%); }
+.inicio-marca { position: absolute; top: 22px; left: 28px; font-size: 1.4rem; letter-spacing: 8px; font-weight: bold; }
+.inicio-marca span { display: block; font-size: 0.7rem; letter-spacing: 3px; color: #4af626; font-weight: normal; margin-top: 4px; }
+.inicio-centro { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); text-align: center; width: min(900px, 94%); }
+.inicio-centro h1 { letter-spacing: 10px; font-weight: 300; font-size: clamp(1.3rem, 3vw, 2.4rem); margin: 0 0 6px; text-shadow: 0 0 18px #000; }
+.inicio-centro p { opacity: .8; margin: 0 0 18px; letter-spacing: 2px; font-size: .85rem; }
+.destinos { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.destino {
+    flex: 1 1 300px; max-width: 420px; text-align: left; padding: 16px 18px; cursor: pointer; font-family: inherit; color: #fff;
+    background: rgba(6, 12, 10, 0.78); border: 1px solid rgba(255,255,255,0.25); border-radius: 14px; backdrop-filter: blur(4px);
+    display: flex; flex-direction: column; gap: 6px; transition: border-color .2s, transform .2s;
+}
+.destino:hover, .destino:focus-within, .destino.activo { border-color: #4af626; transform: translateY(-3px); }
+.destino-nombre { font-size: 1.6rem; letter-spacing: 8px; }
+.destino-mision { color: #4af626; font-size: .8rem; letter-spacing: 1px; }
+.destino-restos { font-size: .78rem; opacity: .75; }
+.rovers { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.rovers button {
+    font-family: inherit; font-size: .75rem; color: #fff; background: rgba(255,120,80,0.12); border: 1px solid rgba(255,140,100,0.6);
+    border-radius: 999px; padding: 6px 10px; cursor: pointer;
+}
+.rovers button:hover { background: rgba(255,120,80,0.35); }
+#lanzamiento { background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0) 70%); pointer-events: none; }
+.lz-info { position: absolute; left: 8%; top: 50%; transform: translateY(-50%); pointer-events: auto; max-width: 480px; }
+.lz-destino { font-size: clamp(1.4rem, 3.4vw, 2.8rem); letter-spacing: 9px; font-weight: 300; text-shadow: 0 0 20px #000; }
+.lz-mision { letter-spacing: 4px; font-size: .85rem; margin: 14px 0 26px; opacity: .85; line-height: 1.7; }
+.btn-lanzar {
+    font-family: inherit; color: #fff; background: rgba(0,0,0,0.25); border: 2px solid #fff; border-radius: 999px;
+    padding: 12px 34px; letter-spacing: 5px; font-size: 1rem; cursor: pointer; transition: background .2s;
+}
+.btn-lanzar span { margin-left: 12px; }
+.btn-lanzar:hover { background: rgba(255,255,255,0.15); }
+.btn-lanzar:disabled { opacity: 0.4; cursor: default; }
+.btn-volver { display: block; margin-top: 16px; background: none; border: none; color: #cfd; cursor: pointer; font-family: inherit; letter-spacing: 2px; opacity: .8; }
+.lz-cuenta { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); font-size: clamp(3rem, 12vw, 9rem); font-weight: 200; letter-spacing: 6px; text-shadow: 0 0 30px #000; }
+.lz-cuenta { text-align: center; }
+.lz-cuenta small { display: block; font-size: 0.22em; letter-spacing: 8px; color: #ffb36b; }

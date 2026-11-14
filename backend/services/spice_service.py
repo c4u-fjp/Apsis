@@ -10,8 +10,10 @@ KERNELS = [
     "pck/pck00011.tpc",
     "spk/de440s.bsp",
     "pck/moon_pa_de440_200625.bpc",
-    "fk/moon_de440_220930.tf",
 ]
+# El FK lunar cambia de nombre con cada version (moon_de440_250416.tf, moon_de440_220930.tf...).
+# Se usa el mas reciente que haya en kernels/fk/.
+LUNAR_FK_GLOB = "moon_de440_*.tf"
 MOON_RADIUS_KM = 1737.4
 ALLOWED_BODIES = {"MOON", "EARTH", "SUN"}
 # Marco "Mean Earth": el de las coordenadas oficiales de los sitios Apolo.
@@ -32,6 +34,11 @@ def load_kernels() -> list[str]:
                 spice.furnsh(str(path))
             else:
                 missing.append(rel)
+        fks = sorted((KERNEL_DIR / "fk").glob(LUNAR_FK_GLOB))
+        if fks:
+            spice.furnsh(str(fks[-1]))
+        else:
+            missing.append(f"fk/{LUNAR_FK_GLOB}")
         _loaded = True
         _frame = _pick_frame()
     return missing
@@ -102,3 +109,55 @@ def moon_orientation(utc: str) -> dict:
     frame = moon_frame()
     m = spice.pxform("J2000", frame, et)
     return {"utc": utc, "frame": frame, "matrix": [list(map(float, row)) for row in m]}
+
+def body_direction_enu(body: str, lat_deg: float, lon_deg: float, utc: str) -> dict:
+    """Como sun_direction pero para cualquier cuerpo (p. ej. la Tierra vista desde un sitio lunar)."""
+    load_kernels()
+    et = utc_to_et(utc)
+    frame = moon_frame()
+    body_from_moon, _ = spice.spkpos(body, et, frame, "LT+S", "MOON")
+    site = np.array(
+        spice.georec(math.radians(lon_deg), math.radians(lat_deg), 0.0, MOON_RADIUS_KM, 0.0)
+    )
+    result = enu_sun(site, np.array(body_from_moon) - site)
+    result.update({"body": body, "utc": utc, "frame": frame})
+    return result
+
+
+def mission_track(t0_utc: str, t1_utc: str, step_s: float) -> dict:
+    """Efemérides para toda la misión: Luna y Sol (J2000, km, desde la Tierra) y la
+    orientación lunar (J2000 -> marco lunar) cada step_s segundos."""
+    load_kernels()
+    et0, et1 = utc_to_et(t0_utc), utc_to_et(t1_utc)
+    frame = moon_frame()
+    n = int((et1 - et0) // step_s) + 1
+    samples = []
+    for i in range(n + 1):
+        et = min(et0 + i * step_s, et1)
+        moon, _ = spice.spkpos("MOON", et, "J2000", "NONE", "EARTH")
+        sun, _ = spice.spkpos("SUN", et, "J2000", "NONE", "EARTH")
+        rot = spice.pxform("J2000", frame, et)
+        samples.append({
+            "t": round(et - et0, 3),
+            "moon": [round(float(v), 3) for v in moon],
+            "sun": [round(float(v), 1) for v in sun],
+            "rot": [round(float(v), 9) for row in rot for v in row],
+        })
+        if et >= et1:
+            break
+    return {"t0_utc": t0_utc, "t1_utc": t1_utc, "step_s": step_s, "frame_rot": frame,
+            "frame": "J2000", "samples": samples}
+
+
+def helio_track(t0_utc: str, t1_utc: str, step_s: float) -> dict:
+    """Tierra y Marte (baricentro) vistos desde el Sol, marco ECLIPJ2000, km."""
+    load_kernels()
+    et0, et1 = utc_to_et(t0_utc), utc_to_et(t1_utc)
+    out = []
+    et = et0
+    while et <= et1 + 1e-6:
+        e, _ = spice.spkpos("EARTH", et, "ECLIPJ2000", "NONE", "SUN")
+        m, _ = spice.spkpos("MARS BARYCENTER", et, "ECLIPJ2000", "NONE", "SUN")
+        out.append({"t": round(et - et0, 1), "tierra": [round(float(v), 0) for v in e], "marte": [round(float(v), 0) for v in m]})
+        et += step_s
+    return {"t0_utc": t0_utc, "step_s": step_s, "frame": "ECLIPJ2000", "samples": out}

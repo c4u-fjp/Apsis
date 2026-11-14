@@ -1,0 +1,24 @@
+name: Tarea
+description: Trabajo nuevo o mejora (una persona, una rama, un PR)
+labels: ["tarea"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área
+      options: [escenas-tierra, espacio-trayectoria, superficie-alunizaje, backend-datos, ui-vr, modelos-3d, contenido-historia]
+    validations: { required: true }
+  - type: textarea
+    id: que
+    attributes: { label: Qué hay que hacer, description: Resultado esperado, visible para el usuario }
+    validations: { required: true }
+  - type: textarea
+    id: hecho
+    attributes:
+      label: Hecho cuando…
+      description: Criterios para cerrar el issue
+      value: |
+        - [ ] 
+  - type: textarea
+    id: pistas
+    attributes: { label: Archivos y pistas, description: "Dónde tocar (ver docs/ARQUITECTURA.md)" }

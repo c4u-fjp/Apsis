@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import ephemeris, sites
+from routers import ephemeris, mission, sites
 from services import spice_service
 
 
@@ -24,6 +24,7 @@ app.add_middleware(
 )
 app.include_router(ephemeris.router)
 app.include_router(sites.router)
+app.include_router(mission.router)
 
 
 @app.get("/health")
