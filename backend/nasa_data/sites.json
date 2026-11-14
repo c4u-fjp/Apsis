@@ -1,0 +1,44 @@
+[
+  {
+    "id": "apollo11", "name": "Apolo 11 - Base Tranquilidad", "lm": "Eagle",
+    "lat": 0.6741, "lon": 23.4730, "landing_utc": "1969-07-20T20:17:40",
+    "hardware": ["Etapa de descenso del LM", "EASEP: sismómetro pasivo", "Retrorreflector láser (LRRR)", "Bandera y placa conmemorativa"],
+    "lrv": false,
+    "story": "Soy la etapa de descenso de Eagle. Fui la plataforma de lanzamiento de mis hermanos y me quedé aquí."
+  },
+  {
+    "id": "apollo12", "name": "Apolo 12 - Oceanus Procellarum", "lm": "Intrepid",
+    "lat": -3.0124, "lon": -23.4216, "landing_utc": "1969-11-19T06:54:35",
+    "hardware": ["Etapa de descenso del LM", "ALSEP", "Surveyor 3 (a unos 180 m; los astronautas le quitaron piezas)"],
+    "lrv": false,
+    "story": "Aterrizamos cerca de una sonda que llevaba dos años esperando."
+  },
+  {
+    "id": "apollo14", "name": "Apolo 14 - Fra Mauro", "lm": "Antares",
+    "lat": -3.6453, "lon": -17.4714, "landing_utc": "1971-02-05T09:18:11",
+    "hardware": ["Etapa de descenso del LM", "ALSEP", "Carro manual MET"],
+    "lrv": false,
+    "story": "Aquí no hubo buggy: los astronautas empujaron un carrito."
+  },
+  {
+    "id": "apollo15", "name": "Apolo 15 - Hadley-Apenninus", "lm": "Falcon",
+    "lat": 26.1322, "lon": 3.6334, "landing_utc": "1971-07-30T22:16:29",
+    "hardware": ["Etapa de descenso del LM", "ALSEP", "LRV (primer buggy lunar)"],
+    "lrv": true,
+    "story": "Fui el primer vehículo conducido por humanos en otro mundo."
+  },
+  {
+    "id": "apollo16", "name": "Apolo 16 - Descartes", "lm": "Orion",
+    "lat": -8.9734, "lon": 15.5011, "landing_utc": "1972-04-21T02:23:35",
+    "hardware": ["Etapa de descenso del LM", "ALSEP", "LRV"],
+    "lrv": true,
+    "story": "Me estacionaron frente a la cámara y ahí sigo."
+  },
+  {
+    "id": "apollo17", "name": "Apolo 17 - Taurus-Littrow", "lm": "Challenger",
+    "lat": 20.1911, "lon": 30.7723, "landing_utc": "1972-12-11T19:54:57",
+    "hardware": ["Etapa de descenso del LM", "ALSEP", "LRV"],
+    "lrv": true,
+    "story": "Fui el último buggy; nadie ha vuelto a conducir en la Luna."
+  }
+]
