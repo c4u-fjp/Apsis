@@ -1,5 +1,5 @@
 // Menú de selección de misión dentro de las gafas (el HTML de la portada no se ve en VR).
-// Un panel 3D delante del usuario en la sala de control. Se elige:
+// Se dibuja sobre el monitor "APSIS" del escritorio de la sala (no tapa la pantalla grande). Se elige:
 //   - apuntando con cualquiera de los dos mandos (rayo) y pulsando el gatillo, o
 //   - moviendo la selección con el joystick izquierdo y confirmando con A.
 import * as THREE from 'three';
@@ -7,20 +7,17 @@ import * as THREE from 'three';
 const W = 1024, H = 720;
 const VERDE = '#4af626', AZUL = '#9ddfff';
 
-export function crearMenuVR({ renderer, rig, opciones, alElegir, alEnfocar = () => {} }) {
+export function crearMenuVR({ renderer, rig, padre, ancho = 0.75, opciones, alElegir, alEnfocar = () => {} }) {
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
     const tex = new THREE.CanvasTexture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
-    const ancho = 1.05;
     const malla = new THREE.Mesh(new THREE.PlaneGeometry(ancho, ancho * H / W),
-        new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false, toneMapped: false }));
-    malla.renderOrder = 60;
-    malla.position.set(0, 0.05, -1.05);   // el origen del rig es la cabeza (espacio "local")
-    malla.rotation.x = -0.08;
+        new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 }));
+    malla.position.set(0, 0, 0.004);      // pegado a la cara del monitor
     malla.visible = false;
-    rig.add(malla);
+    padre.add(malla);
 
     // botones (en píxeles del lienzo)
     const luna = opciones.filter((o) => o.grupo === 'luna');

@@ -259,7 +259,7 @@ async function iniciar() {
 
     // Menú de misiones dentro de las gafas: el mismo que la portada, en 3D delante del usuario
     const menuVR = crearMenuVR({
-        renderer, rig: rigSala,
+        renderer, rig: rigSala, padre: sala.monitor, ancho: 0.74,
         opciones: [
             { grupo: 'luna', id: 'luna', titulo: 'LA LUNA', sub: 'Apollo 11 · Saturn V · 1969' },
             ...marte.misiones.map((m) => ({ grupo: 'marte', id: m.id, titulo: m.rover.split(' ')[0].toUpperCase(), sub: m.lanzamiento_utc.slice(0, 4) })),
@@ -334,6 +334,11 @@ async function iniciar() {
         const dt = Math.min(reloj.getDelta(), 0.1);
         tReal += dt;
         base.entrada = input.poll(dt);
+        if (renderer.xr.isPresenting) {
+            // eligiendo destino: sentado ante el escritorio, de frente al monitor del menú; en la misión, la vista de siempre
+            if (!modo) { rigSala.position.set(-0.36, 1.75, 0.1); rigSala.rotation.set(0, 0.25, 0); }
+            else { rigSala.position.set(0, 1.0, 1.2); rigSala.rotation.set(0, 0, 0); }
+        }
         menuVR.actualizar(renderer.xr.isPresenting && !modo);
         // VR: el stick derecho gira la cámara alrededor del objetivo y acerca/aleja
         const cv = base.entrada.camVR, c = base.escenaActiva?.controls;

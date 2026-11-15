@@ -362,6 +362,7 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
 
     // ───── API que usa main.js ─────
     return {
+        monitor: monitorMesh,   // el monitor "APSIS" del escritorio (en VR muestra el menú de misiones)
         actualizar(estado) {
             dibujarMonitor(estado);
             dibujarTrayectoria(estado);
