@@ -327,22 +327,3 @@ body.pantalla-completa #panel-control, body.pantalla-completa #ayuda, body.panta
 .r-botones button { flex: 1; }
 body.modo-restos #hud-lm { display: none; }
 @media (max-width: 700px) { #restos { width: auto; left: 8px; right: 8px; top: auto; bottom: 40px; max-height: 45%; } }
-
-/* Bilingual switch is available on launch, in flight, and on the VR landing view. */
-.language-switcher {
-  position: fixed; z-index: 10000; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right));
-  display: inline-flex; align-items: center; gap: 2px; padding: 4px;
-  background: rgba(3, 16, 35, .93); border: 1px solid rgba(132, 202, 245, .5);
-  border-radius: 7px; box-shadow: 0 8px 26px rgba(0,0,0,.35); pointer-events: auto;
-}
-.language-switcher button {
-  color: #a9bdcd; border: 0; background: transparent; border-radius: 4px;
-  font-family: Montserrat, system-ui, sans-serif; font-size: 11px; font-weight: 800;
-  padding: 7px 10px; cursor: pointer; letter-spacing: .08em;
-}
-.language-switcher button.is-active { color: #071729; background: #96d9ff; }
-.language-switcher button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-@media (max-width: 650px) {
-  .language-switcher { top: max(7px, env(safe-area-inset-top)); right: 7px; }
-  .language-switcher button { padding: 6px 8px; font-size: 10px; }
-}
