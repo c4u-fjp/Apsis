@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -18,7 +19,10 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Abandoned but not Forgotten API", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    # En producción el frontend llama vía el proxy /api de Cloudflare Pages (mismo origen), así que no
+    # hace falta CORS. Si se llama directo al backend, añade los dominios en ALLOWED_ORIGINS (separados por comas).
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"]
+    + [o.strip() for o in os.environ.get("ALLOWED_ORIGINS", "").split(",") if o.strip()],
     allow_methods=["GET"],
     allow_headers=["*"],
 )

@@ -23,6 +23,7 @@ import { construirSala, pantallaGiganteTarget } from './escenas/centroControl.js
 import { EscenaPlataforma } from './escenas/plataforma.js';
 import { crearEstrellas, texturaMarte } from './modelos/efectos.js';
 import marte from './data/marte.json';
+import { sonido } from './core/audio.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -176,6 +177,7 @@ async function iniciar() {
     }
 
     async function elegir(destino, id) {
+        sonido.preparar();            // el clic del usuario permite cargar y reproducir audio
         inicio.classList.add('oculto');
         document.body.classList.remove('en-inicio');
         progreso(0.02, destino === 'luna' ? 'Preparando el Saturn V…' : 'Preparando el Delta II…');
@@ -200,6 +202,11 @@ async function iniciar() {
         ['btn-lento', 'masLento'], ['btn-historia', 'historia'], ['btn-camara', 'camara'], ['btn-sala', 'sala']]) {
         $(id).addEventListener('click', () => modo?.accion(a));
     }
+    $('btn-sonido-panel').addEventListener('click', () => {
+        const on = sonido.alternar();
+        $('btn-sonido-panel').textContent = on ? '♪ ON' : '♪ OFF';
+        $('sonido-estado').textContent = on ? 'ON' : 'OFF';
+    });
     const slider = $('time-slider');
     base.arrastrando = false;
     slider.addEventListener('pointerdown', () => { base.arrastrando = true; });
@@ -235,7 +242,7 @@ async function iniciar() {
     if (q.has('t') && !q.has('destino')) q.set('destino', 'luna');
     if (q.has('destino')) elegir(q.get('destino'), q.get('mision') ?? 'spirit');
     else mostrarInicio();
-    window.apsis = { base, get modo() { return modo; } };
+    window.apsis = { base, sonido, get modo() { return modo; } };
 }
 
 iniciar().catch((e) => {

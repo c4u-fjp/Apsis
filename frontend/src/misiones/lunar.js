@@ -14,6 +14,7 @@ import { adaptadorSaturno } from '../modelos/vehiculos.js';
 import { EscenaEspacio } from '../escenas/espacio.js';
 import { EscenaSuperficie } from '../escenas/superficie.js';
 import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
+import { sonido, CONTEO_T0 } from '../core/audio.js';
 
 const $ = (id) => document.getElementById(id);
 const FIN_PLATAFORMA = 75;      // s: a partir de aquí el ascenso se sigue en la escena a escala real
@@ -176,6 +177,7 @@ export async function crearMision(base) {
             });
         },
         salir() {
+            sonido.parar();
             pantalla?.ocultar();
             activa?.salir();
             plataforma.preparacion = false;
@@ -196,7 +198,7 @@ export async function crearMision(base) {
 
             // cuenta regresiva en pantalla y paso al vuelo
             if (pantalla && estado === 'vuelo') {
-                pantalla.cuenta(t, crono.ev.ignicion);
+                pantalla.cuenta(t, crono.ev.ignicion, true);
                 if (t > 6) { pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); }
             }
             if (t > tAntes) {
@@ -210,9 +212,15 @@ export async function crearMision(base) {
                     espacio.modo = 'mapa';
                     espacio.ultimaFaseCam = null;
                     vistaSala(true);
+                    sonido.reproducir('espacio');
                     viajeComenzado('Control de Misión sigue la trayectoria hacia la Luna en la pantalla principal. Pulsa C para volver al cohete.');
                 }
             }
+
+            // Grabaciones del lanzamiento, en su sitio exacto: el "zero" del locutor cae en T-0
+            const tiempoReal = estado === 'vuelo' && !reloj.pausado && reloj.warp <= 1.5;
+            sonido.sincronizar('conteo', t, CONTEO_T0, { tiempoReal });
+            sonido.sincronizar('despegue', t, crono.ev.ignicion, { tiempoReal });
 
             const objetivo = escenaPara(t);
             if (objetivo !== activa) cambiarEscena(objetivo, t);

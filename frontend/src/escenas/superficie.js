@@ -11,6 +11,7 @@ import { createLM, step, guiadoAuto, guiadoP66, segundosCombustible, SONDA_CONTA
 import { createMachine } from '../simulation/stateMachine.js';
 import { getSky, getSite } from '../api/client.js';
 import { isoUTC, formatearMET } from '../mision/tiempo.js';
+import { sonido } from '../core/audio.js';
 
 const LM_M = 1.38;
 const PIES = 3.28084;
@@ -389,6 +390,8 @@ export class EscenaSuperficie {
             const comb = segundosCombustible(lm);
             this.resultado = { ok: true, dist, comb, t };
             this.maquina.advance();
+            sonido.reproducir('aterrizaje');
+            sonido.reproducir('eagle', { retraso: 3.5 });   // "Houston, Tranquility Base here. The Eagle has landed."
             hud.banner('THE EAGLE HAS LANDED', `"Houston, Tranquility Base here." · a ${dist.toFixed(0)} m de Base Tranquilidad · combustible: ${comb.toFixed(0)} s`, 9000);
             hud.registrar(`[${formatearMET(t)}] ALUNIZAJE en ${formatearMET(t)} (histórico: ${formatearMET(crono.ev.alunizaje)}). Distancia a Base Tranquilidad: ${dist.toFixed(0)} m.`, 'importante');
             this._tactil(false);

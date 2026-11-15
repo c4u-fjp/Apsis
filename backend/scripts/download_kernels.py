@@ -1,4 +1,6 @@
 """Descarga los kernels SPICE de NAIF (JPL). Ejecutar desde backend/:  python scripts/download_kernels.py"""
+import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -19,17 +21,24 @@ KERNELS = [
 ]
 
 
-def fetch(remote: str, out: Path) -> bool:
-    try:
-        urllib.request.urlretrieve(BASE + remote, out)
-        return True
-    except urllib.error.HTTPError as e:
-        print(f"   {e.code} en {remote}")
-        out.unlink(missing_ok=True)
-        return False
+def fetch(remote: str, out: Path, intentos: int = 3) -> bool:
+    for i in range(intentos):
+        try:
+            urllib.request.urlretrieve(BASE + remote, out)
+            return True
+        except urllib.error.HTTPError as e:      # 404: probar el siguiente candidato
+            print(f"   {e.code} en {remote}")
+            out.unlink(missing_ok=True)
+            return False
+        except (urllib.error.URLError, OSError) as e:   # red caída: reintentar
+            print(f"   error de red ({e}); reintento {i + 1}/{intentos}")
+            out.unlink(missing_ok=True)
+            time.sleep(3 * (i + 1))
+    return False
 
 
 def main():
+    fallos = 0
     for folder, candidates in KERNELS:
         name = Path(candidates[0]).name
         out_dir = DEST / folder
@@ -44,7 +53,9 @@ def main():
                 break
         else:
             print(f"[FALLO] no se pudo descargar {name}; revisa el listado de NAIF")
-    print("Listo.")
+            fallos += 1
+    print("Listo." if not fallos else f"Faltan {fallos} kernels.")
+    sys.exit(1 if fallos else 0)    # en Docker/Render el build falla en vez de arrancar sin datos
 
 
 if __name__ == "__main__":

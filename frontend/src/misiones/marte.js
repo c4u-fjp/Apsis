@@ -7,10 +7,12 @@ import { formatearMET } from '../mision/tiempo.js';
 import { monotona } from '../mision/vec.js';
 import { solEcuatorial, eclipticaAEcuatorial, ecuatorialALocal } from '../mision/sol.js';
 import { fechaHora } from '../core/hud.js';
+import { getMarsTrack } from '../api/client.js';
 import { crearDelta } from '../modelos/cargador.js';
 import { adaptadorDelta, SECUENCIA_DELTA } from '../modelos/vehiculos.js';
 import { EscenaInterplanetaria } from '../escenas/interplanetario.js';
 import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
+import { sonido } from '../core/audio.js';
 
 const $ = (id) => document.getElementById(id);
 const PAD = { nombre: 'Complejo 17 · Cabo Cañaveral', lat: 28.447, lon: -80.565, azimut: 95 };
@@ -23,9 +25,7 @@ const NOMBRE_FASE = { PRE_LANZAMIENTO: 'Cuenta regresiva', DESPEGUE: 'Despegue',
 
 async function cargarTrack(id) {
     try {
-        const r = await fetch(`/api/mission/marte/${id}/track`);
-        if (!r.ok || !(r.headers.get('content-type') ?? '').includes('json')) throw new Error(`HTTP ${r.status}`);
-        return { datos: await r.json(), origen: 'SPICE en vivo (backend)' };
+        return { datos: await getMarsTrack(id), origen: 'SPICE en vivo (backend)' };
     } catch {
         return { datos: respaldo[id], origen: 'SPICE precalculado (backend apagado)' };
     }
@@ -80,6 +80,7 @@ export async function crearMision(base, id = 'spirit') {
     function despegar() { estado = 'ascenso'; plataforma.preparacion = false; t = -10; tPrevio = t; pausado = false; }
 
     function aEspacio() {
+        sonido.reproducir('espacio');
         viajeComenzado(`Control de Misión sigue a ${m.rover} rumbo a Marte en la pantalla principal.`);
         estado = 'crucero';
         activa = inter;
@@ -157,7 +158,7 @@ export async function crearMision(base, id = 'spirit') {
             const q = new URLSearchParams(location.search);
             if (q.has('t')) { despegar(); t = Number(q.get('t')); pausado = q.has('pausa'); pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); if (t >= EN_EL_ESPACIO) aEspacio(); }
         },
-        salir() { pantalla?.ocultar(); plataforma.preparacion = false; hud.el.epilogo.classList.add('oculto'); base.vista = 'escena'; },
+        salir() { sonido.parar(); pantalla?.ocultar(); plataforma.preparacion = false; hud.el.epilogo.classList.add('oculto'); base.vista = 'escena'; },
         accion(a) { acciones[a]?.(); },
         deslizador(f) {
             if (estado === 'preparacion') return;
@@ -183,7 +184,13 @@ export async function crearMision(base, id = 'spirit') {
                 }
             }
             if (estado === 'ascenso' && t >= EN_EL_ESPACIO) aEspacio();
-            if (estado === 'crucero' && t >= D) { estado = 'llegada'; setTimeout(mostrarRestos, 2500); }
+            if (estado === 'crucero' && t >= D) {
+                estado = 'llegada';
+                sonido.reproducir('aterrizaje');
+                sonido.reproducir('eagle', { retraso: 3.5 });
+                setTimeout(mostrarRestos, 2500);
+            }
+            sonido.sincronizar('despegue', t, SECUENCIA_DELTA.ignicion, { tiempoReal: estado === 'ascenso' && !pausado && warp() <= 3 });
 
             activa.actualizar(t, dt, Math.max(0, t - tPrevio), tReal);
             tPrevio = t;

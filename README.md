@@ -35,6 +35,9 @@ usa efemérides SPICE precalculadas (`frontend/src/data/efemerides_apollo11.json
 Enlaces directos: `?destino=luna`, `?destino=marte&mision=pathfinder` (spirit, opportunity, phoenix),
 `?t=102:33:05` (Apollo 11 en ese instante; GET hhh:mm:ss o segundos). Opciones: `&pausa`, `&sala`.
 
+## Publicar en internet
+Frontend en **Cloudflare Pages** y backend (Docker) en **Render** (`render.yaml`), conectados a GitHub: ver **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**.
+
 ## Trabajar en equipo
 Lee **[CONTRIBUTING.md](CONTRIBUTING.md)** (flujo de ramas y PR, áreas, convenciones),
 **[docs/ARQUITECTURA.md](docs/ARQUITECTURA.md)** (cómo encaja todo y cómo añadir escenas o misiones) y
@@ -70,6 +73,19 @@ GitHub Actions las ejecuta en cada Pull Request.
 En el alunizaje, **N** termina el descenso en automático. Si Eagle se estrella puedes reintentar desde la P64
 o desde la P66. El computador (AUTO) aterriza en Base Tranquilidad; en P66 tienes el combustible justo para
 pasar de largo el campo de rocas del cráter West, como Armstrong.
+
+## Sonido (grabaciones de Apollo 11, `public/sonidos/`)
+| Archivo | Cuándo suena |
+|---|---|
+| `conteo_apollo11.mp3` | Empieza en T-9,1 s: "ignition sequence start… six, five… zero" coincide con el despegue (T-0), "liftoff" en T+2,4 y "roll program" en T+13 (el real fue a T+13,2) |
+| `despegue.mp3` | Rugido de motores desde la ignición (T-8,9 s en Apollo 11; T-2 s en el Delta II) |
+| `en_el_espacio.mp3` | Al llegar al espacio, cuando la vista pasa a la sala de control ("EL VIAJE HA COMENZADO") |
+| `aterrizaje.mp3` | En el contacto: alunizaje de Eagle o llegada a Marte |
+| `eagle_has_landed.mp3` | 3,5 s después: "Tranquility Base here, the Eagle has landed" |
+
+Las pistas del lanzamiento van atadas al reloj de la misión: se cortan al pausar, saltar o acelerar el tiempo, y
+se resincronizan si el equipo va lento. En Marte no se usa la cuenta de Apollo 11 (dice "Apollo 11"): suenan pitidos.
+Botón **SONIDO** en la pantalla de lanzamiento y **♪** en el panel.
 
 ## Marte
 - Fechas de lanzamiento y llegada reales (NASA/JPL); posiciones de la Tierra y Marte de SPICE (DE440) vía

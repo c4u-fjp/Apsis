@@ -641,5 +641,27 @@
   "dryMass": 6850,
   "fuel": 1150,
   "nota": "Masa aproximada de Eagle al inicio de la P64; el combustible da ~4 min de vuelo estacionario"
- }
+ },
+ "sonidos": [
+  {
+   "archivo": "conteo_apollo11.mp3",
+   "cuando": "T-9,1 s (el 'zero' del locutor cae en T-0; 'liftoff' en T+2,4; 'roll program' en T+13)"
+  },
+  {
+   "archivo": "despegue.mp3",
+   "cuando": "Ignición de los F-1 (T-8,9 s); en Marte, ignición del Delta II"
+  },
+  {
+   "archivo": "en_el_espacio.mp3",
+   "cuando": "Al llegar al espacio (~100 km, paso a la sala de control)"
+  },
+  {
+   "archivo": "aterrizaje.mp3",
+   "cuando": "Contacto con la superficie (Luna o llegada a Marte)"
+  },
+  {
+   "archivo": "eagle_has_landed.mp3",
+   "cuando": "3,5 s después del contacto"
+  }
+ ]
 }

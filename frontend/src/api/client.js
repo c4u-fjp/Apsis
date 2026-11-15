@@ -30,3 +30,4 @@ export const getMoonOrientation = (utc) => get("/moon-orientation", { utc });
 export const getMission = () => get("/mission/apollo11");
 export const getMissionTrack = (step_s = 1800) => get("/mission/apollo11/track", { step_s }, 8000);
 export const getSky = (utc) => get("/mission/apollo11/sky", { utc });
+export const getMarsTrack = (id) => get(`/mission/marte/${id}/track`, {}, 8000);
