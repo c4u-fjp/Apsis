@@ -1,5 +1,6 @@
 // Destino LUNA: Apollo 11 completo (lanzamiento -> órbita -> TLI -> Luna -> alunizaje -> restos).
 // Al llegar al espacio (~100 km) la vista pasa a la sala de control con la trayectoria hacia la Luna.
+import * as THREE from 'three';
 import datos from '../data/apollo11.json';
 import { Cronologia } from '../mision/cronologia.js';
 import { RelojMision } from '../mision/reloj.js';
@@ -8,13 +9,14 @@ import { Trayectoria } from '../mision/trayectoria.js';
 import { getASegundos, formatearMET, isoUTC, LANZAMIENTO_MS } from '../mision/tiempo.js';
 import { ecuatorialALocal } from '../mision/sol.js';
 import { fechaHora } from '../core/hud.js';
-import { crearSaturno, crearLM, crearLuna } from '../modelos/cargador.js';
+import { crearSaturno, crearLM, crearLuna, LM_M_POR_UNIDAD } from '../modelos/cargador.js';
 import { NaveApollo } from '../modelos/nave.js';
 import { adaptadorSaturno } from '../modelos/vehiculos.js';
 import { EscenaEspacio } from '../escenas/espacio.js';
 import { EscenaSuperficie } from '../escenas/superficie.js';
 import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
 import { sonido, CONTEO_T0 } from '../core/audio.js';
+import { crearModoRestos } from './restos.js';
 
 const $ = (id) => document.getElementById(id);
 const FIN_PLATAFORMA = 75;      // s: a partir de aquí el ascenso se sigue en la escena a escala real
@@ -59,7 +61,41 @@ export async function crearMision(base) {
     let estado = 'preparacion';     // preparacion | vuelo
     let pantalla = null;
 
-    const controles = () => base.controles(escenas, activa);
+    let restos = null;          // modo "lo que quedó allí" (órbita y superficie de la Luna)
+    const controles = () => (restos?.activo ? base.controles([...escenas, restos.escena], restos.escena) : base.controles(escenas, activa));
+
+    async function cargarDescenso() {   // la etapa de descenso real (mod_lunar.glb) para Base Tranquilidad y demás sitios Apollo
+        const lm = await crearLM();
+        const g = new THREE.Group();
+        g.add(lm.descenso);
+        g.scale.setScalar(LM_M_POR_UNIDAD);
+        return g;
+    }
+    function abrirRestos() {
+        if (restos?.activo) return;
+        restos ??= crearModoRestos(base, {
+            cuerpo: 'luna', sitio: 'apollo11', lanzamientoMs: LANZAMIENTO_MS, lunaModelo: luna, cargarLM: cargarDescenso,
+            alRepetir: () => { cerrarRestos(); saltar(crono.ev.p64 - 2); },
+        });
+        reloj.pausado = true;
+        $('fundido').classList.add('negro');
+        setTimeout(() => {
+            activa?.salir();
+            restos.entrar();
+            controles();
+            $('fundido').classList.remove('negro');
+        }, 480);
+    }
+    function cerrarRestos() {
+        if (!restos?.activo) return;
+        restos.salir();
+        base.vista = 'escena';
+        activa.entrar(reloj.t);
+        base.panelVR.colocarEn(activa.rig);
+        reloj.pausado = false;
+        controles();
+    }
+    ctx.alTerminar = abrirRestos;
     function escenaPara(t) {
         if (t < FIN_PLATAFORMA) return plataforma;
         return crono.fase(t).escena === 'superficie' ? superficie : espacio;
@@ -143,7 +179,7 @@ export async function crearMision(base) {
     };
 
     return {
-        depurar: { espacio, superficie, plataforma, reloj, tray, nave },
+        depurar: { espacio, superficie, plataforma, reloj, tray, nave, get restos() { return restos; } },
         controles,
         entrar() {
             base.vista = 'escena';
@@ -156,6 +192,13 @@ export async function crearMision(base) {
             plataforma.preparacion = true;
             activar(plataforma, reloj.t);
             const q = new URLSearchParams(location.search);
+            if (q.has('restos')) {     // enlace directo: ?destino=luna&restos
+                despegar();
+                base.pantallaCompleta(false);
+                saltar(crono.ev.despegueLunar + 80);
+                abrirRestos();
+                return;
+            }
             if (q.has('t')) {          // enlace directo a un instante
                 despegar();
                 base.pantallaCompleta(false);
@@ -177,6 +220,7 @@ export async function crearMision(base) {
             });
         },
         salir() {
+            restos?.salir();
             sonido.parar();
             pantalla?.ocultar();
             activa?.salir();
@@ -185,10 +229,14 @@ export async function crearMision(base) {
             hud.aviso(null);
             base.vista = 'escena';
         },
-        accion(a) { acciones[a]?.(); },
-        deslizador(f) { if (estado === 'vuelo') saltar(interp(f, 0, 1)); },
+        accion(a) {
+            if (restos?.activo) { restos.accion(a); return; }
+            acciones[a]?.();
+        },
+        deslizador(f) { if (estado === 'vuelo') { cerrarRestos(); saltar(interp(f, 0, 1)); } },
 
         frame(dt, tReal) {
+            if (restos?.activo) { restos.frame(dt, tReal); return; }
             const tAntes = reloj.t;
             if (estado === 'vuelo') {
                 if (activa.relojPropio && !pendiente) reloj.t = activa.avanzarReloj(dt, reloj);

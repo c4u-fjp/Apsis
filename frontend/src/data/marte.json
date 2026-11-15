@@ -1,80 +1,80 @@
 {
- "fuente": "NASA/JPL (fact sheets, press kits), NSSDCA",
- "cohete": "Delta II 7925 (9 propulsores GEM-40)",
- "misiones": [
-  {
-   "id": "pathfinder",
-   "nombre": "Mars Pathfinder · Sojourner",
-   "rover": "Sojourner",
-   "lanzamiento_utc": "1996-12-04T06:58:07Z",
-   "plataforma": "SLC-17B",
-   "llegada_utc": "1997-07-04T16:56:55Z",
-   "sitio": "Ares Vallis, Chryse Planitia",
-   "lat": 19.13,
-   "lon": -33.22,
-   "ultimo_contacto": "1997-09-27",
-   "historia": "El primer rover en Marte: 10,6 kg y seis ruedas. Recorrió unos 100 m alrededor de su lander, rebautizado Estación Memorial Carl Sagan. Sigue estacionado en Ares Vallis.",
-   "restos": [
-    "Lander Pathfinder (Estación Memorial Carl Sagan)",
-    "Rover Sojourner",
-    "Airbags y paracaídas",
-    "Escudo térmico"
-   ]
-  },
-  {
-   "id": "spirit",
-   "nombre": "Mars Exploration Rover · Spirit",
-   "rover": "Spirit",
-   "lanzamiento_utc": "2003-06-10T17:58:47Z",
-   "plataforma": "SLC-17A",
-   "llegada_utc": "2004-01-04T04:35:00Z",
-   "sitio": "Cráter Gusev",
-   "lat": -14.82,
-   "lon": 175.15,
-   "ultimo_contacto": "2010-03-22",
-   "historia": "Diseñado para 90 soles, trabajó más de seis años. En 2009 quedó atrapado en arena blanda en 'Troy'; desde entonces es un monumento inmóvil en Gusev.",
-   "restos": [
-    "Rover Spirit (atrapado en 'Troy')",
-    "Plataforma de aterrizaje",
-    "Escudo térmico y paracaídas"
-   ]
-  },
-  {
-   "id": "opportunity",
-   "nombre": "Mars Exploration Rover · Opportunity",
-   "rover": "Opportunity",
-   "lanzamiento_utc": "2003-07-08T03:18:15Z",
-   "plataforma": "SLC-17B",
-   "llegada_utc": "2004-01-25T05:00:00Z",
-   "llegada_nota": "fecha real; hora aproximada",
-   "sitio": "Meridiani Planum",
-   "lat": null,
-   "lon": null,
-   "ultimo_contacto": "2018-06-10",
-   "historia": "Recorrió más de 45 km en casi 15 años. Una tormenta de polvo global cubrió sus paneles solares en 2018 y ya no despertó.",
-   "restos": [
-    "Rover Opportunity",
-    "Plataforma de aterrizaje en el cráter Eagle",
-    "Escudo térmico"
-   ]
-  },
-  {
-   "id": "phoenix",
-   "nombre": "Phoenix Mars Lander",
-   "rover": "Phoenix (lander)",
-   "lanzamiento_utc": "2007-08-04T09:26:34Z",
-   "plataforma": "SLC-17A",
-   "llegada_utc": "2008-05-25T23:53:44Z",
-   "sitio": "Llanuras árticas (Vastitas Borealis)",
-   "lat": null,
-   "lon": null,
-   "ultimo_contacto": "2008-11-02",
-   "historia": "Excavó hielo de agua cerca del polo norte. El invierno marciano lo cubrió de escarcha de CO2 y aplastó sus paneles solares.",
-   "restos": [
-    "Lander Phoenix (paneles rotos por el hielo)",
-    "Escudo térmico",
-    "Paracaídas"
-   ]
-  }
- ]
+  "fuente": "NASA/JPL (fact sheets, press kits), NSSDCA",
+  "cohete": "Delta II 7925 (9 propulsores GEM-40)",
+  "misiones": [
+    {
+      "id": "pathfinder",
+      "nombre": "Mars Pathfinder · Sojourner",
+      "rover": "Sojourner",
+      "lanzamiento_utc": "1996-12-04T06:58:07Z",
+      "plataforma": "SLC-17B",
+      "llegada_utc": "1997-07-04T16:56:55Z",
+      "sitio": "Ares Vallis, Chryse Planitia",
+      "lat": 19.13,
+      "lon": -33.22,
+      "ultimo_contacto": "1997-09-27",
+      "historia": "El primer rover en Marte: 10,6 kg y seis ruedas. Recorrió unos 100 m alrededor de su lander, rebautizado Estación Memorial Carl Sagan. Sigue estacionado en Ares Vallis.",
+      "restos": [
+        "Lander Pathfinder (Estación Memorial Carl Sagan)",
+        "Rover Sojourner",
+        "Airbags y paracaídas",
+        "Escudo térmico"
+      ]
+    },
+    {
+      "id": "spirit",
+      "nombre": "Mars Exploration Rover · Spirit",
+      "rover": "Spirit",
+      "lanzamiento_utc": "2003-06-10T17:58:47Z",
+      "plataforma": "SLC-17A",
+      "llegada_utc": "2004-01-04T04:35:00Z",
+      "sitio": "Cráter Gusev",
+      "lat": -14.568,
+      "lon": 175.473,
+      "ultimo_contacto": "2010-03-22",
+      "historia": "Diseñado para 90 soles, trabajó más de seis años. En 2009 quedó atrapado en arena blanda en 'Troy'; desde entonces es un monumento inmóvil en Gusev.",
+      "restos": [
+        "Rover Spirit (atrapado en 'Troy')",
+        "Plataforma de aterrizaje",
+        "Escudo térmico y paracaídas"
+      ]
+    },
+    {
+      "id": "opportunity",
+      "nombre": "Mars Exploration Rover · Opportunity",
+      "rover": "Opportunity",
+      "lanzamiento_utc": "2003-07-08T03:18:15Z",
+      "plataforma": "SLC-17B",
+      "llegada_utc": "2004-01-25T05:00:00Z",
+      "llegada_nota": "fecha real; hora aproximada",
+      "sitio": "Meridiani Planum",
+      "lat": -1.946,
+      "lon": -5.527,
+      "ultimo_contacto": "2018-06-10",
+      "historia": "Recorrió más de 45 km en casi 15 años. Una tormenta de polvo global cubrió sus paneles solares en 2018 y ya no despertó.",
+      "restos": [
+        "Rover Opportunity",
+        "Plataforma de aterrizaje en el cráter Eagle",
+        "Escudo térmico"
+      ]
+    },
+    {
+      "id": "phoenix",
+      "nombre": "Phoenix Mars Lander",
+      "rover": "Phoenix (lander)",
+      "lanzamiento_utc": "2007-08-04T09:26:34Z",
+      "plataforma": "SLC-17A",
+      "llegada_utc": "2008-05-25T23:53:44Z",
+      "sitio": "Llanuras árticas (Vastitas Borealis)",
+      "lat": 68.219,
+      "lon": -125.749,
+      "ultimo_contacto": "2008-11-02",
+      "historia": "Excavó hielo de agua cerca del polo norte. El invierno marciano lo cubrió de escarcha de CO2 y aplastó sus paneles solares.",
+      "restos": [
+        "Lander Phoenix (paneles rotos por el hielo)",
+        "Escudo térmico",
+        "Paracaídas"
+      ]
+    }
+  ]
 }

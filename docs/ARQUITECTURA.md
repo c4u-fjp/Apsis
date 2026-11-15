@@ -31,6 +31,22 @@ inicio. Al elegir destino carga con `import()` un **controlador** de `src/mision
 La plataforma recibe un **perfil**: `vehiculo` (adaptador de `modelos/vehiculos.js`), `altKm(t)`, `rangoKm(t)`,
 `azimut`, `solLocal(t)` y opcional `astroLocal(t)`. Un cohete nuevo = un adaptador nuevo.
 
+## Lo que quedó allí (explorador de restos)
+Al llegar al destino (Luna: cuando la etapa de ascenso se va; Marte: al llegar) el controlador abre
+`misiones/restos.js`, que envuelve `escenas/restos.js`:
+
+- **Órbita**: el planeta con radio R = 10. Cada nave de `data/restos.json → orbita` se propaga con Kepler
+  (período real, 1 s en pantalla = 10 min) y su radio se comprime con `radioVisual(altKm)` (logarítmico).
+  Colores: naranja abandonada, rosa (discontinua) destino incierto, verde tenue en servicio.
+- **Sitios**: marcadores en lat/lon (`dirLatLon`: longitud 0 en +X, este hacia −Z). Los que tienen
+  `superficie: true` se pueden visitar: acercarse con la rueda a menos de 1,22 R, o el botón de la ficha.
+- **Superficie**: terreno en metros (X este, Z sur) con los `objetos` del sitio; los que están lejos llevan
+  `distancia` y se dibujan a una distancia comprimida. Alejarse (r > 820 m) vuelve a la órbita.
+
+Para añadir un sitio u objeto basta con editar `restos.json` (y, si es un tipo nuevo, una función en
+`modelos/restos.js`). `tests/restos.test.js` comprueba que los tipos existen.
+Enlaces directos: `?destino=luna&restos`, `?destino=marte&mision=phoenix&restos`.
+
 ## El tiempo manda
 Todo depende de **t = GET** (segundos desde el despegue; negativo en la cuenta regresiva).
 `RelojMision` lo avanza con la aceleración del "modo historia" (`warp` en `apollo11.json`).

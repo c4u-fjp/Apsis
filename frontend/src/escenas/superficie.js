@@ -470,7 +470,11 @@ export class EscenaSuperficie {
         animarLlama(this.llamaAPS, tiempoReal, lm.status === 'landed' && tAsc > 0 && tAsc < 45);
         this.equipo.visible = lm.status === 'landed' && t > ev.paso + 1800;
         this.equipo.position.set(X, this.altura(X, 0) - this.altura(0, 0), 0);
-        if (lm.status === 'landed' && tAsc > 70 && !this.epilogoMostrado) { this.epilogoMostrado = true; this._mostrarEpilogo(); }
+        if (lm.status === 'landed' && tAsc > 70 && !this.epilogoMostrado) {
+            this.epilogoMostrado = true;
+            // al terminar: la misión pasa al explorador de restos (órbita y superficie); si no, el epílogo clásico
+            if (this.ctx.alTerminar) this.ctx.alTerminar(); else this._mostrarEpilogo();
+        }
 
         // LM
         this.lm3d.position.set(X, lm.y, 0);

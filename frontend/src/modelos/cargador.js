@@ -131,16 +131,34 @@ export async function crearLM() {
 // La textura de luna1.glb sigue la convención de Three.js: longitud 0 en +X, este hacia -Z, norte +Y.
 export const LUNA_RADIO_MODELO = 1.2718640565872192;
 export async function crearLuna() {
-    const gltf = await cargarGLB('/models/luna1.glb');
-    const luna = gltf.scene;
-    luna.traverse((m) => {
-        if (m.isMesh) {
+    let modelo;
+    try {
+        modelo = (await cargarGLB('/models/luna1.glb')).scene;
+    } catch (e) {
+        // Si luna1.glb falta o está dañado, la misión no se rompe: esfera con textura (misma convención +X)
+        console.warn('luna1.glb no se pudo cargar, se usa una esfera con textura:', e.message);
+        const tex = new THREE.TextureLoader().load('/texturas/moon_1024.jpg');
+        tex.colorSpace = THREE.SRGBColorSpace;
+        modelo = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 64), new THREE.MeshStandardMaterial({ map: tex, roughness: 1 }));
+    }
+    modelo.traverse((m) => {
+        if (m.isMesh && m.material.map) {
             const map = m.material.map;
-            if (map) { map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4; }
+            map.colorSpace = THREE.SRGBColorSpace; map.anisotropy = 4;
             m.material = new THREE.MeshStandardMaterial({ map, roughness: 1, metalness: 0 });
         }
     });
-    return luna;
+    // Cualquier modelo de Luna sirve: se centra y se escala a partir de su tamaño real,
+    // para que mida LUNA_RADIO_MODELO (la escena lo pasa luego a 1737,4 km).
+    const caja = new THREE.Box3().setFromObject(modelo);
+    const radio = Math.max(...caja.getSize(new THREE.Vector3()).toArray()) / 2;
+    modelo.position.sub(caja.getCenter(new THREE.Vector3()));
+    const luna = new THREE.Group();
+    luna.add(modelo);
+    luna.scale.setScalar(LUNA_RADIO_MODELO / radio);
+    const envoltura = new THREE.Group();   // la escena escala este grupo; el de dentro normaliza el modelo
+    envoltura.add(luna);
+    return envoltura;
 }
 
 // ───────────────────────── Tierra ─────────────────────────

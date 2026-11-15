@@ -240,6 +240,7 @@ async function iniciar() {
     // Enlace directo: ?destino=luna|marte&mision=spirit  (y para la Luna, ?t=102:33:05)
     const q = new URLSearchParams(location.search);
     if (q.has('t') && !q.has('destino')) q.set('destino', 'luna');
+    if (q.has('restos') && !q.has('destino')) q.set('destino', 'luna');
     if (q.has('destino')) elegir(q.get('destino'), q.get('mision') ?? 'spirit');
     else mostrarInicio();
     window.apsis = { base, sonido, get modo() { return modo; } };

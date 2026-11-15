@@ -13,6 +13,7 @@ import { adaptadorDelta, SECUENCIA_DELTA } from '../modelos/vehiculos.js';
 import { EscenaInterplanetaria } from '../escenas/interplanetario.js';
 import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
 import { sonido } from '../core/audio.js';
+import { crearModoRestos } from './restos.js';
 
 const $ = (id) => document.getElementById(id);
 const PAD = { nombre: 'Complejo 17 · Cabo Cañaveral', lat: 28.447, lon: -80.565, azimut: 95 };
@@ -61,7 +62,8 @@ export async function crearMision(base, id = 'spirit') {
     let t = -12, pausado = true, estado = 'preparacion', activa = plataforma, pantalla = null;
     let warpManual = null, tCrucero = 0, ultimoHUD = 0, tPrevio = t, eventosVistos = new Set();
     const D = inter.duracion;
-    const controles = () => base.controles(escenas, activa);
+    let restos = null;
+    const controles = () => (restos?.activo ? base.controles([...escenas, restos.escena], restos.escena) : base.controles(escenas, activa));
     const vista = (sala) => { base.vista = sala ? 'sala' : 'escena'; base.panelVR.colocarEn(sala ? base.rigSala : activa.rig); controles(); };
 
     const fase = () => t < 0 ? 'PRE_LANZAMIENTO' : t < SECUENCIA_DELTA.gem6Fin ? 'DESPEGUE' : t < EN_EL_ESPACIO ? 'SEPARACION_GEM'
@@ -89,6 +91,26 @@ export async function crearMision(base, id = 'spirit') {
         base.pantallaCompleta(false);
     }
 
+    // Al llegar: zoom a Marte con lo que orbita y, más cerca, la superficie con lo que quedó
+    function abrirRestos() {
+        if (restos?.activo) return;
+        estado = 'restos';
+        restos ??= crearModoRestos(base, {
+            cuerpo: 'marte', sitio: m.id, lanzamientoMs: lanz,
+            alRepetir: () => { cerrarRestos(); estado = 'crucero'; t = EN_EL_ESPACIO; tCrucero = 0; activa = inter; eventosVistos = new Set([...eventosVistos].filter((x) => x <= EN_EL_ESPACIO)); vista(true); },
+        });
+        $('fundido').classList.add('negro');
+        setTimeout(() => { restos.entrar(); controles(); $('fundido').classList.remove('negro'); }, 480);
+    }
+    function cerrarRestos() {
+        if (!restos?.activo) return;
+        restos.salir();
+        base.vista = 'escena';
+        base.panelVR.colocarEn(activa.rig);
+        controles();
+    }
+
+    // Epílogo clásico (texto), se conserva por si se quiere mostrar sin el explorador 3D
     function mostrarRestos() {
         estado = 'restos';
         const el = hud.el.epilogo;
@@ -136,6 +158,7 @@ export async function crearMision(base, id = 'spirit') {
 
     return {
         controles,
+        depurar: { inter, get restos() { return restos; } },
         entrar() {
             base.vista = 'escena';
             hud.el.log.innerHTML = '';
@@ -156,12 +179,17 @@ export async function crearMision(base, id = 'spirit') {
                 alVolver: () => base.volverAlInicio(),
             });
             const q = new URLSearchParams(location.search);
+            if (q.has('restos')) { despegar(); pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); t = D; estado = 'llegada'; activa = inter; abrirRestos(); return; }
             if (q.has('t')) { despegar(); t = Number(q.get('t')); pausado = q.has('pausa'); pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); if (t >= EN_EL_ESPACIO) aEspacio(); }
         },
-        salir() { sonido.parar(); pantalla?.ocultar(); plataforma.preparacion = false; hud.el.epilogo.classList.add('oculto'); base.vista = 'escena'; },
-        accion(a) { acciones[a]?.(); },
+        salir() { restos?.salir(); sonido.parar(); pantalla?.ocultar(); plataforma.preparacion = false; hud.el.epilogo.classList.add('oculto'); base.vista = 'escena'; },
+        accion(a) {
+            if (restos?.activo) { restos.accion(a); return; }
+            acciones[a]?.();
+        },
         deslizador(f) {
             if (estado === 'preparacion') return;
+            if (restos?.activo) { cerrarRestos(); estado = 'crucero'; }
             t = f < 0.15 ? -10 + (EN_EL_ESPACIO + 10) * (f / 0.15) : EN_EL_ESPACIO + (D - EN_EL_ESPACIO) * ((f - 0.15) / 0.85);
             hud.el.epilogo.classList.add('oculto');
             if (t >= EN_EL_ESPACIO && estado === 'ascenso') aEspacio();
@@ -169,6 +197,7 @@ export async function crearMision(base, id = 'spirit') {
         },
 
         frame(dt, tReal) {
+            if (restos?.activo) { restos.frame(dt, tReal); return; }
             const tAntes = t;
             t = Math.min(estado === 'crucero' || estado === 'restos' ? D : Infinity, t + dt * warp());
             if (estado === 'crucero') tCrucero += dt;
@@ -188,7 +217,7 @@ export async function crearMision(base, id = 'spirit') {
                 estado = 'llegada';
                 sonido.reproducir('aterrizaje');
                 sonido.reproducir('eagle', { retraso: 3.5 });
-                setTimeout(mostrarRestos, 2500);
+                setTimeout(abrirRestos, 2500);
             }
             sonido.sincronizar('despegue', t, SECUENCIA_DELTA.ignicion, { tiempoReal: estado === 'ascenso' && !pausado && warp() <= 3 });
 

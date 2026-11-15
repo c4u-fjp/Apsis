@@ -117,6 +117,10 @@ frontend/
   src/misiones/lunar.js     controlador Apollo 11 (reloj, escenas, línea de tiempo)
   src/misiones/marte.js     controlador Marte (Delta II + viaje interplanetario + restos)
   src/escenas/interplanetario.js  Sol, órbitas reales de la Tierra y Marte, arco de Lambert
+  src/misiones/restos.js    modo "lo que quedó allí": panel lateral, HUD y VR del explorador de restos
+  src/escenas/restos.js     órbita (naves abandonadas y activas, sitios) -> zoom -> superficie con los restos
+  src/modelos/restos.js     modelos procedurales a escala: LRV, Surveyor, Lunokhod, Pathfinder, MER, Phoenix...
+  src/data/restos.json      datos: órbitas, sitios (lat/lon), objetos, estado y fuentes
   src/mision/               tiempo, cronología, reloj, efemérides y trayectoria (Lambert, Kepler)
   src/escenas/plataforma.js 39A en metros: cuenta regresiva, ignición, despegue (0-75 s)
   src/escenas/espacio.js    escala real en km con origen flotante: Tierra, Luna, pila Apollo, mapa
