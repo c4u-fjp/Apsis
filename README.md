@@ -121,6 +121,10 @@ frontend/
   src/escenas/restos.js     órbita (naves abandonadas y activas, sitios) -> zoom -> superficie con los restos
   src/modelos/restos.js     modelos procedurales a escala: LRV, Surveyor, Lunokhod, Pathfinder, MER, Phoenix...
   src/data/restos.json      datos: órbitas, sitios (lat/lon), objetos, estado y fuentes
+  src/movil.css             teléfonos (≤ 800 px): vista 3D arriba y menú abajo; restos como hoja inferior
+  public/models/            buggy_lunar.glb (LRV), mer.glb (Spirit/Opportunity, se despliega con sus animaciones),
+                            perseverance.glb, ingenuity.glb — optimizados con gltf-transform (Draco + WebP 1024)
+  public/video/apollo_60s.mp4  video de la pantalla gigante en la selección de destino (960 px, sin sonido por defecto)
   src/mision/               tiempo, cronología, reloj, efemérides y trayectoria (Lambert, Kepler)
   src/escenas/plataforma.js 39A en metros: cuenta regresiva, ignición, despegue (0-75 s)
   src/escenas/espacio.js    escala real en km con origen flotante: Tierra, Luna, pila Apollo, mapa

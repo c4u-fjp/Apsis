@@ -5,7 +5,7 @@ import { radioVisual } from '../src/escenas/restos.js';
 
 const TIPOS = new Set(['lm_descenso', 'etapa_ascenso', 'bandera', 'easep', 'lrrr', 'alsep', 'camara_tv', 'bolsas', 'placa', 'lrv', 'surveyor',
     'lander_sovietico', 'lunokhod', 'pathfinder_lander', 'sojourner', 'mer', 'escudo', 'coraza_paracaidas', 'phoenix', 'viking', 'insight',
-    'sismometro_cupula', 'topo', 'roca', 'zanja', 'marca', 'orbitador']);
+    'sismometro_cupula', 'topo', 'roca', 'zanja', 'marca', 'orbitador', 'perseverance', 'ingenuity', 'fragmento']);
 
 describe.each(['luna', 'marte'])('restos: %s', (cuerpo) => {
     const d = datos[cuerpo];

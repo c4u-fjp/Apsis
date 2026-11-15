@@ -43,6 +43,10 @@ Al llegar al destino (Luna: cuando la etapa de ascenso se va; Marte: al llegar) 
 - **Superficie**: terreno en metros (X este, Z sur) con los `objetos` del sitio; los que están lejos llevan
   `distancia` y se dibujan a una distancia comprimida. Alejarse (r > 820 m) vuelve a la órbita.
 
+Los tipos `lrv`, `mer`, `perseverance` e `ingenuity` usan los .glb de `public/models` (tabla `REALES` en
+`modelos/restos.js`: archivo, eje y medida real en metros); si un .glb falla se usa el modelo procedural.
+Para optimizar un modelo nuevo: `npx @gltf-transform/cli optimize in.glb out.glb --compress draco --texture-compress webp --texture-size 1024`.
+
 Para añadir un sitio u objeto basta con editar `restos.json` (y, si es un tipo nuevo, una función en
 `modelos/restos.js`). `tests/restos.test.js` comprueba que los tipos existen.
 Enlaces directos: `?destino=luna&restos`, `?destino=marte&mision=phoenix&restos`.

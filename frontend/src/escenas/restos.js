@@ -12,7 +12,7 @@
 import * as THREE from 'three';
 import { Orbita } from '../core/orbita.js';
 import { crearEstrellas, crearEtiqueta, crearMarcador, texturaMarte } from '../modelos/efectos.js';
-import { crearModelo } from '../modelos/restos.js';
+import { crearModelo, crearModeloReal, precargarReales } from '../modelos/restos.js';
 import DATOS from '../data/restos.json';
 
 const R = 10;
@@ -319,10 +319,11 @@ export class EscenaRestos {
             try { this.ctx.lmDescenso = await this.ctx.cargarLM(); } catch { this.ctx.lmDescenso = null; }
         }
         const etiquetas = [];
+        await precargarReales(sitio.objetos.map((o) => o.tipo));
         for (const o of sitio.objetos) {
             let modelo;
             if (o.tipo === 'lm_descenso' && this.ctx.lmDescenso) modelo = this.ctx.lmDescenso.clone(true);
-            else modelo = crearModelo(o.tipo, o.opciones);
+            else modelo = await crearModeloReal(o.tipo, o.opciones);
             const grupo = new THREE.Group();
             grupo.add(modelo);
             grupo.position.set(o.x, this.altura(o.x, o.z), o.z);
@@ -385,7 +386,9 @@ export class EscenaRestos {
                 this.controls.minR = 3; this.controls.maxR = 900; this.controls.minEl = 0.03;
                 this.controls.r = 26; this.controls.el = 0.32; this.controls.az = 0.9; this.controls.interactuo = false;
                 const p = sitio.objetos[0];
-                this.foco.set(p.x, this.altura(p.x, p.z) + 2, p.z); this.focoObjetivo.copy(this.foco);
+                const tam = this.objetosSup[0]?.tam ?? 8;   // el encuadre inicial depende del tamaño del objeto principal
+                this.controls.r = Math.min(26, Math.max(4, tam * 3.2));
+                this.foco.set(p.x, this.altura(p.x, p.z) + Math.min(2, tam * 0.25), p.z); this.focoObjetivo.copy(this.foco);
                 this.seleccion = null;
                 this.alCambiar?.('superficie', sitio);
             });
@@ -549,8 +552,12 @@ export class EscenaRestos {
         // el panel de la derecha tapa parte de la vista: se desplaza el centro óptico hacia la izquierda
         const w = renderer.domElement.clientWidth, h = renderer.domElement.clientHeight;
         const panel = document.getElementById('restos');
-        const dx = !renderer.xr.isPresenting && panel && !panel.classList.contains('oculto') && w > 700 ? (panel.offsetWidth + 14) / 2 : 0;
-        if (dx) this.camera.setViewOffset(w, h, dx, 0, w, h); else this.camera.clearViewOffset();
+        const visible = !renderer.xr.isPresenting && panel && !panel.classList.contains('oculto');
+        const movil = panel && panel.offsetWidth >= w * 0.9;   // hoja inferior (teléfono) o panel lateral
+        // escritorio: el panel está a la derecha; teléfono: abajo (se sube el centro de la vista)
+        const dx = visible && !movil ? (panel.offsetWidth + 14) / 2 : 0;
+        const dy = visible && movil ? panel.offsetHeight / 2 : 0;
+        if (dx || dy) this.camera.setViewOffset(w, h, dx, dy, w, h); else this.camera.clearViewOffset();
         this.camera.updateProjectionMatrix();
         if (renderer.xr.isPresenting) {
             this.rig.position.copy(pos);

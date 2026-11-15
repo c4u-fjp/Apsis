@@ -8,6 +8,7 @@
 // Cada destino es un controlador en src/misiones/ (lunar.js, marte.js) que se carga al elegirlo.
 import './style.css';
 import './portada.css';
+import './movil.css';
 import '@fontsource/barlow-condensed/600.css';
 import '@fontsource/barlow-condensed/800.css';
 import '@fontsource/montserrat/500.css';
@@ -72,6 +73,8 @@ async function iniciar() {
         render(escena, estadoSala = null, tReal = 0) {
             escena.antesDeRender?.();
             if (base.vista === 'sala') {
+                const fov = camSala.aspect < 0.85 ? 85 : 60;
+                if (camSala.fov !== fov) { camSala.fov = fov; camSala.updateProjectionMatrix(); }
                 if (estadoSala) sala.actualizar(estadoSala);
                 sala.animar(tReal);
                 if (ctrlSala.enabled) ctrlSala.update();
@@ -130,6 +133,27 @@ async function iniciar() {
     const mapas = { luna: texLuna, marte: texturaMarte() };
     let destinoPrevio = 'luna';
 
+    // ── Video en la pantalla gigante durante la selección de destino ──
+    // (si no carga o el navegador no lo deja reproducir, se queda la Luna/Marte girando)
+    const video = document.createElement('video');
+    Object.assign(video, { src: '/video/apollo_60s.mp4', muted: true, loop: true, playsInline: true, preload: 'auto' });
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
+    const texVideo = new THREE.VideoTexture(video);
+    texVideo.colorSpace = THREE.SRGBColorSpace;
+    const pantallaVideo = { scene: new THREE.Scene(), camera: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 2) };
+    pantallaVideo.camera.position.z = 1;
+    pantallaVideo.scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ map: texVideo, toneMapped: false, depthTest: false })));
+    let videoListo = false;
+    video.addEventListener('playing', () => { videoListo = true; });
+    video.addEventListener('error', () => { videoListo = false; });
+    const btnVideo = $('btn-video-sonido');
+    const pintarBtnVideo = () => { btnVideo.querySelector('b').textContent = video.muted ? 'SILENCIO' : 'ON'; btnVideo.setAttribute('aria-pressed', String(!video.muted)); };
+    btnVideo.addEventListener('click', (e) => { e.stopPropagation(); video.muted = !video.muted; video.play().catch(() => {}); pintarBtnVideo(); });
+    const reproducirVideo = () => { video.play().then(() => { videoListo = true; }).catch(() => {}); };
+    // los móviles solo dejan reproducir tras tocar la pantalla: el primer toque lo arranca
+    addEventListener('pointerdown', () => { if (!modo) reproducirVideo(); }, { once: true });
+
     // ── Pantalla de inicio ──
     let modo = null;          // controlador de la misión en curso (o null en el inicio)
     const inicio = $('inicio');
@@ -174,10 +198,13 @@ async function iniciar() {
         panelVR.colocarEn(rigSala);
         ctrlSala.enabled = false;
         $('carga').classList.add('fuera');
+        reproducirVideo();
     }
 
     async function elegir(destino, id) {
         sonido.preparar();            // el clic del usuario permite cargar y reproducir audio
+        video.pause();
+        camSala.fov = 60; camSala.updateProjectionMatrix();
         inicio.classList.add('oculto');
         document.body.classList.remove('en-inicio');
         progreso(0.02, destino === 'luna' ? 'Preparando el Saturn V…' : 'Preparando el Delta II…');
@@ -229,9 +256,19 @@ async function iniciar() {
             altitud: 0, velocidad: 0, progreso: 0, met: 'T-  :  :  ', reloj: new Date().toISOString().slice(0, 19).replace('T', ' '),
         });
         sala.animar(tReal);
-        camSala.position.set(-1.6 + Math.sin(tReal * 0.08) * 0.25, 1.5, 1.6);
-        camSala.lookAt(-4.2, 2.6, -9);
-        pantalla(previa.scene, previa.camera);
+        if (camSala.aspect < 0.85) {
+            // teléfono en vertical: la pantalla gigante, de frente, en la mitad de arriba (abajo va el menú)
+            const fovV = 2 * Math.atan(Math.tan((96 / 2) * Math.PI / 180) * Math.max(0.42, Math.min(1, 0.46 / camSala.aspect))) * 180 / Math.PI;
+            if (Math.abs(camSala.fov - fovV) > 0.1) { camSala.fov = fovV; camSala.updateProjectionMatrix(); }
+            camSala.position.set(Math.sin(tReal * 0.08) * 0.1, 2.9, 2.0);
+            camSala.lookAt(0, -0.4, -9);
+        } else {
+            if (camSala.fov !== 60) { camSala.fov = 60; camSala.updateProjectionMatrix(); }
+            camSala.position.set(-1.6 + Math.sin(tReal * 0.08) * 0.25, 1.5, 1.6);
+            camSala.lookAt(-4.2, 2.6, -9);
+        }
+        if (videoListo && !video.paused) pantalla(pantallaVideo.scene, pantallaVideo.camera);
+        else pantalla(previa.scene, previa.camera);
         camSala.userData.qBase = null;
         base.cardboard.render(sceneSala, camSala);
         panelVR.actualizar({ t: 0, fase: { nombre: 'Elige destino' }, warp: 1, pausado: false, siguiente: { titulo: 'Gatillo izq.: Luna · A: Marte', t: 0 } }, renderer.xr.isPresenting);

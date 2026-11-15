@@ -328,9 +328,16 @@ export class EscenaPlataforma {
         if (this.preparacion) {
             // pantalla de lanzamiento: plano bajo con el cohete a la derecha y un lento travelling
             const a = Math.sin(tiempoReal * 0.06) * 0.08;
-            cam = new THREE.Vector3(-1.05 * H + Math.sin(a) * H * 0.3, 7 * this.k + 2, 1.55 * H);
-            mira = new THREE.Vector3(-0.42 * H, this.yBase + 0.52 * H, 0);
-            fov = 50;
+            if (this.camera.aspect < 0.85) {
+                // teléfono en vertical: el cohete centrado en la mitad de arriba (el menú ocupa la de abajo)
+                cam = new THREE.Vector3(-0.55 * H + Math.sin(a) * H * 0.3, this.yBase + 0.25 * H, 2.25 * H);
+                mira = new THREE.Vector3(0, this.yBase + 0.08 * H, 0);
+                fov = 55;
+            } else {
+                cam = new THREE.Vector3(-1.05 * H + Math.sin(a) * H * 0.3, 7 * this.k + 2, 1.55 * H);
+                mira = new THREE.Vector3(-0.42 * H, this.yBase + 0.52 * H, 0);
+                fov = 50;
+            }
         } else if (this.modoCam === 'persecucion') {
             cam = this.controls.leer().add(centro);
         } else if (t < -2) {

@@ -10,74 +10,366 @@
       "Etapa de ascenso del Apollo 10 «Snoopy»: órbita alrededor del Sol."
     ],
     "orbita": [
-      { "id": "eagle", "nombre": "Eagle · etapa de ascenso (Apollo 11)", "modelo": "etapa_ascenso", "estado": "incierta", "anio": 1969,
-        "peri_km": 100, "apo_km": 120, "inc": 178.8, "raan": 20,
-        "texto": "Tras devolver a Armstrong y Aldrin a Columbia se abandonó en órbita lunar el 21 de julio de 1969. Siempre se supuso que había caído, pero un estudio de 2021 (James Meador) concluye que su órbita pudo mantenerse estable: podría seguir ahí." },
-      { "id": "chandrayaan1", "nombre": "Chandrayaan-1 (ISRO)", "modelo": "orbitador", "estado": "abandonada", "anio": 2008,
-        "peri_km": 200, "apo_km": 200, "inc": 90, "raan": 110,
-        "texto": "La primera misión lunar de la India. Se perdió el contacto el 29 de agosto de 2009; en 2016 el radar de Goldstone de la NASA la volvió a encontrar, todavía en su órbita polar a unos 200 km." },
-      { "id": "lro", "nombre": "Lunar Reconnaissance Orbiter (NASA)", "modelo": "orbitador", "estado": "activa", "anio": 2009,
-        "peri_km": 50, "apo_km": 180, "inc": 90, "raan": 60,
-        "texto": "En servicio. Fotografió desde órbita los sitios Apollo: se ven las etapas de descenso, los rovers y hasta las huellas." },
-      { "id": "chandrayaan2", "nombre": "Chandrayaan-2 · orbitador (ISRO)", "modelo": "orbitador", "estado": "activa", "anio": 2019,
-        "peri_km": 100, "apo_km": 100, "inc": 90, "raan": 150,
-        "texto": "Orbitador en servicio; su lander Vikram se estrelló en 2019." },
-      { "id": "danuri", "nombre": "Danuri / KPLO (KARI, Corea)", "modelo": "orbitador", "estado": "activa", "anio": 2022,
-        "peri_km": 100, "apo_km": 100, "inc": 90, "raan": 200,
-        "texto": "Orbitador lunar surcoreano en servicio." }
+      {
+        "id": "eagle",
+        "nombre": "Eagle · etapa de ascenso (Apollo 11)",
+        "modelo": "etapa_ascenso",
+        "estado": "incierta",
+        "anio": 1969,
+        "peri_km": 100,
+        "apo_km": 120,
+        "inc": 178.8,
+        "raan": 20,
+        "texto": "Tras devolver a Armstrong y Aldrin a Columbia se abandonó en órbita lunar el 21 de julio de 1969. Siempre se supuso que había caído, pero un estudio de 2021 (James Meador) concluye que su órbita pudo mantenerse estable: podría seguir ahí."
+      },
+      {
+        "id": "chandrayaan1",
+        "nombre": "Chandrayaan-1 (ISRO)",
+        "modelo": "orbitador",
+        "estado": "abandonada",
+        "anio": 2008,
+        "peri_km": 200,
+        "apo_km": 200,
+        "inc": 90,
+        "raan": 110,
+        "texto": "La primera misión lunar de la India. Se perdió el contacto el 29 de agosto de 2009; en 2016 el radar de Goldstone de la NASA la volvió a encontrar, todavía en su órbita polar a unos 200 km."
+      },
+      {
+        "id": "lro",
+        "nombre": "Lunar Reconnaissance Orbiter (NASA)",
+        "modelo": "orbitador",
+        "estado": "activa",
+        "anio": 2009,
+        "peri_km": 50,
+        "apo_km": 180,
+        "inc": 90,
+        "raan": 60,
+        "texto": "En servicio. Fotografió desde órbita los sitios Apollo: se ven las etapas de descenso, los rovers y hasta las huellas."
+      },
+      {
+        "id": "chandrayaan2",
+        "nombre": "Chandrayaan-2 · orbitador (ISRO)",
+        "modelo": "orbitador",
+        "estado": "activa",
+        "anio": 2019,
+        "peri_km": 100,
+        "apo_km": 100,
+        "inc": 90,
+        "raan": 150,
+        "texto": "Orbitador en servicio; su lander Vikram se estrelló en 2019."
+      },
+      {
+        "id": "danuri",
+        "nombre": "Danuri / KPLO (KARI, Corea)",
+        "modelo": "orbitador",
+        "estado": "activa",
+        "anio": 2022,
+        "peri_km": 100,
+        "apo_km": 100,
+        "inc": 90,
+        "raan": 200,
+        "texto": "Orbitador lunar surcoreano en servicio."
+      }
     ],
     "sitios": [
-      { "id": "apollo11", "nombre": "Base Tranquilidad · Apollo 11", "lat": 0.674, "lon": 23.473, "anio": 1969, "superficie": true,
+      {
+        "id": "apollo11",
+        "nombre": "Base Tranquilidad · Apollo 11",
+        "lat": 0.674,
+        "lon": 23.473,
+        "anio": 1969,
+        "superficie": true,
         "resumen": "20 de julio de 1969: Eagle se posó en el Mar de la Tranquilidad. La etapa de descenso sirvió de plataforma de lanzamiento y se quedó para siempre.",
         "objetos": [
-          { "tipo": "lm_descenso", "nombre": "Etapa de descenso de Eagle", "x": 0, "z": 0, "texto": "Sirvió de plataforma de lanzamiento para la etapa de ascenso. En una pata lleva la placa firmada por los tres astronautas y el presidente Nixon." },
-          { "tipo": "bandera", "nombre": "Bandera de EE. UU.", "x": -6, "z": -8, "opciones": { "caida": true }, "texto": "Aldrin vio cómo la derribaba el chorro del motor al despegar." },
-          { "tipo": "easep", "nombre": "Sismómetro pasivo (EASEP)", "x": -16, "z": 9, "texto": "Registró sismos lunares y hasta los pasos de los astronautas. Dejó de responder en agosto de 1969." },
-          { "tipo": "lrrr", "nombre": "Retrorreflector láser (LRRR)", "x": -15, "z": 4, "texto": "Sigue funcionando: los observatorios todavía le disparan pulsos láser para medir la distancia Tierra-Luna con precisión milimétrica." },
-          { "tipo": "camara_tv", "nombre": "Cámara de televisión", "x": 4, "z": -19, "texto": "La que transmitió en directo la caminata lunar; se dejó sobre su trípode." },
-          { "tipo": "bolsas", "nombre": "Mochilas PLSS, botas y basura", "x": -4.5, "z": 1.5, "texto": "Para ahorrar peso en el despegue se tiraron por la escotilla las mochilas, las botas y otros objetos." },
-          { "tipo": "placa", "nombre": "Disco de silicio y medallas", "x": -2.5, "z": 3, "texto": "Disco con mensajes de buena voluntad de 73 países, un parche del Apollo 1 y medallas en honor a Gagarin y Komarov." },
-          { "tipo": "marca", "nombre": "Cráter Little West", "x": 60, "z": 12, "crater": { "r": 15, "d": 3 }, "texto": "Armstrong caminó hasta su borde (~60 m al este): la excursión más lejana del Apollo 11." },
-          { "tipo": "surveyor", "nombre": "Surveyor 5", "x": -95, "z": -270, "distancia": "a 25 km (distancia real)", "texto": "Sonda de la NASA que se posó en el mismo mar el 11 de septiembre de 1967, casi dos años antes que Eagle." },
-          { "tipo": "marca", "nombre": "Cráter del impacto del Ranger 8", "x": 230, "z": -340, "distancia": "a 72 km (distancia real)", "crater": { "r": 9, "d": 2 }, "texto": "El Ranger 8 se estrelló a propósito el 20 de febrero de 1965 tras enviar miles de fotos de la zona donde luego se posaría el Apollo 11." }
-        ] },
-      { "id": "apollo12", "nombre": "Océano de las Tormentas · Apollo 12", "lat": -3.012, "lon": -23.422, "anio": 1969, "superficie": true,
+          {
+            "tipo": "lm_descenso",
+            "nombre": "Etapa de descenso de Eagle",
+            "x": 0,
+            "z": 0,
+            "texto": "Sirvió de plataforma de lanzamiento para la etapa de ascenso. En una pata lleva la placa firmada por los tres astronautas y el presidente Nixon."
+          },
+          {
+            "tipo": "bandera",
+            "nombre": "Bandera de EE. UU.",
+            "x": -6,
+            "z": -8,
+            "opciones": {
+              "caida": true
+            },
+            "texto": "Aldrin vio cómo la derribaba el chorro del motor al despegar."
+          },
+          {
+            "tipo": "easep",
+            "nombre": "Sismómetro pasivo (EASEP)",
+            "x": -16,
+            "z": 9,
+            "texto": "Registró sismos lunares y hasta los pasos de los astronautas. Dejó de responder en agosto de 1969."
+          },
+          {
+            "tipo": "lrrr",
+            "nombre": "Retrorreflector láser (LRRR)",
+            "x": -15,
+            "z": 4,
+            "texto": "Sigue funcionando: los observatorios todavía le disparan pulsos láser para medir la distancia Tierra-Luna con precisión milimétrica."
+          },
+          {
+            "tipo": "camara_tv",
+            "nombre": "Cámara de televisión",
+            "x": 4,
+            "z": -19,
+            "texto": "La que transmitió en directo la caminata lunar; se dejó sobre su trípode."
+          },
+          {
+            "tipo": "bolsas",
+            "nombre": "Mochilas PLSS, botas y basura",
+            "x": -4.5,
+            "z": 1.5,
+            "texto": "Para ahorrar peso en el despegue se tiraron por la escotilla las mochilas, las botas y otros objetos."
+          },
+          {
+            "tipo": "placa",
+            "nombre": "Disco de silicio y medallas",
+            "x": -2.5,
+            "z": 3,
+            "texto": "Disco con mensajes de buena voluntad de 73 países, un parche del Apollo 1 y medallas en honor a Gagarin y Komarov."
+          },
+          {
+            "tipo": "marca",
+            "nombre": "Cráter Little West",
+            "x": 60,
+            "z": 12,
+            "crater": {
+              "r": 15,
+              "d": 3
+            },
+            "texto": "Armstrong caminó hasta su borde (~60 m al este): la excursión más lejana del Apollo 11."
+          },
+          {
+            "tipo": "surveyor",
+            "nombre": "Surveyor 5",
+            "x": -95,
+            "z": -270,
+            "distancia": "a 25 km (distancia real)",
+            "texto": "Sonda de la NASA que se posó en el mismo mar el 11 de septiembre de 1967, casi dos años antes que Eagle."
+          },
+          {
+            "tipo": "marca",
+            "nombre": "Cráter del impacto del Ranger 8",
+            "x": 230,
+            "z": -340,
+            "distancia": "a 72 km (distancia real)",
+            "crater": {
+              "r": 9,
+              "d": 2
+            },
+            "texto": "El Ranger 8 se estrelló a propósito el 20 de febrero de 1965 tras enviar miles de fotos de la zona donde luego se posaría el Apollo 11."
+          }
+        ]
+      },
+      {
+        "id": "apollo12",
+        "nombre": "Océano de las Tormentas · Apollo 12",
+        "lat": -3.012,
+        "lon": -23.422,
+        "anio": 1969,
+        "superficie": true,
         "resumen": "Intrepid aterrizó con precisión a unos 180 m de una sonda que llevaba dos años y medio allí: el Surveyor 3.",
         "objetos": [
-          { "tipo": "lm_descenso", "nombre": "Etapa de descenso de Intrepid", "x": 0, "z": 0, "texto": "La etapa de ascenso se estrelló después a propósito para que los sismómetros registraran el impacto." },
-          { "tipo": "bandera", "nombre": "Bandera", "x": -8, "z": -6, "texto": "Sigue en pie según las fotos del LRO." },
-          { "tipo": "alsep", "nombre": "Estación ALSEP", "x": -100, "z": -80, "texto": "Sismómetro, magnetómetro y otros experimentos alimentados por un generador nuclear (RTG). Todas las ALSEP se apagaron el 30 de septiembre de 1977." },
-          { "tipo": "surveyor", "nombre": "Surveyor 3", "x": 110, "z": 110, "crater": { "r": 25, "d": 4 }, "texto": "Llegó en abril de 1967. Conrad y Bean le cortaron la cámara y otras piezas y las trajeron a la Tierra para estudiar el efecto de 31 meses en la Luna." }
-        ] },
-      { "id": "apollo15", "nombre": "Hadley-Apeninos · Apollo 15", "lat": 26.132, "lon": 3.634, "anio": 1971, "superficie": true,
+          {
+            "tipo": "lm_descenso",
+            "nombre": "Etapa de descenso de Intrepid",
+            "x": 0,
+            "z": 0,
+            "texto": "La etapa de ascenso se estrelló después a propósito para que los sismómetros registraran el impacto."
+          },
+          {
+            "tipo": "bandera",
+            "nombre": "Bandera",
+            "x": -8,
+            "z": -6,
+            "texto": "Sigue en pie según las fotos del LRO."
+          },
+          {
+            "tipo": "alsep",
+            "nombre": "Estación ALSEP",
+            "x": -100,
+            "z": -80,
+            "texto": "Sismómetro, magnetómetro y otros experimentos alimentados por un generador nuclear (RTG). Todas las ALSEP se apagaron el 30 de septiembre de 1977."
+          },
+          {
+            "tipo": "surveyor",
+            "nombre": "Surveyor 3",
+            "x": 110,
+            "z": 110,
+            "crater": {
+              "r": 25,
+              "d": 4
+            },
+            "texto": "Llegó en abril de 1967. Conrad y Bean le cortaron la cámara y otras piezas y las trajeron a la Tierra para estudiar el efecto de 31 meses en la Luna."
+          }
+        ]
+      },
+      {
+        "id": "apollo15",
+        "nombre": "Hadley-Apeninos · Apollo 15",
+        "lat": 26.132,
+        "lon": 3.634,
+        "anio": 1971,
+        "superficie": true,
         "resumen": "La primera misión con rover lunar. El LRV-1 quedó aparcado al este del módulo lunar.",
         "objetos": [
-          { "tipo": "lm_descenso", "nombre": "Etapa de descenso de Falcon", "x": 0, "z": 0, "texto": "" },
-          { "tipo": "lrv", "nombre": "Rover lunar LRV-1", "x": 90, "z": 10, "rot": 1.2, "texto": "Recorrió unos 28 km. Se dejó aparcado (posición aproximada) con la cámara de TV apuntando al módulo lunar para filmar el despegue." },
-          { "tipo": "placa", "nombre": "«Astronauta caído» y placa", "x": 93, "z": 16, "texto": "Pequeña estatuilla de aluminio y una placa con los nombres de 14 astronautas y cosmonautas fallecidos." },
-          { "tipo": "alsep", "nombre": "Estación ALSEP", "x": -110, "z": 20, "texto": "Apagada desde 1977. Su retrorreflector, más grande que el del Apollo 11, todavía se usa." },
-          { "tipo": "bandera", "nombre": "Bandera", "x": -10, "z": 8, "texto": "" }
-        ] },
-      { "id": "apollo17", "nombre": "Taurus-Littrow · Apollo 17", "lat": 20.191, "lon": 30.772, "anio": 1972, "superficie": true,
+          {
+            "tipo": "lm_descenso",
+            "nombre": "Etapa de descenso de Falcon",
+            "x": 0,
+            "z": 0,
+            "texto": ""
+          },
+          {
+            "tipo": "lrv",
+            "nombre": "Rover lunar LRV-1",
+            "x": 90,
+            "z": 10,
+            "rot": 1.2,
+            "texto": "Recorrió unos 28 km. Se dejó aparcado (posición aproximada) con la cámara de TV apuntando al módulo lunar para filmar el despegue."
+          },
+          {
+            "tipo": "placa",
+            "nombre": "«Astronauta caído» y placa",
+            "x": 93,
+            "z": 16,
+            "texto": "Pequeña estatuilla de aluminio y una placa con los nombres de 14 astronautas y cosmonautas fallecidos."
+          },
+          {
+            "tipo": "alsep",
+            "nombre": "Estación ALSEP",
+            "x": -110,
+            "z": 20,
+            "texto": "Apagada desde 1977. Su retrorreflector, más grande que el del Apollo 11, todavía se usa."
+          },
+          {
+            "tipo": "bandera",
+            "nombre": "Bandera",
+            "x": -10,
+            "z": 8,
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "id": "apollo17",
+        "nombre": "Taurus-Littrow · Apollo 17",
+        "lat": 20.191,
+        "lon": 30.772,
+        "anio": 1972,
+        "superficie": true,
         "resumen": "La última vez que un ser humano pisó la Luna (diciembre de 1972).",
         "objetos": [
-          { "tipo": "lm_descenso", "nombre": "Etapa de descenso de Challenger", "x": 0, "z": 0, "texto": "Lleva una placa que conmemora el fin de las primeras exploraciones humanas de la Luna." },
-          { "tipo": "lrv", "nombre": "Rover lunar LRV-3", "x": 145, "z": -20, "rot": 1.4, "texto": "Recorrió unos 36 km; quedó aparcado al este del LM (posición aproximada) para filmar el despegue." },
-          { "tipo": "alsep", "nombre": "Estación ALSEP", "x": -185, "z": 10, "texto": "Apagada desde 1977." },
-          { "tipo": "bandera", "nombre": "Bandera", "x": -9, "z": -7, "texto": "" }
-        ] },
-      { "id": "lunokhod1", "nombre": "Mar de las Lluvias · Luna 17 / Lunokhod 1", "lat": 38.24, "lon": -35.0, "anio": 1970, "superficie": true,
+          {
+            "tipo": "lm_descenso",
+            "nombre": "Etapa de descenso de Challenger",
+            "x": 0,
+            "z": 0,
+            "texto": "Lleva una placa que conmemora el fin de las primeras exploraciones humanas de la Luna."
+          },
+          {
+            "tipo": "lrv",
+            "nombre": "Rover lunar LRV-3",
+            "x": 145,
+            "z": -20,
+            "rot": 1.4,
+            "texto": "Recorrió unos 36 km; quedó aparcado al este del LM (posición aproximada) para filmar el despegue."
+          },
+          {
+            "tipo": "alsep",
+            "nombre": "Estación ALSEP",
+            "x": -185,
+            "z": 10,
+            "texto": "Apagada desde 1977."
+          },
+          {
+            "tipo": "bandera",
+            "nombre": "Bandera",
+            "x": -9,
+            "z": -7,
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "id": "lunokhod1",
+        "nombre": "Mar de las Lluvias · Luna 17 / Lunokhod 1",
+        "lat": 38.24,
+        "lon": -35.0,
+        "anio": 1970,
+        "superficie": true,
         "resumen": "Noviembre de 1970: el primer rover que recorrió otro mundo, manejado a distancia desde la URSS.",
         "objetos": [
-          { "tipo": "lander_sovietico", "nombre": "Etapa de aterrizaje de Luna 17", "x": 0, "z": 0, "texto": "Bajó al rover por unas rampas; quedó en el sitio de aterrizaje." },
-          { "tipo": "lunokhod", "nombre": "Lunokhod 1", "x": -40, "z": -170, "distancia": "a ~2 km (recorrió 10,5 km)", "texto": "Funcionó hasta septiembre de 1971. El LRO lo localizó en 2010 y su retrorreflector volvió a devolver pulsos láser desde la Tierra ese mismo año." }
-        ] },
-      { "id": "apollo14", "nombre": "Fra Mauro · Apollo 14", "lat": -3.645, "lon": -17.471, "anio": 1971, "texto": "Etapa de descenso de Antares, ALSEP y el carrito de mano MET. Alan Shepard golpeó aquí dos pelotas de golf." },
-      { "id": "apollo16", "nombre": "Descartes · Apollo 16", "lat": -8.973, "lon": 15.5, "anio": 1972, "texto": "Etapa de descenso de Orion, el rover LRV-2 y una foto familiar que dejó Charlie Duke." },
-      { "id": "luna2", "nombre": "Impacto de Luna 2 (aprox.)", "lat": 29.1, "lon": 0.0, "anio": 1959, "texto": "El primer objeto humano en llegar a la Luna: se estrelló el 13 de septiembre de 1959." },
-      { "id": "change3", "nombre": "Chang'e 3 / Yutu", "lat": 44.12, "lon": -19.51, "anio": 2013, "texto": "Lander chino y su rover Yutu, que quedó inmóvil a pocos metros." },
-      { "id": "vikram", "nombre": "Chandrayaan-3 · Vikram y Pragyan", "lat": -69.37, "lon": 32.32, "anio": 2023, "texto": "Primer aterrizaje cerca del polo sur lunar. Ambos entraron en reposo en septiembre de 2023 y no volvieron a despertar." },
-      { "id": "change4", "nombre": "Chang'e 4 (cara oculta)", "lat": -45.44, "lon": 177.59, "anio": 2019, "texto": "El primer aterrizaje en la cara oculta, comunicado a través de un satélite repetidor." }
+          {
+            "tipo": "lander_sovietico",
+            "nombre": "Etapa de aterrizaje de Luna 17",
+            "x": 0,
+            "z": 0,
+            "texto": "Bajó al rover por unas rampas; quedó en el sitio de aterrizaje."
+          },
+          {
+            "tipo": "lunokhod",
+            "nombre": "Lunokhod 1",
+            "x": -40,
+            "z": -170,
+            "distancia": "a ~2 km (recorrió 10,5 km)",
+            "texto": "Funcionó hasta septiembre de 1971. El LRO lo localizó en 2010 y su retrorreflector volvió a devolver pulsos láser desde la Tierra ese mismo año."
+          }
+        ]
+      },
+      {
+        "id": "apollo14",
+        "nombre": "Fra Mauro · Apollo 14",
+        "lat": -3.645,
+        "lon": -17.471,
+        "anio": 1971,
+        "texto": "Etapa de descenso de Antares, ALSEP y el carrito de mano MET. Alan Shepard golpeó aquí dos pelotas de golf."
+      },
+      {
+        "id": "apollo16",
+        "nombre": "Descartes · Apollo 16",
+        "lat": -8.973,
+        "lon": 15.5,
+        "anio": 1972,
+        "texto": "Etapa de descenso de Orion, el rover LRV-2 y una foto familiar que dejó Charlie Duke."
+      },
+      {
+        "id": "luna2",
+        "nombre": "Impacto de Luna 2 (aprox.)",
+        "lat": 29.1,
+        "lon": 0.0,
+        "anio": 1959,
+        "texto": "El primer objeto humano en llegar a la Luna: se estrelló el 13 de septiembre de 1959."
+      },
+      {
+        "id": "change3",
+        "nombre": "Chang'e 3 / Yutu",
+        "lat": 44.12,
+        "lon": -19.51,
+        "anio": 2013,
+        "texto": "Lander chino y su rover Yutu, que quedó inmóvil a pocos metros."
+      },
+      {
+        "id": "vikram",
+        "nombre": "Chandrayaan-3 · Vikram y Pragyan",
+        "lat": -69.37,
+        "lon": 32.32,
+        "anio": 2023,
+        "texto": "Primer aterrizaje cerca del polo sur lunar. Ambos entraron en reposo en septiembre de 2023 y no volvieron a despertar."
+      },
+      {
+        "id": "change4",
+        "nombre": "Chang'e 4 (cara oculta)",
+        "lat": -45.44,
+        "lon": 177.59,
+        "anio": 2019,
+        "texto": "El primer aterrizaje en la cara oculta, comunicado a través de un satélite repetidor."
+      }
     ]
   },
   "marte": {
@@ -94,101 +386,536 @@
       "entrada": "Cápsula de entrada: el escudo térmico, la coraza trasera y el paracaídas quedaron repartidos por la superficie cerca del sitio."
     },
     "orbita": [
-      { "id": "maven", "nombre": "MAVEN (NASA)", "modelo": "orbitador", "estado": "abandonada", "anio": 2014,
-        "peri_km": 150, "apo_km": 6200, "inc": 75, "raan": 30,
-        "texto": "Estudiaba cómo Marte perdió su atmósfera. Dejó de comunicarse el 6 de diciembre de 2025, girando de forma inesperada; la NASA dio la misión por terminada en junio de 2026." },
-      { "id": "mgs", "nombre": "Mars Global Surveyor (NASA)", "modelo": "orbitador", "estado": "abandonada", "anio": 1997,
-        "peri_km": 378, "apo_km": 378, "inc": 93, "raan": 80,
-        "texto": "Se perdió en noviembre de 2006. Se calcula que seguirá en órbita hasta mediados de la década de 2040." },
-      { "id": "mom", "nombre": "Mangalyaan / Mars Orbiter Mission (ISRO)", "modelo": "orbitador", "estado": "abandonada", "anio": 2014,
-        "peri_km": 421, "apo_km": 76993, "inc": 150, "raan": 140,
-        "texto": "La primera misión de la India a Marte. Se quedó sin combustible ni baterías y perdió el contacto en 2022." },
-      { "id": "mariner9", "nombre": "Mariner 9 (NASA)", "modelo": "orbitador", "estado": "incierta", "anio": 1971,
-        "peri_km": 1398, "apo_km": 17916, "inc": 64.4, "raan": 200,
-        "texto": "La primera nave que orbitó otro planeta (14 de noviembre de 1971). Se apagó en 1972; se calculó que caería hacia 2022, pero nadie lo ha confirmado." },
-      { "id": "viking1o", "nombre": "Viking 1 · orbitador (NASA)", "modelo": "orbitador", "estado": "incierta", "anio": 1976,
-        "peri_km": 1500, "apo_km": 33000, "inc": 39, "raan": 250,
-        "texto": "Funcionó hasta 1980. Su destino exacto es incierto (órbita aproximada)." },
-      { "id": "mars2", "nombre": "Mars 2 · orbitador (URSS)", "modelo": "orbitador", "estado": "incierta", "anio": 1971,
-        "peri_km": 1380, "apo_km": 24940, "inc": 48.9, "raan": 300,
-        "texto": "Llegó el mismo mes que Mariner 9. Se presume que sigue en órbita, igual que los de Mars 3 y Mars 5." },
-      { "id": "phobos2", "nombre": "Phobos 2 (URSS)", "modelo": "orbitador", "estado": "incierta", "anio": 1989,
-        "peri_km": 6300, "apo_km": 6300, "inc": 1, "raan": 0,
-        "texto": "Se perdió en marzo de 1989 mientras se acercaba a la luna Fobos." },
-      { "id": "odyssey", "nombre": "2001 Mars Odyssey (NASA)", "modelo": "orbitador", "estado": "activa", "anio": 2001,
-        "peri_km": 400, "apo_km": 400, "inc": 93, "raan": 170,
-        "texto": "La nave más longeva en otro planeta. Retransmitió la mayor parte de los datos de Spirit y Opportunity. Sigue trabajando con muy poco combustible." },
-      { "id": "mro", "nombre": "Mars Reconnaissance Orbiter (NASA)", "modelo": "orbitador", "estado": "activa", "anio": 2006,
-        "peri_km": 255, "apo_km": 320, "inc": 93, "raan": 220,
-        "texto": "Su cámara HiRISE fotografió los landers, paracaídas y escudos térmicos de esta misma lista." },
-      { "id": "mex", "nombre": "Mars Express (ESA)", "modelo": "orbitador", "estado": "activa", "anio": 2003,
-        "peri_km": 330, "apo_km": 10530, "inc": 86.3, "raan": 100,
-        "texto": "En servicio. Su lander Beagle 2 se dio por perdido hasta que se encontró en 2015." },
-      { "id": "tgo", "nombre": "ExoMars Trace Gas Orbiter (ESA)", "modelo": "orbitador", "estado": "activa", "anio": 2016,
-        "peri_km": 400, "apo_km": 400, "inc": 74, "raan": 320,
-        "texto": "En servicio. Su lander de prueba Schiaparelli se estrelló al aterrizar." }
+      {
+        "id": "maven",
+        "nombre": "MAVEN (NASA)",
+        "modelo": "orbitador",
+        "estado": "abandonada",
+        "anio": 2014,
+        "peri_km": 150,
+        "apo_km": 6200,
+        "inc": 75,
+        "raan": 30,
+        "texto": "Estudiaba cómo Marte perdió su atmósfera. Dejó de comunicarse el 6 de diciembre de 2025, girando de forma inesperada; la NASA dio la misión por terminada en junio de 2026."
+      },
+      {
+        "id": "mgs",
+        "nombre": "Mars Global Surveyor (NASA)",
+        "modelo": "orbitador",
+        "estado": "abandonada",
+        "anio": 1997,
+        "peri_km": 378,
+        "apo_km": 378,
+        "inc": 93,
+        "raan": 80,
+        "texto": "Se perdió en noviembre de 2006. Se calcula que seguirá en órbita hasta mediados de la década de 2040."
+      },
+      {
+        "id": "mom",
+        "nombre": "Mangalyaan / Mars Orbiter Mission (ISRO)",
+        "modelo": "orbitador",
+        "estado": "abandonada",
+        "anio": 2014,
+        "peri_km": 421,
+        "apo_km": 76993,
+        "inc": 150,
+        "raan": 140,
+        "texto": "La primera misión de la India a Marte. Se quedó sin combustible ni baterías y perdió el contacto en 2022."
+      },
+      {
+        "id": "mariner9",
+        "nombre": "Mariner 9 (NASA)",
+        "modelo": "orbitador",
+        "estado": "incierta",
+        "anio": 1971,
+        "peri_km": 1398,
+        "apo_km": 17916,
+        "inc": 64.4,
+        "raan": 200,
+        "texto": "La primera nave que orbitó otro planeta (14 de noviembre de 1971). Se apagó en 1972; se calculó que caería hacia 2022, pero nadie lo ha confirmado."
+      },
+      {
+        "id": "viking1o",
+        "nombre": "Viking 1 · orbitador (NASA)",
+        "modelo": "orbitador",
+        "estado": "incierta",
+        "anio": 1976,
+        "peri_km": 1500,
+        "apo_km": 33000,
+        "inc": 39,
+        "raan": 250,
+        "texto": "Funcionó hasta 1980. Su destino exacto es incierto (órbita aproximada)."
+      },
+      {
+        "id": "mars2",
+        "nombre": "Mars 2 · orbitador (URSS)",
+        "modelo": "orbitador",
+        "estado": "incierta",
+        "anio": 1971,
+        "peri_km": 1380,
+        "apo_km": 24940,
+        "inc": 48.9,
+        "raan": 300,
+        "texto": "Llegó el mismo mes que Mariner 9. Se presume que sigue en órbita, igual que los de Mars 3 y Mars 5."
+      },
+      {
+        "id": "phobos2",
+        "nombre": "Phobos 2 (URSS)",
+        "modelo": "orbitador",
+        "estado": "incierta",
+        "anio": 1989,
+        "peri_km": 6300,
+        "apo_km": 6300,
+        "inc": 1,
+        "raan": 0,
+        "texto": "Se perdió en marzo de 1989 mientras se acercaba a la luna Fobos."
+      },
+      {
+        "id": "odyssey",
+        "nombre": "2001 Mars Odyssey (NASA)",
+        "modelo": "orbitador",
+        "estado": "activa",
+        "anio": 2001,
+        "peri_km": 400,
+        "apo_km": 400,
+        "inc": 93,
+        "raan": 170,
+        "texto": "La nave más longeva en otro planeta. Retransmitió la mayor parte de los datos de Spirit y Opportunity. Sigue trabajando con muy poco combustible."
+      },
+      {
+        "id": "mro",
+        "nombre": "Mars Reconnaissance Orbiter (NASA)",
+        "modelo": "orbitador",
+        "estado": "activa",
+        "anio": 2006,
+        "peri_km": 255,
+        "apo_km": 320,
+        "inc": 93,
+        "raan": 220,
+        "texto": "Su cámara HiRISE fotografió los landers, paracaídas y escudos térmicos de esta misma lista."
+      },
+      {
+        "id": "mex",
+        "nombre": "Mars Express (ESA)",
+        "modelo": "orbitador",
+        "estado": "activa",
+        "anio": 2003,
+        "peri_km": 330,
+        "apo_km": 10530,
+        "inc": 86.3,
+        "raan": 100,
+        "texto": "En servicio. Su lander Beagle 2 se dio por perdido hasta que se encontró en 2015."
+      },
+      {
+        "id": "tgo",
+        "nombre": "ExoMars Trace Gas Orbiter (ESA)",
+        "modelo": "orbitador",
+        "estado": "activa",
+        "anio": 2016,
+        "peri_km": 400,
+        "apo_km": 400,
+        "inc": 74,
+        "raan": 320,
+        "texto": "En servicio. Su lander de prueba Schiaparelli se estrelló al aterrizar."
+      }
     ],
     "sitios": [
-      { "id": "pathfinder", "nombre": "Ares Vallis · Pathfinder y Sojourner", "lat": 19.13, "lon": -33.22, "anio": 1997, "superficie": true,
+      {
+        "id": "pathfinder",
+        "nombre": "Ares Vallis · Pathfinder y Sojourner",
+        "lat": 19.13,
+        "lon": -33.22,
+        "anio": 1997,
+        "superficie": true,
         "resumen": "4 de julio de 1997: Pathfinder rebotó sobre sus airbags y abrió sus pétalos. Sojourner, el primer rover en Marte, bajó por una rampa.",
         "objetos": [
-          { "tipo": "pathfinder_lander", "nombre": "Lander Pathfinder · Estación Memorial Carl Sagan", "x": 0, "z": 0, "texto": "Último contacto: 27 de septiembre de 1997. Los airbags desinflados siguen alrededor de los pétalos." },
-          { "tipo": "sojourner", "nombre": "Rover Sojourner", "x": 4, "z": 3, "rot": 0.7, "texto": "10,6 kg y unos 100 m recorridos alrededor del lander. Cuando el lander calló, se quedó esperando órdenes que nunca llegaron." },
-          { "tipo": "roca", "nombre": "Barnacle Bill", "x": 2.5, "z": -2.5, "opciones": { "tam": 0.25 }, "texto": "La primera roca marciana analizada por un rover." },
-          { "tipo": "roca", "nombre": "Yogi", "x": -4, "z": 3.5, "opciones": { "tam": 0.6 }, "texto": "" },
-          { "tipo": "escudo", "nombre": "Escudo térmico", "x": -120, "z": 90, "distancia": "posición ilustrativa", "texto": "Protegió la cápsula a más de 7 km/s durante la entrada." },
-          { "tipo": "coraza_paracaidas", "nombre": "Coraza trasera y paracaídas", "x": 150, "z": -110, "distancia": "posición ilustrativa", "texto": "Se soltaron segundos antes de inflar los airbags." }
-        ] },
-      { "id": "spirit", "nombre": "Cráter Gusev · Spirit", "lat": -14.568, "lon": 175.473, "anio": 2004, "superficie": true,
+          {
+            "tipo": "pathfinder_lander",
+            "nombre": "Lander Pathfinder · Estación Memorial Carl Sagan",
+            "x": 0,
+            "z": 0,
+            "texto": "Último contacto: 27 de septiembre de 1997. Los airbags desinflados siguen alrededor de los pétalos."
+          },
+          {
+            "tipo": "sojourner",
+            "nombre": "Rover Sojourner",
+            "x": 4,
+            "z": 3,
+            "rot": 0.7,
+            "texto": "10,6 kg y unos 100 m recorridos alrededor del lander. Cuando el lander calló, se quedó esperando órdenes que nunca llegaron."
+          },
+          {
+            "tipo": "roca",
+            "nombre": "Barnacle Bill",
+            "x": 2.5,
+            "z": -2.5,
+            "opciones": {
+              "tam": 0.25
+            },
+            "texto": "La primera roca marciana analizada por un rover."
+          },
+          {
+            "tipo": "roca",
+            "nombre": "Yogi",
+            "x": -4,
+            "z": 3.5,
+            "opciones": {
+              "tam": 0.6
+            },
+            "texto": ""
+          },
+          {
+            "tipo": "escudo",
+            "nombre": "Escudo térmico",
+            "x": -120,
+            "z": 90,
+            "distancia": "posición ilustrativa",
+            "texto": "Protegió la cápsula a más de 7 km/s durante la entrada."
+          },
+          {
+            "tipo": "coraza_paracaidas",
+            "nombre": "Coraza trasera y paracaídas",
+            "x": 150,
+            "z": -110,
+            "distancia": "posición ilustrativa",
+            "texto": "Se soltaron segundos antes de inflar los airbags."
+          }
+        ]
+      },
+      {
+        "id": "spirit",
+        "nombre": "Cráter Gusev · Spirit",
+        "lat": -14.568,
+        "lon": 175.473,
+        "anio": 2004,
+        "superficie": true,
         "resumen": "Diseñado para 90 soles, Spirit trabajó más de seis años en Gusev.",
         "objetos": [
-          { "tipo": "pathfinder_lander", "nombre": "Plataforma de Spirit · Estación Memorial Columbia", "x": 0, "z": 0, "opciones": { "escala": 1.4, "mastil": false }, "texto": "Bautizada en memoria de la tripulación del transbordador Columbia." },
-          { "tipo": "mer", "nombre": "Spirit, atrapado en «Troy»", "x": 240, "z": 180, "rot": 2.3, "opciones": { "atrapado": true }, "distancia": "a varios km (recorrió 7,7 km)", "texto": "En 2009 sus ruedas se hundieron en arena blanda junto a Home Plate. Último contacto: 22 de marzo de 2010." },
-          { "tipo": "escudo", "nombre": "Escudo térmico", "x": -140, "z": 70, "distancia": "posición ilustrativa", "texto": "" },
-          { "tipo": "coraza_paracaidas", "nombre": "Coraza trasera y paracaídas", "x": 120, "z": -100, "distancia": "posición ilustrativa", "opciones": { "radioParacaidas": 7 }, "texto": "" }
-        ] },
-      { "id": "opportunity", "nombre": "Meridiani Planum · Opportunity", "lat": -1.946, "lon": -5.527, "anio": 2004, "superficie": true,
+          {
+            "tipo": "pathfinder_lander",
+            "nombre": "Plataforma de Spirit · Estación Memorial Columbia",
+            "x": 0,
+            "z": 0,
+            "opciones": {
+              "escala": 1.4,
+              "mastil": false
+            },
+            "texto": "Bautizada en memoria de la tripulación del transbordador Columbia."
+          },
+          {
+            "tipo": "mer",
+            "nombre": "Spirit, atrapado en «Troy»",
+            "x": 240,
+            "z": 180,
+            "rot": 2.3,
+            "opciones": {
+              "atrapado": true
+            },
+            "distancia": "a varios km (recorrió 7,7 km)",
+            "texto": "En 2009 sus ruedas se hundieron en arena blanda junto a Home Plate. Último contacto: 22 de marzo de 2010."
+          },
+          {
+            "tipo": "escudo",
+            "nombre": "Escudo térmico",
+            "x": -140,
+            "z": 70,
+            "distancia": "posición ilustrativa",
+            "texto": ""
+          },
+          {
+            "tipo": "coraza_paracaidas",
+            "nombre": "Coraza trasera y paracaídas",
+            "x": 120,
+            "z": -100,
+            "distancia": "posición ilustrativa",
+            "opciones": {
+              "radioParacaidas": 7
+            },
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "id": "opportunity",
+        "nombre": "Meridiani Planum · Opportunity",
+        "lat": -1.946,
+        "lon": -5.527,
+        "anio": 2004,
+        "superficie": true,
         "resumen": "Opportunity cayó dentro de un cráter de 22 m, Eagle: un «hoyo en uno» a 456 millones de km.",
         "objetos": [
-          { "tipo": "pathfinder_lander", "nombre": "Plataforma de Opportunity · Estación Memorial Challenger", "x": 0, "z": 0, "opciones": { "escala": 1.4, "mastil": false }, "crater": { "r": 11, "d": 2.2 }, "texto": "Sigue en el fondo del cráter Eagle." },
-          { "tipo": "escudo", "nombre": "Escudo térmico", "x": -160, "z": -60, "distancia": "posición ilustrativa", "texto": "Opportunity lo visitó en diciembre de 2004." },
-          { "tipo": "roca", "nombre": "Heat Shield Rock", "x": -150, "z": -50, "opciones": { "tam": 0.3 }, "texto": "Junto al escudo encontró este meteorito metálico: el primero identificado en otro planeta (enero de 2005)." },
-          { "tipo": "coraza_paracaidas", "nombre": "Coraza trasera y paracaídas", "x": 130, "z": 120, "distancia": "posición ilustrativa", "opciones": { "radioParacaidas": 7 }, "texto": "" },
-          { "tipo": "mer", "nombre": "Opportunity en Perseverance Valley", "x": 330, "z": -200, "rot": 0.6, "opciones": { "atrapado": true }, "distancia": "a decenas de km (recorrió 45 km)", "texto": "Una tormenta de polvo global cubrió sus paneles en 2018. Último contacto: 10 de junio de 2018." }
-        ] },
-      { "id": "phoenix", "nombre": "Vastitas Borealis · Phoenix", "lat": 68.219, "lon": -125.749, "anio": 2008, "superficie": true,
+          {
+            "tipo": "pathfinder_lander",
+            "nombre": "Plataforma de Opportunity · Estación Memorial Challenger",
+            "x": 0,
+            "z": 0,
+            "opciones": {
+              "escala": 1.4,
+              "mastil": false
+            },
+            "crater": {
+              "r": 11,
+              "d": 2.2
+            },
+            "texto": "Sigue en el fondo del cráter Eagle."
+          },
+          {
+            "tipo": "escudo",
+            "nombre": "Escudo térmico",
+            "x": -160,
+            "z": -60,
+            "distancia": "posición ilustrativa",
+            "texto": "Opportunity lo visitó en diciembre de 2004."
+          },
+          {
+            "tipo": "roca",
+            "nombre": "Heat Shield Rock",
+            "x": -150,
+            "z": -50,
+            "opciones": {
+              "tam": 0.3
+            },
+            "texto": "Junto al escudo encontró este meteorito metálico: el primero identificado en otro planeta (enero de 2005)."
+          },
+          {
+            "tipo": "coraza_paracaidas",
+            "nombre": "Coraza trasera y paracaídas",
+            "x": 130,
+            "z": 120,
+            "distancia": "posición ilustrativa",
+            "opciones": {
+              "radioParacaidas": 7
+            },
+            "texto": ""
+          },
+          {
+            "tipo": "mer",
+            "nombre": "Opportunity en Perseverance Valley",
+            "x": 330,
+            "z": -200,
+            "rot": 0.6,
+            "opciones": {
+              "atrapado": true
+            },
+            "distancia": "a decenas de km (recorrió 45 km)",
+            "texto": "Una tormenta de polvo global cubrió sus paneles en 2018. Último contacto: 10 de junio de 2018."
+          }
+        ]
+      },
+      {
+        "id": "phoenix",
+        "nombre": "Vastitas Borealis · Phoenix",
+        "lat": 68.219,
+        "lon": -125.749,
+        "anio": 2008,
+        "superficie": true,
         "resumen": "Phoenix excavó hielo de agua cerca del polo norte. El invierno lo enterró en escarcha de CO₂.",
         "objetos": [
-          { "tipo": "phoenix", "nombre": "Lander Phoenix", "x": 0, "z": 0, "texto": "Último contacto: 2 de noviembre de 2008. En 2010 la cámara HiRISE vio que el hielo invernal había doblado o roto sus paneles solares." },
-          { "tipo": "zanja", "nombre": "Zanja «Dodo-Goldilocks»", "x": 2.6, "z": 0.6, "texto": "Al excavar apareció hielo blanco que se sublimó en pocos días." },
-          { "tipo": "zanja", "nombre": "Zanja «Snow White»", "x": 2.3, "z": -0.8, "texto": "" },
-          { "tipo": "coraza_paracaidas", "nombre": "Coraza trasera y paracaídas", "x": 160, "z": 120, "distancia": "posición ilustrativa", "opciones": { "radioParacaidas": 6 }, "texto": "" },
-          { "tipo": "escudo", "nombre": "Escudo térmico", "x": -110, "z": -90, "distancia": "posición ilustrativa", "texto": "" }
-        ] },
-      { "id": "viking1", "nombre": "Chryse Planitia · Viking 1", "lat": 22.697, "lon": -48.222, "anio": 1976, "superficie": true,
+          {
+            "tipo": "phoenix",
+            "nombre": "Lander Phoenix",
+            "x": 0,
+            "z": 0,
+            "texto": "Último contacto: 2 de noviembre de 2008. En 2010 la cámara HiRISE vio que el hielo invernal había doblado o roto sus paneles solares."
+          },
+          {
+            "tipo": "zanja",
+            "nombre": "Zanja «Dodo-Goldilocks»",
+            "x": 2.6,
+            "z": 0.6,
+            "texto": "Al excavar apareció hielo blanco que se sublimó en pocos días."
+          },
+          {
+            "tipo": "zanja",
+            "nombre": "Zanja «Snow White»",
+            "x": 2.3,
+            "z": -0.8,
+            "texto": ""
+          },
+          {
+            "tipo": "coraza_paracaidas",
+            "nombre": "Coraza trasera y paracaídas",
+            "x": 160,
+            "z": 120,
+            "distancia": "posición ilustrativa",
+            "opciones": {
+              "radioParacaidas": 6
+            },
+            "texto": ""
+          },
+          {
+            "tipo": "escudo",
+            "nombre": "Escudo térmico",
+            "x": -110,
+            "z": -90,
+            "distancia": "posición ilustrativa",
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "id": "viking1",
+        "nombre": "Chryse Planitia · Viking 1",
+        "lat": 22.697,
+        "lon": -48.222,
+        "anio": 1976,
+        "superficie": true,
         "resumen": "20 de julio de 1976: el primer aterrizaje plenamente exitoso en Marte.",
         "objetos": [
-          { "tipo": "viking", "nombre": "Viking 1 · Estación Memorial Thomas Mutch", "x": 0, "z": 0, "texto": "Funcionó hasta noviembre de 1982." },
-          { "tipo": "coraza_paracaidas", "nombre": "Coraza trasera y paracaídas", "x": 140, "z": -90, "distancia": "posición ilustrativa", "texto": "" }
-        ] },
-      { "id": "viking2", "nombre": "Utopia Planitia · Viking 2", "lat": 47.64, "lon": 134.29, "anio": 1976, "superficie": true,
+          {
+            "tipo": "viking",
+            "nombre": "Viking 1 · Estación Memorial Thomas Mutch",
+            "x": 0,
+            "z": 0,
+            "texto": "Funcionó hasta noviembre de 1982."
+          },
+          {
+            "tipo": "coraza_paracaidas",
+            "nombre": "Coraza trasera y paracaídas",
+            "x": 140,
+            "z": -90,
+            "distancia": "posición ilustrativa",
+            "texto": ""
+          }
+        ]
+      },
+      {
+        "id": "viking2",
+        "nombre": "Utopia Planitia · Viking 2",
+        "lat": 47.64,
+        "lon": 134.29,
+        "anio": 1976,
+        "superficie": true,
         "resumen": "Septiembre de 1976. Fotografió escarcha en invierno.",
         "objetos": [
-          { "tipo": "viking", "nombre": "Viking 2", "x": 0, "z": 0, "rot": 0.4, "texto": "Funcionó hasta abril de 1980, cuando fallaron sus baterías." }
-        ] },
-      { "id": "insight", "nombre": "Elysium Planitia · InSight", "lat": 4.502, "lon": 135.623, "anio": 2018, "superficie": true,
+          {
+            "tipo": "viking",
+            "nombre": "Viking 2",
+            "x": 0,
+            "z": 0,
+            "rot": 0.4,
+            "texto": "Funcionó hasta abril de 1980, cuando fallaron sus baterías."
+          }
+        ]
+      },
+      {
+        "id": "insight",
+        "nombre": "Elysium Planitia · InSight",
+        "lat": 4.502,
+        "lon": 135.623,
+        "anio": 2018,
+        "superficie": true,
         "resumen": "InSight escuchó el interior de Marte: registró más de mil sismos marcianos.",
         "objetos": [
-          { "tipo": "insight", "nombre": "Lander InSight", "x": 0, "z": 0, "texto": "El polvo cubrió sus paneles; último contacto: 15 de diciembre de 2022." },
-          { "tipo": "sismometro_cupula", "nombre": "Sismómetro SEIS bajo su cúpula", "x": 2.2, "z": 0.8, "texto": "Detectó sismos marcianos y los impactos de meteoritos." },
-          { "tipo": "topo", "nombre": "Sonda de calor HP3 («el topo»)", "x": 2.0, "z": -1.2, "texto": "El suelo no le daba agarre y nunca logró enterrarse a la profundidad prevista." }
-        ] },
-      { "id": "curiosity", "nombre": "Cráter Gale · Curiosity", "lat": -4.59, "lon": 137.44, "anio": 2012, "activo": true, "texto": "Rover en servicio. Cerca quedaron su etapa de descenso (grúa aérea), que se estrelló a propósito, y su escudo térmico." },
-      { "id": "perseverance", "nombre": "Cráter Jezero · Perseverance e Ingenuity", "lat": 18.44, "lon": 77.45, "anio": 2021, "activo": true, "texto": "Perseverance sigue trabajando. El helicóptero Ingenuity quedó en tierra en enero de 2024, tras dañarse sus palas en su vuelo 72." },
-      { "id": "zhurong", "nombre": "Utopia Planitia · Zhurong", "lat": 25.07, "lon": 109.93, "anio": 2021, "texto": "Rover chino. Entró en hibernación en mayo de 2022 y no volvió a despertar." },
-      { "id": "beagle2", "nombre": "Isidis Planitia · Beagle 2", "lat": 11.53, "lon": 90.43, "anio": 2003, "texto": "Lander británico dado por perdido; en 2015 se encontró en fotos de HiRISE con los paneles a medio abrir." },
-      { "id": "schiaparelli", "nombre": "Meridiani · Schiaparelli", "lat": -2.05, "lon": -6.21, "anio": 2016, "texto": "Lander de prueba europeo que se estrelló al apagar sus motores antes de tiempo." },
-      { "id": "mars3", "nombre": "Mars 3 (aprox.)", "lat": -45, "lon": -158, "anio": 1971, "texto": "El primer aterrizaje suave en Marte (URSS): transmitió apenas unos segundos." }
+          {
+            "tipo": "insight",
+            "nombre": "Lander InSight",
+            "x": 0,
+            "z": 0,
+            "texto": "El polvo cubrió sus paneles; último contacto: 15 de diciembre de 2022."
+          },
+          {
+            "tipo": "sismometro_cupula",
+            "nombre": "Sismómetro SEIS bajo su cúpula",
+            "x": 2.2,
+            "z": 0.8,
+            "texto": "Detectó sismos marcianos y los impactos de meteoritos."
+          },
+          {
+            "tipo": "topo",
+            "nombre": "Sonda de calor HP3 («el topo»)",
+            "x": 2.0,
+            "z": -1.2,
+            "texto": "El suelo no le daba agarre y nunca logró enterrarse a la profundidad prevista."
+          }
+        ]
+      },
+      {
+        "id": "curiosity",
+        "nombre": "Cráter Gale · Curiosity",
+        "lat": -4.59,
+        "lon": 137.44,
+        "anio": 2012,
+        "activo": true,
+        "texto": "Rover en servicio. Cerca quedaron su etapa de descenso (grúa aérea), que se estrelló a propósito, y su escudo térmico."
+      },
+      {
+        "id": "jezero",
+        "nombre": "Cráter Jezero · Ingenuity y Perseverance",
+        "lat": 18.44,
+        "lon": 77.45,
+        "anio": 2021,
+        "superficie": true,
+        "resumen": "Ingenuity, el primer helicóptero en otro planeta, voló 72 veces. Quedó en tierra en enero de 2024 y sigue allí; la NASA lo dejó guardando datos en su memoria para quien llegue después. Perseverance continúa explorando lejos de aquí.",
+        "objetos": [
+          {
+            "tipo": "ingenuity",
+            "nombre": "Helicóptero Ingenuity",
+            "x": 0,
+            "z": 0,
+            "texto": "1,8 kg. Diseñado para 5 vuelos de prueba, hizo 72. En su último aterrizaje (18 de enero de 2024) se dañaron las palas y ya no pudo despegar."
+          },
+          {
+            "tipo": "fragmento",
+            "nombre": "Trozo de pala del rotor",
+            "x": 9,
+            "z": -11,
+            "texto": "Perseverance fotografió un fragmento de pala a unos 15 m del helicóptero (posición aproximada)."
+          },
+          {
+            "tipo": "perseverance",
+            "nombre": "Rover Perseverance (en servicio)",
+            "x": -150,
+            "z": 160,
+            "rot": 0.8,
+            "distancia": "sigue explorando a varios km",
+            "texto": "Rover de la NASA que llegó en febrero de 2021 con Ingenuity bajo su panza. Recoge muestras de roca en tubos sellados."
+          },
+          {
+            "tipo": "coraza_paracaidas",
+            "nombre": "Coraza trasera y paracaídas de Mars 2020",
+            "x": 170,
+            "z": -120,
+            "distancia": "posición ilustrativa",
+            "opciones": {
+              "radioParacaidas": 9
+            },
+            "texto": "Ingenuity los fotografió desde el aire en abril de 2022."
+          }
+        ]
+      },
+      {
+        "id": "zhurong",
+        "nombre": "Utopia Planitia · Zhurong",
+        "lat": 25.07,
+        "lon": 109.93,
+        "anio": 2021,
+        "texto": "Rover chino. Entró en hibernación en mayo de 2022 y no volvió a despertar."
+      },
+      {
+        "id": "beagle2",
+        "nombre": "Isidis Planitia · Beagle 2",
+        "lat": 11.53,
+        "lon": 90.43,
+        "anio": 2003,
+        "texto": "Lander británico dado por perdido; en 2015 se encontró en fotos de HiRISE con los paneles a medio abrir."
+      },
+      {
+        "id": "schiaparelli",
+        "nombre": "Meridiani · Schiaparelli",
+        "lat": -2.05,
+        "lon": -6.21,
+        "anio": 2016,
+        "texto": "Lander de prueba europeo que se estrelló al apagar sus motores antes de tiempo."
+      },
+      {
+        "id": "mars3",
+        "nombre": "Mars 3 (aprox.)",
+        "lat": -45,
+        "lon": -158,
+        "anio": 1971,
+        "texto": "El primer aterrizaje suave en Marte (URSS): transmitió apenas unos segundos."
+      }
     ]
   }
 }

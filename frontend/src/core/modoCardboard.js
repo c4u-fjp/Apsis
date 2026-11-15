@@ -66,6 +66,7 @@ export function crearModoCardboard(motor, { alEntrar, alSalir } = {}) {
     });
 
     const boton = document.createElement('button');
+    boton.id = 'btn-cardboard';
     boton.textContent = 'MODO CARDBOARD';
     boton.style.cssText = 'position:absolute;bottom:20px;left:calc(50% + 90px);width:170px;padding:12px 6px;' +
         'font:0.8rem "Courier New",monospace;color:#4af626;background:rgba(5,10,6,.85);' +

@@ -55,7 +55,7 @@ export function createInput(renderer) {
     der.style.cssText = "display:flex;gap:12px;align-items:flex-end";
     der.append(mk("⟲", "left"), mk("⟳", "right"), mk("🔥", "thrust"));
     touchUI.append(izq, der);
-    document.body.append(touchUI);
+    (document.getElementById('monitor-3d') ?? document.body).append(touchUI);   // dentro de la vista 3D, no encima del menú
   }
   let tactilVisible = false;
   renderer.xr.addEventListener("sessionstart", () => touchUI && (touchUI.style.display = "none"));

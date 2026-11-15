@@ -2,6 +2,7 @@
 // Son simplificados pero a escala: sirven para reconocer cada objeto y su tamaño relativo.
 // crearModelo(tipo, opciones) devuelve un THREE.Group con la base en y = 0.
 import * as THREE from 'three';
+import { cargarGLB } from './cargador.js';
 
 const mats = new Map();
 function mat(nombre) {
@@ -304,6 +305,20 @@ const D = {
         return g;
     },
     marca() { return new THREE.Group(); },   // solo etiqueta (p. ej. un cráter)
+    perseverance() { const g = D.mer(); g.scale.setScalar(1.6); return g; },   // respaldo si no carga el .glb
+    ingenuity() {
+        const g = new THREE.Group();
+        g.add(en(caja(0.14, 0.14, 0.14, 'oro'), 0, 0.18, 0));
+        for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + 0.785; g.add(barra([0, 0.15, 0], [Math.cos(a) * 0.2, 0, Math.sin(a) * 0.2], 0.008, 'gris')); }
+        g.add(barra([0, 0.25, 0], [0, 0.45, 0], 0.01, 'gris'), en(caja(1.2, 0.01, 0.06, 'oscuro'), 0, 0.4, 0), en(caja(1.2, 0.01, 0.06, 'oscuro'), 0, 0.44, 0, 0, 1.2));
+        g.add(en(caja(0.18, 0.01, 0.12, 'panel'), 0, 0.47, 0));
+        return g;
+    },
+    fragmento() {   // trozo de pala de rotor
+        const g = new THREE.Group();
+        g.add(en(caja(0.3, 0.01, 0.07, 'oscuro'), 0, 0.01, 0, 0, 0.5, 0.05));
+        return g;
+    },
 
     // ───── En órbita ─────
     orbitador({ alas = 2, color = 'oro' } = {}) {
@@ -319,5 +334,71 @@ export function crearModelo(tipo, opciones = {}) {
     const f = D[tipo] ?? D.marca;
     const g = f(opciones);
     g.traverse((m) => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
+    return g;
+}
+
+// ───── Modelos 3D reales (public/models) ─────
+// Si un .glb no carga, se usa el modelo procedural de arriba. Cada uno se normaliza a su tamaño real
+// (metros), con la base en y = 0 y centrado en X/Z.
+
+export const REALES = {
+    lrv: { url: '/models/buggy_lunar.glb', eje: 'z', medida: 3.1, rotY: Math.PI / 2 },   // Lunar Roving Vehicle: 3,1 m de largo
+    mer: { url: '/models/mer.glb', eje: 'y', medida: 1.5, desplegar: true, ocultar: ['_root'] },   // Spirit / Opportunity: 1,5 m de alto
+    perseverance: { url: '/models/perseverance.glb', eje: 'z', medida: 3.0 },   // 3 m de largo
+    ingenuity: { url: '/models/ingenuity.glb', eje: 'y', medida: 0.49 },       // 49 cm de alto
+};
+const plantillas = new Map();
+
+async function plantilla(tipo) {
+    if (!plantillas.has(tipo)) {
+        plantillas.set(tipo, (async () => {
+            const cfg = REALES[tipo];
+            const gltf = await cargarGLB(cfg.url);
+            const escena = gltf.scene.clone(true);
+            if (cfg.desplegar && gltf.animations.length) {
+                // el modelo viene plegado (como viajó dentro del lander): se reproducen sus animaciones hasta el final
+                const mezcla = new THREE.AnimationMixer(escena);
+                let fin = 0;
+                for (const clip of gltf.animations) {
+                    const a = mezcla.clipAction(clip);
+                    a.setLoop(THREE.LoopOnce); a.clampWhenFinished = true; a.play();
+                    fin = Math.max(fin, clip.duration);
+                }
+                mezcla.setTime(fin);
+            }
+            escena.traverse((o) => {
+                if (o.isMesh && cfg.ocultar?.includes(o.name)) o.geometry = new THREE.BufferGeometry();   // cubo auxiliar del modelo
+                if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
+            });
+            escena.updateMatrixWorld(true);
+            const caja = new THREE.Box3().setFromObject(escena);
+            const tam = caja.getSize(new THREE.Vector3());
+            escena.scale.setScalar(cfg.medida / tam[cfg.eje]);
+            const caja2 = new THREE.Box3().setFromObject(escena);
+            const c = caja2.getCenter(new THREE.Vector3());
+            escena.position.set(-c.x, -caja2.min.y, -c.z);
+            const g = new THREE.Group();
+            g.add(escena);
+            g.rotation.y = cfg.rotY ?? 0;
+            const final = new THREE.Group();
+            final.add(g);
+            return final;
+        })());
+    }
+    return plantillas.get(tipo);
+}
+
+// Precarga los modelos reales que necesita una lista de tipos (los que fallen se ignoran)
+export async function precargarReales(tipos) {
+    const usados = [...new Set(tipos)].filter((t) => REALES[t]);
+    await Promise.all(usados.map((t) => plantilla(t).catch((e) => { console.warn(`Modelo ${t} no disponible, se usa el procedural:`, e.message); plantillas.set(t, Promise.resolve(null)); })));
+}
+
+// Igual que crearModelo, pero con el .glb real si ya está precargado
+export async function crearModeloReal(tipo, opciones = {}) {
+    const p = REALES[tipo] ? await plantilla(tipo).catch(() => null) : null;
+    if (!p) return crearModelo(tipo, opciones);
+    const g = p.clone(true);
+    if (opciones.atrapado) { g.rotation.z = 0.08; g.position.y = -0.12; }   // Spirit, hundido en la arena de "Troy"
     return g;
 }
