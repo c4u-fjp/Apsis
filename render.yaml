@@ -1,16 +1,20 @@
 # Blueprint de Render: backend FastAPI + SPICE (Docker). Render lo lee desde la raíz del repositorio.
-# Las rutas de dockerfilePath y dockerContext son relativas a la raíz del repo.
+# Sin rootDir: las rutas de Docker son relativas a la raíz del repo (con rootDir Render las duplicaba:
+# "backend/backend").
 services:
   - type: web
     name: apsis-backend
     runtime: docker
     plan: free
     region: oregon
-    rootDir: backend                     # solo se vuelve a desplegar si cambia backend/
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
     healthCheckPath: /health
-    autoDeployTrigger: commit            # cada push a la rama conectada (main)
+    autoDeployTrigger: commit            # cada push a main...
+    buildFilter:                         # ...pero solo si cambió algo del backend
+      paths:
+        - backend/**
+        - render.yaml
     envVars:
       - key: ALLOWED_ORIGINS             # opcional: solo si llamas al backend sin el proxy de Cloudflare
         sync: false
