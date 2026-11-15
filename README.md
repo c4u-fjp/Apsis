@@ -72,6 +72,9 @@ GitHub Actions las ejecuta en cada Pull Request.
 | Inclinar adelante / atrás | D / A | joystick der. ↔ (solo pilotando) | ⟳ ⟲ |
 | Empuje (solo modo DIRECTO) | Espacio | gatillo derecho | 🔥 |
 
+En VR la portada (HTML) no se ve: delante aparece un **menú 3D** con la Luna y los cuatro rovers. Apunta con
+cualquier mando y pulsa el gatillo, o muévete con el joystick izquierdo y confirma con **A**. En la plataforma,
+**A** (o el gatillo izquierdo) lanza y el joystick izquierdo ↓ vuelve al menú.
 En VR el panel bajo la vista muestra la velocidad de la simulación y esta guía de mandos. Mientras pilotas el LM
 a mano (P66 o DIRECTO) los joysticks pilotan; el resto del tiempo controlan el tiempo y la cámara.
 Para volver a VR después de pulsar Y, toca **ENTER VR** en la página.

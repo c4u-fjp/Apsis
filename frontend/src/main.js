@@ -26,6 +26,7 @@ import { crearEstrellas, texturaMarte } from './modelos/efectos.js';
 import marte from './data/marte.json';
 import { sonido } from './core/audio.js';
 import { Personaje } from './modelos/personaje.js';
+import { crearMenuVR } from './core/menuVR.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -256,6 +257,17 @@ async function iniciar() {
     });
     caption('luna');
 
+    // Menú de misiones dentro de las gafas: el mismo que la portada, en 3D delante del usuario
+    const menuVR = crearMenuVR({
+        renderer, rig: rigSala,
+        opciones: [
+            { grupo: 'luna', id: 'luna', titulo: 'LA LUNA', sub: 'Apollo 11 · Saturn V · 1969' },
+            ...marte.misiones.map((m) => ({ grupo: 'marte', id: m.id, titulo: m.rover.split(' ')[0].toUpperCase(), sub: m.lanzamiento_utc.slice(0, 4) })),
+        ],
+        alElegir: (o) => (o.grupo === 'luna' ? elegir('luna') : elegir('marte', o.id)),
+        alEnfocar: (o) => caption(o.grupo),   // el video de la pantalla gigante sigue al destino resaltado
+    });
+
     function mostrarInicio() {
         modo?.salir();
         modo = null;
@@ -295,6 +307,7 @@ async function iniciar() {
     const ALIAS = { adelantar: 'siguiente', atrasar: 'anterior' };   // stick izquierdo ↑/↓ en VR
     input.onAccion((a) => {
         if (modo) { modo.accion(ALIAS[a] ?? a); return; }
+        if (renderer.xr.isPresenting) { if (a !== 'siguiente') menuVR.accion(a); return; }   // el gatillo elige con el rayo
         if (ALIAS[a]) return;
         if (a === 'siguiente') elegir('luna');        // en VR: gatillo izquierdo = Luna, A = Marte
         if (a === 'modo') elegir('marte', 'spirit');
@@ -321,6 +334,7 @@ async function iniciar() {
         const dt = Math.min(reloj.getDelta(), 0.1);
         tReal += dt;
         base.entrada = input.poll(dt);
+        menuVR.actualizar(renderer.xr.isPresenting && !modo);
         // VR: el stick derecho gira la cámara alrededor del objetivo y acerca/aleja
         const cv = base.entrada.camVR, c = base.escenaActiva?.controls;
         if (modo && renderer.xr.isPresenting && c && base.vista === 'escena' && (cv.giro || cv.zoom)) {
@@ -366,7 +380,7 @@ async function iniciar() {
                 renderer.autoClear = true;
             }
         }
-        panelVR.actualizar({ inicio: true, t: 0, fase: { nombre: 'Elige destino' }, warp: 1, pausado: false, siguiente: { titulo: 'Gatillo izq.: Luna · A: Marte', t: 0 } }, renderer.xr.isPresenting);
+        panelVR.actualizar({ inicio: true, t: 0, fase: { nombre: 'Elige destino' }, warp: 1, pausado: false }, false);   // en VR se ve el menú 3D
     });
 
     // Enlace directo: ?destino=luna|marte&mision=spirit  (y para la Luna, ?t=102:33:05)
@@ -375,7 +389,7 @@ async function iniciar() {
     if (q.has('restos') && !q.has('destino')) q.set('destino', 'luna');
     if (q.has('destino')) elegir(q.get('destino'), q.get('mision') ?? 'spirit');
     else mostrarInicio();
-    window.apsis = { base, sonido, get modo() { return modo; }, zylo: () => lanzarEgg(), egg };
+    window.apsis = { base, sonido, get modo() { return modo; }, zylo: () => lanzarEgg(), egg, menuVR };
 }
 
 iniciar().catch((e) => {

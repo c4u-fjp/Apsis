@@ -148,7 +148,8 @@ export async function crearMision(base, id = 'spirit') {
             else if (estado === 'ascenso') { t = EN_EL_ESPACIO; }
             else if (estado === 'crucero') { t = D - 3 * 86400; }
         },
-        anterior: () => { if (estado === 'crucero' || estado === 'restos') { estado = 'crucero'; hud.el.epilogo.classList.add('oculto'); t = EN_EL_ESPACIO; tCrucero = 0; } },
+        modo: () => { if (estado === 'preparacion') $('btn-lanzar').click(); },   // VR: A = lanzar
+        anterior: () => { if (estado === 'preparacion') { base.volverAlInicio(); return; } if (estado === 'crucero' || estado === 'restos') { estado = 'crucero'; hud.el.epilogo.classList.add('oculto'); t = EN_EL_ESPACIO; tCrucero = 0; } },
         masRapido: () => { warpManual = Math.min(4e6, ((warpManual ?? warp()) || 1) * 3); },
         masLento: () => { warpManual = Math.max(1, ((warpManual ?? warp()) || 1) / 3); },
         historia: () => { warpManual = null; },

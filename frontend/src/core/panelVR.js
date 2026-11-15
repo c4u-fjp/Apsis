@@ -87,7 +87,14 @@ export function crearPanelVR() {
             // guía de los mandos
             ctx.fillStyle = 'rgba(74,246,38,0.35)'; ctx.fillRect(20, 310, W - 40, 2);
             const pilotando = s.lm && s.lm.modo !== 'AUTO';
-            if (s.inicio) {
+            const enPlataforma = !document.getElementById('lanzamiento')?.classList.contains('oculto');
+            if (enPlataforma) {   // la pantalla de lanzamiento es HTML y no se ve en VR: el botón va aquí
+                const cohete = document.getElementById('lz-cohete')?.textContent ?? '';
+                ctx.fillStyle = '#ffb020'; ctx.fillRect(20, 322, W - 40, 110);
+                ctx.fillStyle = '#140a00'; ctx.font = 'bold 44px Courier New, monospace';
+                ctx.fillText(`A o GATILLO IZQ · ¡LANZAR ${cohete}!`.slice(0, 40), 40, 392);
+                guia(470, [['STICK IZQ ↓', 'cambiar destino'], ['GATILLO IZQ', 'lanzar']]);
+            } else if (s.inicio) {
                 ctx.fillStyle = '#fff'; ctx.font = 'bold 26px Courier New, monospace';
                 ctx.fillText('ELIGE DESTINO', 28, 348);
                 guia(400, [['GATILLO IZQ', 'la Luna · Apollo 11'], ['A', 'Marte · Spirit']]);

@@ -154,6 +154,7 @@ export async function crearMision(base) {
             if (e) saltar(e.t - 2);
         },
         anterior: () => {
+            if (estado === 'preparacion') { base.volverAlInicio(); return; }   // VR: stick ↓ en la plataforma = cambiar destino
             const previos = crono.eventos.filter((e) => e.t < reloj.t - 4);
             if (previos.length) saltar(previos[previos.length - 1].t - 2);
         },
@@ -162,7 +163,7 @@ export async function crearMision(base) {
         historia: () => reloj.modoHistoria(),
         camara: () => { $('btn-camara').textContent = `CÁMARA: ${String(activa.cambiarCamara()).toUpperCase()}`; },
         sala: () => vistaSala(base.vista !== 'sala'),
-        modo: () => { if (activa === superficie) superficie.cambiarModo(); },
+        modo: () => { if (estado === 'preparacion') { $('btn-lanzar').click(); return; } if (activa === superficie) superficie.cambiarModo(); },
         reintentar: () => { if (activa === superficie) superficie.iniciar('P64'); },
     };
 
