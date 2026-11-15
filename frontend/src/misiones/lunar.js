@@ -13,7 +13,7 @@ import { NaveApollo } from '../modelos/nave.js';
 import { adaptadorSaturno } from '../modelos/vehiculos.js';
 import { EscenaEspacio } from '../escenas/espacio.js';
 import { EscenaSuperficie } from '../escenas/superficie.js';
-import { pantallaLanzamiento, textoCuenta } from './lanzamiento.js';
+import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
 
 const $ = (id) => document.getElementById(id);
 const FIN_PLATAFORMA = 75;      // s: a partir de aquí el ascenso se sigue en la escena a escala real
@@ -49,6 +49,7 @@ export async function crearMision(base) {
         vehiculo: adaptadorSaturno(nave, crono.ev.ignicion),
         altKm: tray.altAsc, rangoKm: tray.rngAsc, azimut: tray.pad.azimut_vuelo_deg,
         solLocal: (t) => ecuatorialALocal(efem.sol(t), LANZAMIENTO_MS + t * 1000, tray.pad.lat, tray.pad.lon),
+        nocheCine: !new URLSearchParams(location.search).has('luzReal'),   // Apollo 11 despegó de día: ?luzReal
     });
     const escenas = [plataforma, espacio, superficie];
     for (const e of escenas) base.registrarCamara(e.camera);
@@ -141,6 +142,7 @@ export async function crearMision(base) {
     };
 
     return {
+        depurar: { espacio, superficie, plataforma, reloj, tray, nave },
         controles,
         entrar() {
             base.vista = 'escena';
@@ -165,8 +167,10 @@ export async function crearMision(base) {
             }
             base.pantallaCompleta(true);
             pantalla = pantallaLanzamiento({
-                destino: 'MISIÓN A LA LUNA',
-                mision: ['APOLLO 11 · SATURN V AS-506', 'COMPLEJO 39A · KENNEDY', '16 JUL 1969 · 13:32 UTC', 'Destino: Mar de la Tranquilidad'],
+                eyebrow: 'MISIÓN APOLLO 11 · SATURN V',
+                titulo: ['RUMBO A', 'LA LUNA'],
+                descripcion: 'Todo gran viaje empieza con un lanzamiento. 16 de julio de 1969: el Saturno V lleva a Armstrong, Aldrin y Collins al Mar de la Tranquilidad, donde aún sigue la etapa de descenso de Eagle.',
+                cohete: 'SATURN V', coheteSub: 'APOLLO LAUNCH VEHICLE', plataforma: 'COMPLEJO 39A · KENNEDY', mision: 'MISIÓN AS-506',
                 alLanzar: despegar,
                 alVolver: () => base.volverAlInicio(),
             });
@@ -192,8 +196,8 @@ export async function crearMision(base) {
 
             // cuenta regresiva en pantalla y paso al vuelo
             if (pantalla && estado === 'vuelo') {
-                pantalla.cuenta(textoCuenta(t, crono.ev.ignicion));
-                if (t > 4) { pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); }
+                pantalla.cuenta(t, crono.ev.ignicion);
+                if (t > 6) { pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); }
             }
             if (t > tAntes) {
                 const cruzados = crono.entre(tAntes, t);
@@ -206,7 +210,7 @@ export async function crearMision(base) {
                     espacio.modo = 'mapa';
                     espacio.ultimaFaseCam = null;
                     vistaSala(true);
-                    hud.banner('EN EL ESPACIO', 'Control de Misión · trayectoria hacia la Luna en la pantalla principal (C para volver al cohete)', 6000);
+                    viajeComenzado('Control de Misión sigue la trayectoria hacia la Luna en la pantalla principal. Pulsa C para volver al cohete.');
                 }
             }
 

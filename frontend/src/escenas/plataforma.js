@@ -52,7 +52,7 @@ export class EscenaPlataforma {
         this.rig.add(this.camera);
         this.scene.add(this.rig);
         this.controls = new Orbita(renderer.domElement);
-        this.controls.minR = 15; this.controls.maxR = 20000;
+        this.controls.minR = 60; this.controls.maxR = 20000;
         this.controls.minEl = -0.2;
 
         this.cielo = new THREE.Mesh(new THREE.SphereGeometry(1000, 32, 16), new THREE.ShaderMaterial({
@@ -62,7 +62,7 @@ export class EscenaPlataforma {
         this.cielo.renderOrder = -100;
         this.cielo.frustumCulled = false;
         this.scene.add(this.cielo);
-        this.estrellas = crearEstrellas(4000, 900);
+        this.estrellas = crearEstrellas(4000, 150000, true);   // solo sobre el horizonte y más lejos que el suelo
         this.estrellas.material.transparent = true;
         this.scene.add(this.estrellas);
 
@@ -208,6 +208,7 @@ export class EscenaPlataforma {
         this.perfil = perfil;
         this.v = perfil.vehiculo;
         this.k = this.v.alto / 110.6;                     // escala de la plataforma respecto a la 39A
+        this.controls.minR = this.v.alto * 0.9;          // nunca dentro del cohete
         this.estructura.scale.setScalar(Math.max(0.42, this.k));
         this.yBase = 27.6 * Math.max(0.42, this.k);
         this.scene.add(this.v.raiz);
@@ -289,7 +290,7 @@ export class EscenaPlataforma {
         this.estela.actualizar(Math.max(0, dtSim), { arrastre: 0.2 });
 
         // Sol real a la hora del lanzamiento; de noche: focos, balizas y estrellas
-        const sol = new THREE.Vector3(...this.perfil.solLocal(t)).normalize();
+        const sol = this.perfil.nocheCine ? new THREE.Vector3(0.3, -0.35, -0.9).normalize() : new THREE.Vector3(...this.perfil.solLocal(t)).normalize();
         const noche = 1 - smooth((sol.y + 0.05) / 0.12);
         this.sol.position.copy(pos).addScaledVector(sol, 800);
         this.sol.target.position.copy(pos);
@@ -323,6 +324,7 @@ export class EscenaPlataforma {
         const centro = pos.clone().addScaledVector(eje, H * 0.45);
         let cam, mira = centro, fov = 45;
         if (this.controls.interactuo && this.modoCam === 'auto' && !this.preparacion) this.modoCam = 'persecucion';
+        if (this.preparacion) this.controls.interactuo = false;
         if (this.preparacion) {
             // pantalla de lanzamiento: plano bajo con el cohete a la derecha y un lento travelling
             const a = Math.sin(tiempoReal * 0.06) * 0.08;
@@ -344,6 +346,7 @@ export class EscenaPlataforma {
         } else {
             cam = centro.clone().add(new THREE.Vector3(-1.0 * H, -0.5 * H, 1.36 * H));
         }
+        if (this.modoCam !== 'persecucion') this.controls.sincronizar(cam.clone().sub(centro));
         if (this.camera.fov !== fov) { this.camera.fov = fov; this.camera.updateProjectionMatrix(); }
         if (renderer.xr.isPresenting) {
             const ojo = t < 38 ? new THREE.Vector3(-3.5 * H, 2, 2.9 * H) : cam;

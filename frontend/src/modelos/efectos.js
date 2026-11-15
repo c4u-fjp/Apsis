@@ -65,11 +65,11 @@ export function crearEtiqueta(texto, { color = '#4af626', tam = 34 } = {}) {
 }
 
 // Estrellas en una esfera "infinita" (se mueve con la cámara). De lanzamiento.js: crearEstrellas
-export function crearEstrellas(n = 4000, radio = 1000) {
+export function crearEstrellas(n = 4000, radio = 1000, soloArriba = false) {
     const pos = new Float32Array(n * 3);
     const col = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
-        const u = Math.random() * 2 - 1, a = Math.random() * Math.PI * 2, s = Math.sqrt(1 - u * u);
+        const u = soloArriba ? 0.02 + Math.random() * 0.98 : Math.random() * 2 - 1, a = Math.random() * Math.PI * 2, s = Math.sqrt(1 - u * u);
         pos.set([radio * s * Math.cos(a), radio * u, radio * s * Math.sin(a)], i * 3);
         const b = 0.45 + Math.random() * 0.55, tinte = Math.random();
         col.set([b * (tinte > 0.8 ? 1 : 0.9), b * 0.95, b * (tinte < 0.2 ? 1 : 0.88)], i * 3);

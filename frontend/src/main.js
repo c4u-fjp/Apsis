@@ -7,6 +7,11 @@
 // Este archivo es el "armazón": renderer, entrada, HUD, sala de control, plataforma y bucle.
 // Cada destino es un controlador en src/misiones/ (lunar.js, marte.js) que se carga al elegirlo.
 import './style.css';
+import './portada.css';
+import '@fontsource/barlow-condensed/600.css';
+import '@fontsource/barlow-condensed/800.css';
+import '@fontsource/montserrat/500.css';
+import '@fontsource/montserrat/700.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createRenderer, handleResize, startLoop } from './core/renderer.js';
@@ -128,15 +133,32 @@ async function iniciar() {
     let modo = null;          // controlador de la misión en curso (o null en el inicio)
     const inicio = $('inicio');
     const rovers = $('lista-rovers');
+    const CAPTION = {
+        luna: ['LA LUNA', '384 400 KM DE LA TIERRA', 'APOLLO 11 · 1969'],
+        marte: ['MARTE', '55 A 400 MILLONES DE KM', 'ROVERS 1996 – 2007'],
+    };
+    const caption = (d) => {
+        destinoPrevio = d;
+        const [a, b, c] = CAPTION[d];
+        const el = $('caption-destino');
+        el.querySelector('span').textContent = a;
+        const smalls = el.querySelectorAll('small');
+        smalls[0].textContent = b; smalls[1].textContent = c;
+        inicio.querySelectorAll('.room').forEach((r) => r.classList.toggle('activo', r.dataset.destino === d));
+    };
     for (const m of marte.misiones) {
         const b = document.createElement('button');
-        b.textContent = `${m.rover} · ${m.lanzamiento_utc.slice(0, 4)}`;
+        b.textContent = `${m.rover.split(' ')[0].toUpperCase()} · ${m.lanzamiento_utc.slice(0, 4)}`;
         b.title = m.nombre;
         b.onclick = (e) => { e.stopPropagation(); elegir('marte', m.id); };
         rovers.append(b);
     }
     inicio.querySelector('[data-destino="luna"]').onclick = () => elegir('luna');
-    inicio.querySelectorAll('.destino').forEach((d) => d.addEventListener('pointerenter', () => { destinoPrevio = d.dataset.destino; }));
+    inicio.querySelectorAll('.room').forEach((d) => {
+        d.addEventListener('pointerenter', () => caption(d.dataset.destino));
+        d.addEventListener('focusin', () => caption(d.dataset.destino));
+    });
+    caption('luna');
 
     function mostrarInicio() {
         modo?.salir();
@@ -145,6 +167,8 @@ async function iniciar() {
         hud.el.epilogo.classList.add('oculto');
         $('lanzamiento').classList.add('oculto');
         inicio.classList.remove('oculto');
+        document.body.classList.add('en-inicio');
+        $('mision-num').textContent = 'MISIÓN 001';
         base.pantallaCompleta(true);
         panelVR.colocarEn(rigSala);
         ctrlSala.enabled = false;
@@ -153,6 +177,7 @@ async function iniciar() {
 
     async function elegir(destino, id) {
         inicio.classList.add('oculto');
+        document.body.classList.remove('en-inicio');
         progreso(0.02, destino === 'luna' ? 'Preparando el Saturn V…' : 'Preparando el Delta II…');
         try {
             const mod = destino === 'luna' ? await import('./misiones/lunar.js') : await import('./misiones/marte.js');
@@ -197,8 +222,8 @@ async function iniciar() {
             altitud: 0, velocidad: 0, progreso: 0, met: 'T-  :  :  ', reloj: new Date().toISOString().slice(0, 19).replace('T', ' '),
         });
         sala.animar(tReal);
-        camSala.position.set(Math.sin(tReal * 0.08) * 0.35, 1.45, 1.4);
-        camSala.lookAt(0, 2.5, -9);
+        camSala.position.set(-1.6 + Math.sin(tReal * 0.08) * 0.25, 1.5, 1.6);
+        camSala.lookAt(-4.2, 2.6, -9);
         pantalla(previa.scene, previa.camera);
         camSala.userData.qBase = null;
         base.cardboard.render(sceneSala, camSala);

@@ -208,7 +208,12 @@ export class EscenaEspacio {
             const w = smooth((t - tU) / 1800);
             this._actitudPila(t, this.qCSM);
             this._actitudLM(t, this.qLM);
-            const qL = new THREE.Quaternion().slerpQuaternions(this.qCSM, this.qLM, smooth((t - tU) / 600));
+            // Eagle gira 180° sobre su eje Z (el que apunta a la Luna) para quedar con el motor hacia delante.
+            // Antes se usaba slerp entre dos actitudes casi opuestas: el camino "más corto" cambiaba de lado
+            // cada cuadro y Eagle y Columbia temblaban.
+            const giro = Math.PI * smooth((t - tU) / 600);
+            const qL = t - tU >= 600 ? this.qLM.clone()
+                : this.qCSM.clone().multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), giro));
             const baseLM = NaveApollo.baseLM * ESC_PILA, ofsCSM = (NaveApollo.baseLM + NaveApollo.offsetCSMdesdeLM) * ESC_PILA;
             const ejeY = (q) => { _v.set(0, 1, 0).applyQuaternion(q); return [_v.x, -_v.z, _v.y]; };
             const yC = ejeY(this.qCSM);
@@ -409,6 +414,10 @@ export class EscenaEspacio {
                 this.ultimaFaseCam = clave;
             }
         }
+        // distancia mínima según el tamaño del vehículo: la cámara nunca queda dentro del cohete
+        const tam = t >= this.ctx.crono.ev.desacople ? 0.012 : t < this.ctx.crono.ev.sepS2 ? 0.09 : 0.045;
+        this.controls.minR = modo === 'mapa' ? 2 : tam;
+        if (this.controls.r < this.controls.minR) this.controls.r = this.controls.minR;
         const rot = B.clone().setPosition(0, 0, 0);
         const pos = this.controls.leer().applyMatrix4(rot).add(objetivo);
         const up = _u.set(0, 1, 0).applyMatrix4(rot).normalize();

@@ -277,44 +277,6 @@ html, body { touch-action: none; }
 .consola-eventos h3 { font-size: 0.9rem; color: #32a852; margin: 0 0 8px; }
 #ayuda { top: 8px; bottom: auto; }
 
-/* ───────── Inicio y pantalla de lanzamiento ───────── */
+
+/* Portada: sin panel lateral ni ayudas */
 body.pantalla-completa #panel-control, body.pantalla-completa #ayuda, body.pantalla-completa .crosshair { display: none; }
-#inicio, #lanzamiento { position: absolute; inset: 0; z-index: 35; color: #fff; }
-#inicio.oculto, #lanzamiento.oculto { display: none; }
-#inicio { background: radial-gradient(ellipse at 50% 35%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.75) 100%); }
-.inicio-marca { position: absolute; top: 22px; left: 28px; font-size: 1.4rem; letter-spacing: 8px; font-weight: bold; }
-.inicio-marca span { display: block; font-size: 0.7rem; letter-spacing: 3px; color: #4af626; font-weight: normal; margin-top: 4px; }
-.inicio-centro { position: absolute; left: 50%; bottom: 6%; transform: translateX(-50%); text-align: center; width: min(900px, 94%); }
-.inicio-centro h1 { letter-spacing: 10px; font-weight: 300; font-size: clamp(1.3rem, 3vw, 2.4rem); margin: 0 0 6px; text-shadow: 0 0 18px #000; }
-.inicio-centro p { opacity: .8; margin: 0 0 18px; letter-spacing: 2px; font-size: .85rem; }
-.destinos { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-.destino {
-    flex: 1 1 300px; max-width: 420px; text-align: left; padding: 16px 18px; cursor: pointer; font-family: inherit; color: #fff;
-    background: rgba(6, 12, 10, 0.78); border: 1px solid rgba(255,255,255,0.25); border-radius: 14px; backdrop-filter: blur(4px);
-    display: flex; flex-direction: column; gap: 6px; transition: border-color .2s, transform .2s;
-}
-.destino:hover, .destino:focus-within, .destino.activo { border-color: #4af626; transform: translateY(-3px); }
-.destino-nombre { font-size: 1.6rem; letter-spacing: 8px; }
-.destino-mision { color: #4af626; font-size: .8rem; letter-spacing: 1px; }
-.destino-restos { font-size: .78rem; opacity: .75; }
-.rovers { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
-.rovers button {
-    font-family: inherit; font-size: .75rem; color: #fff; background: rgba(255,120,80,0.12); border: 1px solid rgba(255,140,100,0.6);
-    border-radius: 999px; padding: 6px 10px; cursor: pointer;
-}
-.rovers button:hover { background: rgba(255,120,80,0.35); }
-#lanzamiento { background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 45%, rgba(0,0,0,0) 70%); pointer-events: none; }
-.lz-info { position: absolute; left: 8%; top: 50%; transform: translateY(-50%); pointer-events: auto; max-width: 480px; }
-.lz-destino { font-size: clamp(1.4rem, 3.4vw, 2.8rem); letter-spacing: 9px; font-weight: 300; text-shadow: 0 0 20px #000; }
-.lz-mision { letter-spacing: 4px; font-size: .85rem; margin: 14px 0 26px; opacity: .85; line-height: 1.7; }
-.btn-lanzar {
-    font-family: inherit; color: #fff; background: rgba(0,0,0,0.25); border: 2px solid #fff; border-radius: 999px;
-    padding: 12px 34px; letter-spacing: 5px; font-size: 1rem; cursor: pointer; transition: background .2s;
-}
-.btn-lanzar span { margin-left: 12px; }
-.btn-lanzar:hover { background: rgba(255,255,255,0.15); }
-.btn-lanzar:disabled { opacity: 0.4; cursor: default; }
-.btn-volver { display: block; margin-top: 16px; background: none; border: none; color: #cfd; cursor: pointer; font-family: inherit; letter-spacing: 2px; opacity: .8; }
-.lz-cuenta { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); font-size: clamp(3rem, 12vw, 9rem); font-weight: 200; letter-spacing: 6px; text-shadow: 0 0 30px #000; }
-.lz-cuenta { text-align: center; }
-.lz-cuenta small { display: block; font-size: 0.22em; letter-spacing: 8px; color: #ffb36b; }

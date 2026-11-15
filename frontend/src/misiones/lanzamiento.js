@@ -1,35 +1,74 @@
-// Pantalla de lanzamiento (el cohete en la plataforma y el botón LANZAMIENTO) y cuenta regresiva.
-const $ = (id) => document.getElementById(id);
+// Pantalla de lanzamiento (diseño de saturno_v_lanzamiento_web): texto a la izquierda, cohete 3D a la
+// derecha, botón LANZAR y sonido; luego cuenta regresiva grande, destello y vibración en la ignición.
+import { sonido } from '../core/audio.js';
 
-export function pantallaLanzamiento({ destino, mision, alLanzar, alVolver }) {
+const $ = (id) => document.getElementById(id);
+const body = document.body;
+
+$('btn-sonido').addEventListener('click', () => {
+    const on = sonido.alternar();
+    $('sonido-estado').textContent = on ? 'ON' : 'OFF';
+    $('btn-sonido').setAttribute('aria-pressed', String(on));
+});
+
+// datos: { eyebrow, titulo:[línea1, línea2], descripcion, cohete, coheteSub, plataforma, mision, alLanzar, alVolver }
+export function pantallaLanzamiento(d) {
     const el = $('lanzamiento');
-    $('lz-destino').textContent = destino;
-    $('lz-mision').innerHTML = '';
-    for (const linea of mision) { const d = document.createElement('div'); d.textContent = linea; $('lz-mision').append(d); }
+    $('lz-eyebrow').textContent = d.eyebrow;
+    $('lz-titulo').innerHTML = '';
+    $('lz-titulo').append(d.titulo[0], document.createElement('br'));
+    const em = document.createElement('em'); em.textContent = d.titulo[1]; $('lz-titulo').append(em);
+    $('lz-desc').textContent = d.descripcion;
+    $('lz-cohete').textContent = d.cohete;
+    $('lz-cohete-sub').textContent = d.coheteSub;
+    $('lz-plataforma').textContent = d.plataforma;
+    $('lz-preflight').textContent = `${d.cohete} 3D · LISTO PARA LANZAR`;
+    $('mision-num').textContent = d.mision;
     const lanzar = $('btn-lanzar');
     lanzar.disabled = false;
-    $('lz-cuenta').textContent = '';
-    el.querySelector('.lz-info').style.display = '';
-    lanzar.onclick = () => { lanzar.disabled = true; el.querySelector('.lz-info').style.display = 'none'; alLanzar(); };
-    $('btn-volver').onclick = alVolver;
+    lanzar.onclick = () => {
+        lanzar.disabled = true;
+        body.classList.add('lanzado');
+        el.querySelector('.hero-copy').style.opacity = '0';
+        el.querySelector('.rocket-caption').style.opacity = '0';
+        d.alLanzar();
+    };
+    $('btn-volver').onclick = d.alVolver;
+    el.querySelector('.hero-copy').style.opacity = '';
+    el.querySelector('.rocket-caption').style.opacity = '';
+    body.classList.add('en-lanzamiento');
+    body.classList.remove('lanzado', 'ignited', 'ascent', 'shake');
     el.classList.remove('oculto');
+    let ultimo = null, rugiendo = false;
+    const hud = $('launchHud');
+
     return {
-        cuenta(texto) {
-            const [n, sub] = texto.split(' · ');
-            const el = $('lz-cuenta');
-            if (el.dataset.t === texto) return;
-            el.dataset.t = texto;
-            el.innerHTML = '';
-            el.append(n ?? '');
-            if (sub) { const s = document.createElement('small'); s.textContent = sub; el.append(s); }
+        // t: segundos respecto al despegue; ignicion: instante de encendido (negativo)
+        cuenta(t, ignicion) {
+            let n, sub, label = 'SECUENCIA DE LANZAMIENTO';
+            if (t < 0) { n = String(Math.ceil(-t)).padStart(2, '0'); sub = t > ignicion ? 'IGNICIÓN' : 'CUENTA REGRESIVA'; }
+            else if (t < 5) { n = '00'; sub = 'DESPEGUE'; label = 'TORRE LIBRE'; }
+            else { hud.classList.remove('visible'); body.classList.remove('shake', 'ignited'); body.classList.add('ascent'); return; }
+            hud.classList.add('visible');
+            if (n !== ultimo) { ultimo = n; $('countNumber').textContent = n; sonido.pitido(t < 0 ? 760 : 980); }
+            $('hudSub').textContent = sub; $('hudLabel').textContent = label;
+            if (t > ignicion) {
+                body.classList.add('ignited', 'shake');
+                if (!rugiendo) { rugiendo = true; sonido.rugido(); }
+            }
         },
-        ocultar() { el.classList.add('oculto'); $('lz-cuenta').textContent = ''; },
+        ocultar() {
+            el.classList.add('oculto');
+            hud.classList.remove('visible');
+            body.classList.remove('en-lanzamiento', 'lanzado', 'ignited', 'ascent', 'shake');
+        },
     };
 }
 
-// Texto de la cuenta regresiva para un instante t (s respecto al despegue)
-export function textoCuenta(t, ignicion) {
-    if (t < -0.05) return t > ignicion ? `T-${Math.ceil(-t)} · IGNICIÓN` : `T-${Math.ceil(-t)}`;
-    if (t < 4) return 'DESPEGUE';
-    return '';
+// "EL VIAJE HA COMENZADO" al llegar al espacio
+export function viajeComenzado(texto, ms = 6500) {
+    const el = $('missionComplete');
+    $('complete-texto').textContent = texto;
+    el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), ms);
 }

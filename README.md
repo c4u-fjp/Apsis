@@ -6,8 +6,11 @@ cohete en la plataforma → **LANZAMIENTO**: cuenta regresiva, despegue y seguim
 espacio (~100 km) la vista pasa a la sala de control, donde la pantalla gigante muestra la trayectoria hacia
 el destino → los restos que quedaron allí.
 
-La luz de la pantalla de lanzamiento sigue la hora real: Apollo 11 y Spirit despegaron de día;
-Pathfinder, Opportunity y Phoenix de noche (focos, balizas, estrellas y Marte en el cielo).
+La portada y la pantalla de lanzamiento usan el diseño del equipo (`saturno_v_lanzamiento_web`): tipografías
+Barlow Condensed y Montserrat (incluidas con @fontsource, funcionan sin internet), cielo de referencia, grano de
+película, cuenta regresiva grande, destello y vibración en la ignición, y sonido sintético opcional (SONIDO: ON).
+El lanzamiento es nocturno y cinematográfico; con `?luzReal` se usa la hora real (Apollo 11 y Spirit despegaron
+de día).
 
 Simulador del **Apollo 11, del lanzamiento al alunizaje**: Saturn V en la plataforma 39A, separación de
 etapas, órbita terrestre, inyección translunar, transposición y acople, tránsito a la Luna, órbita lunar,

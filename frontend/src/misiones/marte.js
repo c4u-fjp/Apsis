@@ -10,7 +10,7 @@ import { fechaHora } from '../core/hud.js';
 import { crearDelta } from '../modelos/cargador.js';
 import { adaptadorDelta, SECUENCIA_DELTA } from '../modelos/vehiculos.js';
 import { EscenaInterplanetaria } from '../escenas/interplanetario.js';
-import { pantallaLanzamiento, textoCuenta } from './lanzamiento.js';
+import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
 
 const $ = (id) => document.getElementById(id);
 const PAD = { nombre: 'Complejo 17 · Cabo Cañaveral', lat: 28.447, lon: -80.565, azimut: 95 };
@@ -49,6 +49,7 @@ export async function crearMision(base, id = 'spirit') {
     const rng = monotona(ASC.map((a) => a[0]), ASC.map((a) => a[2]));
     plataforma.configurarMision({
         vehiculo: adaptadorDelta(delta), altKm: alt, rangoKm: rng, azimut: PAD.azimut, alabeoDeg: 0,
+        nocheCine: !new URLSearchParams(location.search).has('luzReal'),
         solLocal: (t) => ecuatorialALocal(solEcuatorial(ms(t)), ms(t), PAD.lat, PAD.lon),
         astroLocal: (t) => {
             const g = inter.pos('marte', t).map((v, k) => v - inter.pos('tierra', t)[k]);
@@ -79,6 +80,7 @@ export async function crearMision(base, id = 'spirit') {
     function despegar() { estado = 'ascenso'; plataforma.preparacion = false; t = -10; tPrevio = t; pausado = false; }
 
     function aEspacio() {
+        viajeComenzado(`Control de Misión sigue a ${m.rover} rumbo a Marte en la pantalla principal.`);
         estado = 'crucero';
         activa = inter;
         tCrucero = 0;
@@ -145,8 +147,10 @@ export async function crearMision(base, id = 'spirit') {
             controles();
             base.pantallaCompleta(true);
             pantalla = pantallaLanzamiento({
-                destino: 'MISIÓN A MARTE',
-                mision: [m.nombre.toUpperCase(), `DELTA II 7925 · ${m.plataforma} · CABO CAÑAVERAL`, `${fechaHora(lanz)} UTC`, `Destino: ${m.sitio}`],
+                eyebrow: `${m.nombre.toUpperCase()} · DELTA II`,
+                titulo: ['RUMBO A', 'MARTE'],
+                descripcion: `${fechaHora(lanz)} UTC. Un Delta II con nueve propulsores sólidos lleva a ${m.rover} hacia ${m.sitio}. ${m.historia}`,
+                cohete: 'DELTA II', coheteSub: 'DELTA 7925 · 9 GEM-40', plataforma: `${m.plataforma} · CABO CAÑAVERAL`, mision: m.rover.split(' ')[0].toUpperCase(),
                 alLanzar: despegar,
                 alVolver: () => base.volverAlInicio(),
             });
@@ -168,8 +172,8 @@ export async function crearMision(base, id = 'spirit') {
             t = Math.min(estado === 'crucero' || estado === 'restos' ? D : Infinity, t + dt * warp());
             if (estado === 'crucero') tCrucero += dt;
             if (pantalla && estado !== 'preparacion') {
-                pantalla.cuenta(textoCuenta(t, SECUENCIA_DELTA.ignicion));
-                if (t > 4) { pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); }
+                pantalla.cuenta(t, SECUENCIA_DELTA.ignicion);
+                if (t > 6) { pantalla.ocultar(); pantalla = null; base.pantallaCompleta(false); }
             }
             for (const [te, titulo, texto] of EVENTOS) {
                 if (tAntes < te && t >= te && !eventosVistos.has(te)) {

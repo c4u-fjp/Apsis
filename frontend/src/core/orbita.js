@@ -54,6 +54,14 @@ export class Orbita {
         this.interactuo = false;
     }
 
+    // Copia la vista actual sin marcar interacción: si el usuario arrastra, parte de lo que ya veía
+    sincronizar(v) {
+        const i = this.interactuo;
+        this.fijar(v);
+        this.interactuo = i;
+        this.r = Math.max(this.minR, this.r);
+    }
+
     leer(out = new THREE.Vector3()) {
         const c = Math.cos(this.el);
         return out.set(this.r * c * Math.sin(this.az), this.r * Math.sin(this.el), this.r * c * Math.cos(this.az));
