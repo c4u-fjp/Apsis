@@ -35,6 +35,7 @@ export function crearModoRestos(base, { cuerpo, sitio, lanzamientoMs, lunaModelo
     for (const s of d.sitios.filter((x) => x.superficie)) {
         const b = el('button', s.id === sitio ? 'mision' : '', s.nombre.split(' · ').pop());
         b.title = s.nombre;
+        b.dataset.siteId = s.id; // stable even if the visible tooltip is translated
         b.onclick = () => { if (escena.nivel === 'superficie') { escena.subir().then(() => escena.bajar(s)); } else escena.bajar(s); };
         sitiosEl.append(b);
     }
@@ -113,7 +114,7 @@ export function crearModoRestos(base, { cuerpo, sitio, lanzamientoMs, lunaModelo
         titulo.textContent = nivel === 'orbita' ? `${d.nombre} · LO QUE ORBITA` : `${d.nombre} · ${s.nombre.split(' · ')[0].toUpperCase()}`;
         bOrb.classList.toggle('activo', nivel === 'orbita');
         bSup.classList.toggle('activo', nivel === 'superficie');
-        for (const b of sitiosEl.children) b.classList.toggle('activo', nivel === 'superficie' && b.title === s?.nombre);
+        for (const b of sitiosEl.children) b.classList.toggle('activo', nivel === 'superficie' && b.dataset.siteId === s?.id);
         pintarLeyenda();
         fichaGeneral();
         base.hud.registrar(nivel === 'orbita' ? `[RESTOS] Vista orbital de ${d.nombre.toLowerCase()}` : `[RESTOS] Superficie: ${s.nombre}`, 'importante');
