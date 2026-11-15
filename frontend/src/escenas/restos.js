@@ -13,6 +13,7 @@ import * as THREE from 'three';
 import { Orbita } from '../core/orbita.js';
 import { crearEstrellas, crearEtiqueta, crearMarcador, texturaMarte } from '../modelos/efectos.js';
 import { crearModelo, crearModeloReal, precargarReales } from '../modelos/restos.js';
+import { Personaje } from '../modelos/personaje.js';
 import DATOS from '../data/restos.json';
 
 const R = 10;
@@ -213,6 +214,7 @@ export class EscenaRestos {
 
     async _construirSuperficie(sitio) {
         const g = this.gSuperficie;
+        if (this.zylo) g.remove(this.zylo.raiz);   // Zylo se reutiliza: no se liberan sus mallas
         g.traverse((o) => { if (o.isMesh) { o.geometry.dispose?.(); } });
         g.clear();
         const marte = this.cuerpo === 'marte';
@@ -347,6 +349,22 @@ export class EscenaRestos {
             this.pickSup.push(proxy);
             this.objetosSup.push({ o, grupo, et, tam });
         }
+        await this._colocarZylo();
+    }
+
+    // Easter egg: a veces (60 %) Zylo ronda alguno de los restos del sitio. Un clic y desaparece.
+    async _colocarZylo() {
+        const forzar = new URLSearchParams(location.search).has('zylo');
+        if (!forzar && Math.random() > 0.6) { if (this.zylo) this.zylo.raiz.visible = false; return; }
+        try { this.zylo ??= await Personaje.crear(); } catch { return; }
+        const cerca = this.objetosSup.filter((x) => x.o.tipo !== 'marca' && x.o.tipo !== 'zanja');
+        const obj = cerca[Math.floor(Math.random() * cerca.length)] ?? this.objetosSup[0];
+        if (!obj) return;
+        const r = Math.min(9, obj.tam * 0.45 + 1.8), a = Math.random() * Math.PI * 2;
+        const pt = (k) => [obj.o.x + Math.cos(a + k) * r, obj.o.z + Math.sin(a + k) * r];
+        this.gSuperficie.add(this.zylo.raiz);
+        this.zylo.iniciar(pt(0), [{ ir: pt(1.1) }, { esperar: 1.5 }, { ir: pt(2.2) }, { mirarCamara: true }, { saludar: 2.2 },
+            { ir: pt(3.4) }, { esperar: 2 }, { ir: pt(0) }, { repetir: true }], { suelo: (x, z) => this.altura(x, z) });
     }
 
     // ───────────────────────── ciclo de vida ─────────────────────────
@@ -465,6 +483,11 @@ export class EscenaRestos {
             if (mov > 6) return;
             const r = dom.getBoundingClientRect();
             ray.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), this.camera);
+            if (this.nivel === 'superficie' && this.zylo?.impacta(ray)) {
+                this.zylo.desaparecer();
+                this.ctx.hud.registrar('[??] Señal no identificada perdida.');
+                return;
+            }
             const lista = this.nivel === 'orbita' ? [this.planeta, ...this.pick] : this.pickSup;
             const hit = ray.intersectObjects(lista, true).find((h) => h.object.parent?.visible !== false && h.object.visible !== false);
             this.seleccionar(hit?.object.userData.info ?? null);
@@ -530,6 +553,7 @@ export class EscenaRestos {
                 if (cand && cand.c <= Math.cos(28 * RAD)) C.r = R * 1.22;
             }
         } else {
+            this.zylo?.actualizar(dt, this.camera.getWorldPosition(new THREE.Vector3()));
             this.foco.lerp(this.focoObjetivo, Math.min(1, dt * 3));
             if (C.interactuo && !this.enTransicion && C.r > 820) this.subir();
         }

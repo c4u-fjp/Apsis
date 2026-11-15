@@ -25,6 +25,7 @@ import { EscenaPlataforma } from './escenas/plataforma.js';
 import { crearEstrellas, texturaMarte } from './modelos/efectos.js';
 import marte from './data/marte.json';
 import { sonido } from './core/audio.js';
+import { Personaje } from './modelos/personaje.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -179,6 +180,49 @@ async function iniciar() {
     }
     pintarBtnVideo();
 
+    // ── Easter egg: si nadie toca nada durante un minuto, Zylo entra caminando, saluda y se esfuma ──
+    // Se dibuja en una capa encima de la sala (sus mesas lo taparían), anclado a la cámara pero sin su
+    // inclinación, así camina "por la pantalla". Un clic sobre él lo hace desaparecer antes.
+    const egg = { escena: new THREE.Scene(), ancla: new THREE.Group(), zylo: null, ultima: performance.now() };
+    egg.escena.add(egg.ancla, new THREE.HemisphereLight(0xe6f2ff, 0x1c2a38, 2.2));
+    const luzEgg = new THREE.DirectionalLight(0xffffff, 2.4);
+    luzEgg.position.set(1.5, 2.5, 1);
+    luzEgg.target.position.set(0, 0, -4);
+    egg.ancla.add(luzEgg, luzEgg.target);
+    Personaje.crear().then((z) => { egg.zylo = z; egg.ancla.add(z.raiz); }).catch((e) => console.warn('Zylo no cargó:', e.message));
+    for (const ev of ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart']) addEventListener(ev, () => { egg.ultima = performance.now(); }, { passive: true });
+    const _dir = new THREE.Vector3();
+    function anclarEgg() {
+        camSala.updateMatrixWorld();
+        camSala.getWorldDirection(_dir);
+        egg.ancla.position.copy(camSala.getWorldPosition(new THREE.Vector3()));
+        egg.ancla.rotation.set(0, Math.atan2(-_dir.x, -_dir.z), 0);   // sigue el rumbo de la cámara, no su cabeceo
+        egg.escena.updateMatrixWorld();
+        return Math.asin(Math.max(-1, Math.min(1, _dir.y)));           // cabeceo
+    }
+    function lanzarEgg() {
+        const z = egg.zylo;
+        if (!z || z.activo || modo) return;
+        const cabeceo = anclarEgg();
+        const d = 6.5, tv = Math.tan((camSala.fov / 2) * Math.PI / 180), th = tv * camSala.aspect;
+        const movil = camSala.aspect < 0.85;
+        // altura de los pies para que queden en el borde de abajo (teléfono: justo encima del menú)
+        const v = movil ? 0.04 : -0.82;
+        const yPies = d * Math.tan(Math.atan(v * tv) + cabeceo);
+        const xIni = d * th + 0.9, xFin = movil ? 0 : d * th * 0.66;   // escritorio: a la derecha de las tarjetas de destino
+        z.iniciar([xIni, -d], [{ ir: [xFin, -d] }, { mirarCamara: true }, { saludar: 2.8 }, { esperar: 0.3 }, { desaparecer: true }],
+            { suelo: () => yPies, rumbo: -Math.PI / 2 });
+        egg.ultima = performance.now();
+    }
+    addEventListener('pointerdown', (e) => {
+        const z = egg.zylo;
+        if (!z?.activo || modo) return;
+        const r = renderer.domElement.getBoundingClientRect();
+        const ray = new THREE.Raycaster();
+        ray.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), camSala);
+        if (z.impacta(ray)) { z.desaparecer(); e.stopPropagation(); e.preventDefault(); }
+    }, { capture: true });
+
     // ── Pantalla de inicio ──
     let modo = null;          // controlador de la misión en curso (o null en el inicio)
     const inicio = $('inicio');
@@ -231,6 +275,7 @@ async function iniciar() {
     async function elegir(destino, id) {
         sonido.preparar();            // el clic del usuario permite cargar y reproducir audio
         pararVideos();
+        if (egg.zylo) egg.zylo.raiz.visible = false;
         camSala.fov = 60; camSala.updateProjectionMatrix();
         inicio.classList.add('oculto');
         document.body.classList.remove('en-inicio');
@@ -309,6 +354,18 @@ async function iniciar() {
         else pantalla(previa.scene, previa.camera);
         camSala.userData.qBase = null;
         base.cardboard.render(sceneSala, camSala);
+        // easter egg (no en VR ni en Cardboard)
+        if (egg.zylo && !renderer.xr.isPresenting && !base.cardboard?.activo) {
+            if (!egg.zylo.activo && performance.now() - egg.ultima > 60000) lanzarEgg();
+            if (egg.zylo.activo) {
+                anclarEgg();
+                egg.zylo.actualizar(dt, new THREE.Vector3(0, 0, 0));
+                renderer.autoClear = false;
+                renderer.clearDepth();
+                renderer.render(egg.escena, camSala);
+                renderer.autoClear = true;
+            }
+        }
         panelVR.actualizar({ inicio: true, t: 0, fase: { nombre: 'Elige destino' }, warp: 1, pausado: false, siguiente: { titulo: 'Gatillo izq.: Luna · A: Marte', t: 0 } }, renderer.xr.isPresenting);
     });
 
@@ -318,7 +375,7 @@ async function iniciar() {
     if (q.has('restos') && !q.has('destino')) q.set('destino', 'luna');
     if (q.has('destino')) elegir(q.get('destino'), q.get('mision') ?? 'spirit');
     else mostrarInicio();
-    window.apsis = { base, sonido, get modo() { return modo; } };
+    window.apsis = { base, sonido, get modo() { return modo; }, zylo: () => lanzarEgg(), egg };
 }
 
 iniciar().catch((e) => {

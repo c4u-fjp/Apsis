@@ -91,3 +91,12 @@ calcular desde `t` (la física del alunizaje) se reinicia en `entrar(t)`.
 1. `backend/nasa_data/apollo15_mission.json` con la misma forma que el de Apolo 11 + ruta en `routers/mission.py`.
 2. Escena de superficie: copiar `superficie.js`, cambiar sitio (sites.json), cráteres (Hadley Rille) y añadir el LRV.
 3. Selector de misión en la pantalla de inicio (`main.js`).
+
+## Easter egg: Zylo
+`modelos/personaje.js` carga `public/models/personaje.glb` (animación "Caminar"; el saludo mueve los huesos
+`brazoR`/`antebrazoR`) y lo maneja con un guion de pasos (`ir`, `mirar`, `saludar`, `esperar`, `desaparecer`, `repetir`).
+- Inicio (`main.js`): tras 60 s sin actividad entra por la derecha, saluda y se esfuma. Va en una capa
+  propia encima de la sala (anclada a la cámara sin su cabeceo). Consola: `apsis.zylo()` lo lanza ya.
+- Superficie (`escenas/restos.js → _colocarZylo`): 60 % de las visitas ronda un resto al azar; `?zylo` lo fuerza.
+- Un clic sobre él lo hace desaparecer.
+
