@@ -522,6 +522,15 @@ export class EscenaSuperficie {
         const { renderer } = this.ctx;
         const lmPos = new THREE.Vector3(X, lm.y + 3.5, 0);
         const cabina = new THREE.Vector3(X - 2.4, lm.y + 5.2, 0.7);   // ventana izquierda (Armstrong)
+        if (renderer.xr.isPresenting && (this.cam === 'suelo' || (this.cam === 'auto' && this.controls.interactuo))) {
+            // en VR con el stick derecho: girar alrededor del LM y acercar/alejar (o la cámara fija en el suelo)
+            const ojo = this.cam === 'suelo' ? new THREE.Vector3(-25, this.altura(-25, 30) + 1.7, 30) : this.controls.leer().add(lmPos);
+            const hs = this.altura(ojo.x, ojo.z) + 1.5;
+            if (ojo.y < hs) ojo.y = hs;
+            this.rig.position.copy(ojo).y -= 1.6;
+            this.rig.rotation.set(0, Math.atan2(-(lmPos.x - ojo.x), -(lmPos.z - ojo.z)), 0);
+            return;
+        }
         if (renderer.xr.isPresenting) {
             // en VR: en la cabina de Eagle mirando hacia delante (solo guiñada, el horizonte no se inclina)
             const enSuelo = lm.status === 'landed' && t > this.ctx.crono.ev.despegueLunar - 5;

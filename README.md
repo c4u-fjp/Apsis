@@ -60,15 +60,21 @@ GitHub Actions las ejecuta en cada Pull Request.
 ## Controles
 | Acción | Teclado | Quest 2 | Móvil |
 |---|---|---|---|
-| Pausa | P (o Espacio fuera del alunizaje) | — | botón ⏸ |
-| Siguiente / anterior evento | N / B | gatillo izquierdo | ⏭ / ⏮ |
-| Velocidad del tiempo | `,` / `.` · H = modo historia | — | − / + / HISTORIA |
-| Cambiar cámara | V | B | CÁMARA |
+| Pausa | P (o Espacio fuera del alunizaje) | clic del joystick izq. | botón ⏸ |
+| Siguiente / anterior evento | N / B | joystick izq. ↑ / ↓ (o gatillo izq.) | ⏭ / ⏮ |
+| Velocidad del tiempo | `,` / `.` · H = modo historia | joystick izq. ← / → (mantener = repetir) | − / + / HISTORIA |
+| Cambiar cámara | V | B o clic del joystick der. | CÁMARA |
+| Girar la cámara / acercar y alejar | arrastrar / rueda | joystick der. ← → / ↑ ↓ | arrastrar / pellizco |
+| Salir del modo VR (volver a la pantalla normal) | — | **Y** | — |
 | Ver desde el Control de Misión | C | X | CONTROL DE MISIÓN |
 | Modo de pilotaje (AUTO → P66 → DIRECTO) | M | A | — |
-| P66: velocidad de descenso (±0,3 m/s por pulsación) | W / S | joystick izq. ↕ | ▲ ▼ |
-| Inclinar adelante / atrás | D / A | joystick der. ↔ | ⟳ ⟲ |
+| P66: velocidad de descenso (±0,3 m/s por pulsación) | W / S | joystick izq. ↕ (solo pilotando) | ▲ ▼ |
+| Inclinar adelante / atrás | D / A | joystick der. ↔ (solo pilotando) | ⟳ ⟲ |
 | Empuje (solo modo DIRECTO) | Espacio | gatillo derecho | 🔥 |
+
+En VR el panel bajo la vista muestra la velocidad de la simulación y esta guía de mandos. Mientras pilotas el LM
+a mano (P66 o DIRECTO) los joysticks pilotan; el resto del tiempo controlan el tiempo y la cámara.
+Para volver a VR después de pulsar Y, toca **ENTER VR** en la página.
 
 En el alunizaje, **N** termina el descenso en automático. Si Eagle se estrella puedes reintentar desde la P64
 o desde la P66. El computador (AUTO) aterriza en Base Tranquilidad; en P66 tienes el combustible justo para
@@ -124,7 +130,9 @@ frontend/
   src/movil.css             teléfonos (≤ 800 px): vista 3D arriba y menú abajo; restos como hoja inferior
   public/models/            buggy_lunar.glb (LRV), mer.glb (Spirit/Opportunity, se despliega con sus animaciones),
                             perseverance.glb, ingenuity.glb — optimizados con gltf-transform (Draco + WebP 1024)
-  public/video/apollo_60s.mp4  video de la pantalla gigante en la selección de destino (960 px, sin sonido por defecto)
+  public/video/apollo_60s.mp4  video de la Luna en la pantalla gigante del inicio (bucle, con sonido)
+  public/video/marte_90s.mp4   video de Marte: primer 1:30 de «Mars Pathfinder – 20th Anniversary Special» (NASA/JPL)
+                               con «Titan» de Scott Buckley (CC BY 4.0, desde 1:00) como audio
   src/mision/               tiempo, cronología, reloj, efemérides y trayectoria (Lambert, Kepler)
   src/escenas/plataforma.js 39A en metros: cuenta regresiva, ignición, despegue (0-75 s)
   src/escenas/espacio.js    escala real en km con origen flotante: Tierra, Luna, pila Apollo, mapa

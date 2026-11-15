@@ -95,22 +95,35 @@ export class EscenaEspacio {
     }
 
     // ─────────── trayectoria dibujada ───────────
+    // Se dibuja en el marco que gira con la Luna (Tierra-Luna "sinódico"), como los diagramas de la NASA:
+    // cada punto se guarda en la base (x hacia la Luna, z normal a su órbita) del instante en que la nave
+    // pasó por él, y en cada cuadro el grupo se orienta con la base del instante actual. Así la trayectoria
+    // termina en la Luna que se ve en pantalla (en el marco inercial apuntaría a donde estará la Luna días después).
+    _baseSinodica(t) {
+        const { efem } = this.ctx;
+        const pl = efem.luna(t);
+        const x = norm(pl);
+        const z = norm(cross(pl, sub(efem.luna(t + 600), pl)));
+        return { x, y: cross(z, x), z };
+    }
+
     _construirLineas() {
         const { tray } = this.ctx;
         const tiempos = [];
         for (let t = 0; t <= tray.park.t0; t += 8) tiempos.push(t);
         for (let t = tray.park.t0; t <= tray.tTLI; t += 60) tiempos.push(t);
         for (let i = 0; i <= 500; i++) tiempos.push(tray.tTLI + (tray.tAprox - tray.tTLI) * Math.pow(i / 500, 2.2));
-        const geo = tiempos.map((t) => tray.posicion(t));
+        const comps = (v, b) => [dot(v, b.x), dot(v, b.y), dot(v, b.z)];
+        const geo = tiempos.map((t) => comps(tray.posicion(t), this._baseSinodica(t)));
         const tSel = [];
         for (let i = 0; i <= 300; i++) tSel.push(tray.tAprox + (tray.tLOI - tray.tAprox) * Math.pow(i / 300, 0.45));
         for (let t = tray.tLOI; t <= tray.tPDI; t += 60) tSel.push(t);
         for (let i = 0; i <= 80; i++) tSel.push(tray.tPDI + (tray.tP64 - tray.tPDI) * (i / 80));
-        const sel = tSel.map((t) => sub(tray.posicion(t), this.ctx.efem.luna(t)));
+        const sel = tSel.map((t) => comps(sub(tray.posicion(t), this.ctx.efem.luna(t)), this._baseSinodica(t)));
 
         const crear = (pts, colorFuerte) => {
             const arr = new Float32Array(pts.length * 3);
-            pts.forEach((p, i) => { T3(p, _v); arr.set([_v.x, _v.y, _v.z], i * 3); });
+            pts.forEach((p, i) => arr.set(p, i * 3));   // componentes en la base sinódica (el grupo las orienta)
             const g = new THREE.BufferGeometry();
             g.setAttribute('position', new THREE.BufferAttribute(arr, 3));
             const g2 = new THREE.BufferGeometry();          // misma lista de puntos, rango de dibujo propio
@@ -119,12 +132,22 @@ export class EscenaEspacio {
             const pasada = new THREE.Line(g, new THREE.LineBasicMaterial({ color: colorFuerte }));
             futura.frustumCulled = pasada.frustumCulled = false;
             const grupo = new THREE.Group();
+            grupo.matrixAutoUpdate = false;
             grupo.add(futura, pasada);
             this.lineas.add(grupo);
             return { grupo, pasada };
         };
         this.lGeo = { ...crear(geo, 0x4af626), tiempos };
         this.lSel = { ...crear(sel, 0x9dff7a), tiempos: tSel };
+        // órbita de la Luna (referencia, discontinua)
+        const rL = len(this.ctx.efem.luna(tray.tAprox));
+        const circ = [];
+        for (let i = 0; i <= 256; i++) { const a = (i / 256) * Math.PI * 2; circ.push(new THREE.Vector3(rL * Math.cos(a), rL * Math.sin(a), 0)); }
+        this.orbLuna = new THREE.Line(new THREE.BufferGeometry().setFromPoints(circ), new THREE.LineDashedMaterial({ color: 0x8a8f99, dashSize: 9000, gapSize: 7000, transparent: true, opacity: 0.45 }));
+        this.orbLuna.computeLineDistances();
+        this.orbLuna.matrixAutoUpdate = false;
+        this.orbLuna.frustumCulled = false;
+        this.lineas.add(this.orbLuna);
     }
 
     _rango(linea, t) {
@@ -269,10 +292,16 @@ export class EscenaEspacio {
         this.estrellas.material.opacity = 1 - azul;
         this.estrellas.material.transparent = true;
 
-        // ── líneas de trayectoria ──
+        // ── líneas de trayectoria (marco que gira con la Luna, ver _construirLineas) ──
+        const b = this._baseSinodica(t);
+        _m.makeBasis(T3(b.x, _v), T3(b.y, _w), T3(b.z, _u));
+        this.lGeo.grupo.matrix.copy(_m);
+        this.orbLuna.matrix.copy(_m);
+        this.lSel.grupo.matrix.copy(_m).setPosition(T3(pLuna, _v));
+        this.lGeo.grupo.matrixWorldNeedsUpdate = this.lSel.grupo.matrixWorldNeedsUpdate = this.orbLuna.matrixWorldNeedsUpdate = true;
+        this.orbLuna.visible = this.camera.position.length() > 30000;
         this.lGeo.pasada.geometry.setDrawRange(0, this._rango(this.lGeo, t));
         this.lGeo.pasada.material.visible = true;
-        T3(pLuna, this.lSel.grupo.position);
         this.lSel.pasada.geometry.setDrawRange(0, this._rango(this.lSel, t));
         // la parte pasada de la geocéntrica (rango) no usa la misma geometría que la "futura", así que se comparten
 

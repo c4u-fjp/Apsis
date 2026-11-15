@@ -220,6 +220,7 @@ export async function crearMision(base) {
             });
         },
         salir() {
+            base.input.pilotaje = false;
             restos?.salir();
             sonido.parar();
             pantalla?.ocultar();
@@ -243,6 +244,7 @@ export async function crearMision(base) {
                 else reloj.avanzar(dt);
             }
             const t = reloj.t;
+            base.input.pilotaje = activa === superficie && superficie.lm?.status === 'descending' && superficie.modo !== 'AUTO';
 
             // cuenta regresiva en pantalla y paso al vuelo
             if (pantalla && estado === 'vuelo') {

@@ -335,7 +335,12 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
         ctx.fillStyle = '#071108'; ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = VERDE; ctx.lineWidth = 4; ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
         ctx.fillStyle = VERDE; ctx.textAlign = 'left';
-        ctx.font = 'bold 28px Courier New, monospace'; ctx.fillText('TELEMETRÍA HOUSTON', 30, 55);
+        if (estado.tituloMonitor) {   // en el inicio: el nombre del proyecto
+            ctx.font = 'bold 40px Courier New, monospace'; ctx.fillText(estado.tituloMonitor, 30, 60);
+            ctx.font = '16px Courier New, monospace'; ctx.fillText(estado.subtituloMonitor ?? '', 190, 58);
+        } else {
+            ctx.font = 'bold 28px Courier New, monospace'; ctx.fillText('TELEMETRÍA HOUSTON', 30, 55);
+        }
         ctx.font = '22px Courier New, monospace';
         ctx.fillText(`FASE: ${estado.etapaActual.replace(/_/g, ' ')}`, 30, 115);
         ctx.fillText(`ALTITUD: ${estado.altitud.toLocaleString()} ${estado.unidadAlt ?? 'km'}`, 30, 165);

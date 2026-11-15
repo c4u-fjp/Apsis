@@ -356,7 +356,7 @@ export class EscenaPlataforma {
         if (this.modoCam !== 'persecucion') this.controls.sincronizar(cam.clone().sub(centro));
         if (this.camera.fov !== fov) { this.camera.fov = fov; this.camera.updateProjectionMatrix(); }
         if (renderer.xr.isPresenting) {
-            const ojo = t < 38 ? new THREE.Vector3(-3.5 * H, 2, 2.9 * H) : cam;
+            const ojo = this.modoCam === 'persecucion' ? cam : t < 38 ? new THREE.Vector3(-3.5 * H, 2, 2.9 * H) : cam;
             this.rig.position.copy(ojo);
             const m = new THREE.Matrix4().lookAt(ojo, mira, new THREE.Vector3(0, 1, 0));
             const e = new THREE.Euler().setFromQuaternion(new THREE.Quaternion().setFromRotationMatrix(m), 'YXZ');

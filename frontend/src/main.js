@@ -64,6 +64,7 @@ async function iniciar() {
         registrarCamara(c) { camaras.add(c); ajustar(); },
         pantallaCompleta(v) { document.body.classList.toggle('pantalla-completa', v); requestAnimationFrame(ajustar); },
         controles(escenas, activa) {
+            base.escenaActiva = activa;
             const libre = !renderer.xr.isPresenting && !base.cardboard?.activo;
             for (const e of escenas) e.controls.enabled = libre && base.vista === 'escena' && e === activa;
             ctrlSala.enabled = libre && base.vista === 'sala';
@@ -133,26 +134,50 @@ async function iniciar() {
     const mapas = { luna: texLuna, marte: texturaMarte() };
     let destinoPrevio = 'luna';
 
-    // ── Video en la pantalla gigante durante la selección de destino ──
-    // (si no carga o el navegador no lo deja reproducir, se queda la Luna/Marte girando)
-    const video = document.createElement('video');
-    Object.assign(video, { src: '/video/apollo_60s.mp4', muted: true, loop: true, playsInline: true, preload: 'auto' });
-    video.setAttribute('playsinline', '');
-    video.setAttribute('webkit-playsinline', '');
-    const texVideo = new THREE.VideoTexture(video);
-    texVideo.colorSpace = THREE.SRGBColorSpace;
-    const pantallaVideo = { scene: new THREE.Scene(), camera: new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 2) };
-    pantallaVideo.camera.position.z = 1;
-    pantallaVideo.scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ map: texVideo, toneMapped: false, depthTest: false })));
-    let videoListo = false;
-    video.addEventListener('playing', () => { videoListo = true; });
-    video.addEventListener('error', () => { videoListo = false; });
+    // ── Videos en la pantalla gigante durante la selección de destino (en bucle y con sonido) ──
+    // Luna: "The Apollo Program in 60 Seconds". Marte: primer 1:30 de "Mars Pathfinder - 20th Anniversary
+    // Special" con música de Scott Buckley ("Titan", desde el minuto 1). Se cambia al pasar el cursor por el destino.
+    // Los navegadores no dejan reproducir con sonido hasta que el usuario toca la página: mientras tanto
+    // el video va en silencio y en el primer clic o toque se le pone el sonido.
+    const crearVideo = (src) => {
+        const v = document.createElement('video');
+        Object.assign(v, { src, muted: true, loop: true, playsInline: true, preload: 'auto' });
+        v.setAttribute('playsinline', ''); v.setAttribute('webkit-playsinline', '');
+        const tex = new THREE.VideoTexture(v);
+        tex.colorSpace = THREE.SRGBColorSpace;
+        const scene = new THREE.Scene();
+        scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false, depthTest: false })));
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 2);
+        camera.position.z = 1;
+        const x = { v, scene, camera, listo: false };
+        v.addEventListener('playing', () => { x.listo = true; });
+        v.addEventListener('error', () => { x.listo = false; });
+        return x;
+    };
+    const videos = { luna: crearVideo('/video/apollo_60s.mp4'), marte: crearVideo('/video/marte_90s.mp4') };
+    let conSonido = true;            // lo que quiere el usuario (botón ♪ VIDEO)
+    let sonidoPermitido = false;     // el navegador ya dejó reproducir con sonido
     const btnVideo = $('btn-video-sonido');
-    const pintarBtnVideo = () => { btnVideo.querySelector('b').textContent = video.muted ? 'SILENCIO' : 'ON'; btnVideo.setAttribute('aria-pressed', String(!video.muted)); };
-    btnVideo.addEventListener('click', (e) => { e.stopPropagation(); video.muted = !video.muted; video.play().catch(() => {}); pintarBtnVideo(); });
-    const reproducirVideo = () => { video.play().then(() => { videoListo = true; }).catch(() => {}); };
-    // los móviles solo dejan reproducir tras tocar la pantalla: el primer toque lo arranca
-    addEventListener('pointerdown', () => { if (!modo) reproducirVideo(); }, { once: true });
+    const pintarBtnVideo = () => { btnVideo.querySelector('b').textContent = conSonido ? 'ON' : 'SILENCIO'; btnVideo.setAttribute('aria-pressed', String(conSonido)); };
+    const CREDITOS = {
+        luna: 'Video: «The Apollo Program in 60 Seconds»',
+        marte: 'Video: «Mars Pathfinder – 20th Anniversary Special» (NASA/JPL) · Música: Scott Buckley – «Titan» (CC BY 4.0)',
+    };
+    function reproducirVideo() {
+        $('credito-video').textContent = CREDITOS[destinoPrevio] ?? '';
+        if (modo) return;
+        for (const [d, x] of Object.entries(videos)) {
+            if (d !== destinoPrevio) { x.v.pause(); continue; }
+            x.v.muted = !(conSonido && sonidoPermitido);
+            x.v.play().catch(() => { x.v.muted = true; x.v.play().catch(() => {}); });
+        }
+    }
+    function pararVideos() { for (const x of Object.values(videos)) x.v.pause(); }
+    btnVideo.addEventListener('click', (e) => { e.stopPropagation(); conSonido = !conSonido; sonidoPermitido = true; pintarBtnVideo(); reproducirVideo(); });
+    for (const ev of ['pointerdown', 'keydown', 'touchend']) {
+        addEventListener(ev, () => { if (!sonidoPermitido) { sonidoPermitido = true; reproducirVideo(); } }, { capture: true });
+    }
+    pintarBtnVideo();
 
     // ── Pantalla de inicio ──
     let modo = null;          // controlador de la misión en curso (o null en el inicio)
@@ -163,7 +188,9 @@ async function iniciar() {
         marte: ['MARTE', '55 A 400 MILLONES DE KM', 'ROVERS 1996 – 2007'],
     };
     const caption = (d) => {
+        const cambio = destinoPrevio !== d;
         destinoPrevio = d;
+        if (cambio) reproducirVideo();
         const [a, b, c] = CAPTION[d];
         const el = $('caption-destino');
         el.querySelector('span').textContent = a;
@@ -203,7 +230,7 @@ async function iniciar() {
 
     async function elegir(destino, id) {
         sonido.preparar();            // el clic del usuario permite cargar y reproducir audio
-        video.pause();
+        pararVideos();
         camSala.fov = 60; camSala.updateProjectionMatrix();
         inicio.classList.add('oculto');
         document.body.classList.remove('en-inicio');
@@ -220,8 +247,10 @@ async function iniciar() {
     }
 
     // ── Acciones: siempre van al controlador activo ──
+    const ALIAS = { adelantar: 'siguiente', atrasar: 'anterior' };   // stick izquierdo ↑/↓ en VR
     input.onAccion((a) => {
-        if (modo) { modo.accion(a); return; }
+        if (modo) { modo.accion(ALIAS[a] ?? a); return; }
+        if (ALIAS[a]) return;
         if (a === 'siguiente') elegir('luna');        // en VR: gatillo izquierdo = Luna, A = Marte
         if (a === 'modo') elegir('marte', 'spirit');
     });
@@ -247,11 +276,19 @@ async function iniciar() {
         const dt = Math.min(reloj.getDelta(), 0.1);
         tReal += dt;
         base.entrada = input.poll(dt);
+        // VR: el stick derecho gira la cámara alrededor del objetivo y acerca/aleja
+        const cv = base.entrada.camVR, c = base.escenaActiva?.controls;
+        if (modo && renderer.xr.isPresenting && c && base.vista === 'escena' && (cv.giro || cv.zoom)) {
+            c.az -= cv.giro * dt * 1.4;
+            c.r = Math.min(c.maxR, Math.max(c.minR, c.r * Math.exp(cv.zoom * dt * 1.6)));
+            c.interactuo = true;
+        }
         if (modo) { modo.frame(dt, tReal); return; }
         // inicio: la sala de control con el destino girando en la pantalla gigante
         esfera.material.map = mapas[destinoPrevio];
         esfera.rotation.y += dt * 0.15;
         sala.actualizar({
+            tituloMonitor: 'APSIS', subtituloMonitor: 'ABANDONED BUT NOT FORGOTTEN',
             etapaActual: 'SELECCIÓN DE DESTINO', fases: ['SELECCIÓN DE DESTINO', 'LUNA · APOLLO 11', 'MARTE · DELTA II'], tituloEtapas: 'DESTINOS',
             altitud: 0, velocidad: 0, progreso: 0, met: 'T-  :  :  ', reloj: new Date().toISOString().slice(0, 19).replace('T', ' '),
         });
@@ -267,11 +304,12 @@ async function iniciar() {
             camSala.position.set(-1.6 + Math.sin(tReal * 0.08) * 0.25, 1.5, 1.6);
             camSala.lookAt(-4.2, 2.6, -9);
         }
-        if (videoListo && !video.paused) pantalla(pantallaVideo.scene, pantallaVideo.camera);
+        const vid = videos[destinoPrevio];
+        if (vid?.listo && !vid.v.paused) pantalla(vid.scene, vid.camera);
         else pantalla(previa.scene, previa.camera);
         camSala.userData.qBase = null;
         base.cardboard.render(sceneSala, camSala);
-        panelVR.actualizar({ t: 0, fase: { nombre: 'Elige destino' }, warp: 1, pausado: false, siguiente: { titulo: 'Gatillo izq.: Luna · A: Marte', t: 0 } }, renderer.xr.isPresenting);
+        panelVR.actualizar({ inicio: true, t: 0, fase: { nombre: 'Elige destino' }, warp: 1, pausado: false, siguiente: { titulo: 'Gatillo izq.: Luna · A: Marte', t: 0 } }, renderer.xr.isPresenting);
     });
 
     // Enlace directo: ?destino=luna|marte&mision=spirit  (y para la Luna, ?t=102:33:05)

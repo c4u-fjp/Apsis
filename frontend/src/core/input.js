@@ -64,9 +64,20 @@ export function createInput(renderer) {
   const dead = (v) => (Math.abs(v) < 0.15 ? 0 : v);
   const previo = new Map(); // estado anterior de los botones del mando (para detectar pulsaciones)
   let acumROD = 0;
+  // Joysticks fuera del pilotaje: acciones al empujar (y repetidas si se mantiene, para la velocidad)
+  const repetir = new Map();
+  const empuje = (clave, valor, umbral, accion, dt, cada = 0) => {
+    const activo = Math.abs(valor) > umbral;
+    const r = repetir.get(clave) ?? { activo: false, t: 0 };
+    if (activo && !r.activo) { emitir(accion); r.t = 0; }
+    else if (activo && cada) { r.t += dt; if (r.t > cada) { emitir(accion); r.t = 0; } }
+    r.activo = activo;
+    repetir.set(clave, r);
+  };
 
   return {
     onAccion(f) { oyentes.push(f); },
+    pilotaje: false,     // la misión lo pone en true mientras se pilota el LM a mano (los sticks pilotan)
     mostrarTactil(v) { tactilVisible = v; if (touchUI && !renderer.xr.isPresenting) touchUI.style.display = v ? "flex" : "none"; },
     poll(dt = 1 / 60) {
       let throttle = keys.has("Space") || touch.thrust ? 1 : 0;
@@ -78,7 +89,12 @@ export function createInput(renderer) {
 
       // Quest 2: gatillo = empuje, joystick derecho X = inclinacion, joystick izquierdo Y = ROD.
       // A = cambiar modo / tomar el control, B = camara, gatillo izq. = siguiente evento.
+      // Fuera del pilotaje: stick izq. ←/→ velocidad, ↑/↓ evento siguiente/anterior, clic = pausa;
+      //                     stick der. ←/→ girar la cámara, ↑/↓ acercar/alejar, clic = cambiar vista;
+      //                     Y = salir del modo VR (volver a la pantalla normal).
+      const camVR = { giro: 0, zoom: 0 };
       const session = renderer.xr.getSession?.();
+      const pilotando = this.pilotaje;
       if (session) {
         for (const src of session.inputSources) {
           const gp = src.gamepad;
@@ -87,11 +103,19 @@ export function createInput(renderer) {
           const x = dead(gp.axes[2] ?? 0), y = dead(gp.axes[3] ?? 0);
           if (lado === "right") {
             throttle = Math.max(throttle, gp.buttons[0]?.value ?? 0);
-            if (Math.abs(x) > Math.abs(tilt)) { tilt = x; rotate = x; }
-          } else if (y) {
-            acumROD += -y * dt * 4;                      // ~4 clics por segundo a fondo
-            while (acumROD >= 1) { clicksROD++; acumROD--; }
-            while (acumROD <= -1) { clicksROD--; acumROD++; }
+            if (pilotando) { if (Math.abs(x) > Math.abs(tilt)) { tilt = x; rotate = x; } }
+            else { camVR.giro = x; camVR.zoom = y; }
+          } else if (pilotando) {
+            if (y) {
+              acumROD += -y * dt * 4;                      // ~4 clics por segundo a fondo
+              while (acumROD >= 1) { clicksROD++; acumROD--; }
+              while (acumROD <= -1) { clicksROD--; acumROD++; }
+            }
+          } else {
+            empuje("izqX+", Math.max(0, x), 0.6, "masRapido", dt, 0.45);
+            empuje("izqX-", Math.min(0, x), 0.6, "masLento", dt, 0.45);
+            empuje("izqY-", Math.min(0, y), 0.7, "adelantar", dt);   // arriba (el eje Y es negativo hacia arriba)
+            empuje("izqY+", Math.max(0, y), 0.7, "atrasar", dt);
           }
           const pulsado = (i) => !!gp.buttons[i]?.pressed;
           const clave = (i) => `${lado}${i}`;
@@ -100,12 +124,15 @@ export function createInput(renderer) {
           if (lado === "right" && flanco(5)) emitir("camara");
           if (lado === "left" && flanco(0)) emitir("siguiente");
           if (lado === "left" && flanco(4)) emitir("sala");
-          for (const i of [0, 4, 5]) previo.set(clave(i), pulsado(i));
+          if (lado === "left" && flanco(3)) emitir("pausa");
+          if (lado === "right" && flanco(3)) emitir("camara");
+          if (lado === "left" && flanco(5)) { session.end().catch(() => {}); }   // Y: salir del modo VR
+          for (const i of [0, 3, 4, 5]) previo.set(clave(i), pulsado(i));
         }
       }
       const rod = clicksROD;
       clicksROD = 0;
-      return { throttle, rotate, rod, tilt };
+      return { throttle, rotate, rod, tilt, camVR };
     },
   };
 }

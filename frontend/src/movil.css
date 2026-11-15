@@ -70,6 +70,7 @@
     .rovers { padding-top: 8px !important; gap: 5px !important; }
     .rovers button { font-size: 8px !important; padding: 6px 5px !important; letter-spacing: .06em !important; }
     #btn-video-sonido { margin-top: 10px; }
+    .credito-video { font-size: 8px; }
     #lz-titulo { font-size: 36px !important; margin: 0 0 8px; }
     #lanzamiento .hero-description {
         font-size: 11px !important; line-height: 1.5 !important; margin-bottom: 10px !important;

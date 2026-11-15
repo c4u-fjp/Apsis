@@ -112,3 +112,5 @@ body.lanzado #cielo-ref { opacity: 0; transition: opacity 2.5s; }
 .intro-overlay { font-family: Montserrat, sans-serif; color: #fff; }
 .intro-emblema { font-size: 92px; color: #a2dfff; text-shadow: 0 0 30px #1b68cd; animation: logoZoom 1.4s both; }
 .progress-line i { animation: none; transform: none; width: 0; transition: width .3s; }
+
+.credito-video { display: block; margin-top: 8px; font-size: 9px; letter-spacing: .06em; color: #8ca5ba; max-width: 560px; }
