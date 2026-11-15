@@ -11,6 +11,7 @@ import { add, sub, mul, norm, len, dot, cross, lerp, smooth, rotar, clamp } from
 import { crearTierra, LUNA_RADIO_MODELO, SATURNO_M_POR_UNIDAD, LM_M_POR_UNIDAD } from '../modelos/cargador.js';
 import { crearEstrellas, crearMarcador, crearEtiqueta, Particulas, animarLlama } from '../modelos/efectos.js';
 import { NaveApollo } from '../modelos/nave.js';
+import { t as tr } from '../i18n/index.js';
 
 export const T3 = (v, out = new THREE.Vector3()) => out.set(v[0], v[2], -v[1]);   // J2000 -> Three.js
 const ESC_PILA = SATURNO_M_POR_UNIDAD / 1000;   // km por unidad del Saturn V
@@ -61,8 +62,8 @@ export class EscenaEspacio {
         this.mundo.add(this.lineas);
         this.marcador = crearMarcador(0xffe08a);
         this.mundo.add(this.marcador);
-        this.etTierra = crearEtiqueta('TIERRA');
-        this.etLuna = crearEtiqueta('LUNA');
+        this.etTierra = crearEtiqueta(tr('TIERRA'));
+        this.etLuna = crearEtiqueta(tr('LUNA'));
         this.etNave = crearEtiqueta('APOLLO 11', { color: '#ffb020' });
         this.mundo.add(this.etTierra, this.etLuna, this.etNave);
         this.brilloTierra = crearMarcador(0x6fa8ff);

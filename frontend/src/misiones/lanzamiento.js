@@ -1,6 +1,7 @@
 // Pantalla de lanzamiento (diseño de saturno_v_lanzamiento_web): texto a la izquierda, cohete 3D a la
 // derecha, botón LANZAR y sonido; luego cuenta regresiva grande, destello y vibración en la ignición.
 import { sonido } from '../core/audio.js';
+import { t as tr } from '../i18n/index.js';
 
 const $ = (id) => document.getElementById(id);
 const body = document.body;
@@ -23,7 +24,7 @@ export function pantallaLanzamiento(d) {
     $('lz-cohete').textContent = d.cohete;
     $('lz-cohete-sub').textContent = d.coheteSub;
     $('lz-plataforma').textContent = d.plataforma;
-    $('lz-preflight').textContent = `${d.cohete} 3D · LISTO PARA LANZAR`;
+    $('lz-preflight').textContent = `${d.cohete} 3D · ${tr('LISTO PARA LANZAR')}`;
     $('mision-num').textContent = d.mision;
     const lanzar = $('btn-lanzar');
     lanzar.disabled = false;
@@ -48,9 +49,9 @@ export function pantallaLanzamiento(d) {
         // t: segundos respecto al despegue; ignicion: instante de encendido (negativo)
         // voz: hay grabación de la cuenta regresiva (entonces no se ponen pitidos)
         cuenta(t, ignicion, voz = false) {
-            let n, sub, label = 'SECUENCIA DE LANZAMIENTO';
-            if (t < 0) { n = String(Math.ceil(-t)).padStart(2, '0'); sub = t > ignicion ? 'IGNICIÓN' : 'CUENTA REGRESIVA'; }
-            else if (t < 5) { n = '00'; sub = 'DESPEGUE'; label = 'TORRE LIBRE'; }
+            let n, sub, label = tr('SECUENCIA DE LANZAMIENTO');
+            if (t < 0) { n = String(Math.ceil(-t)).padStart(2, '0'); sub = t > ignicion ? tr('IGNICIÓN') : tr('CUENTA REGRESIVA'); }
+            else if (t < 5) { n = '00'; sub = tr('DESPEGUE'); label = tr('TORRE LIBRE'); }
             else { hud.classList.remove('visible'); body.classList.remove('shake', 'ignited'); body.classList.add('ascent'); return; }
             hud.classList.add('visible');
             if (n !== ultimo) { ultimo = n; $('countNumber').textContent = n; if (!(voz && sonido.tiene('conteo'))) sonido.pitido(t < 0 ? 760 : 980); }

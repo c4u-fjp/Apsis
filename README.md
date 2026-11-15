@@ -130,6 +130,7 @@ frontend/
   src/escenas/restos.js     órbita (naves abandonadas y activas, sitios) -> zoom -> superficie con los restos
   src/modelos/restos.js     modelos procedurales a escala: LRV, Surveyor, Lunokhod, Pathfinder, MER, Phoenix...
   src/data/restos.json      datos: órbitas, sitios (lat/lon), objetos, estado y fuentes
+  src/i18n/                 idiomas: es (base) y en · selector en la portada · ver docs/ARQUITECTURA.md
   src/movil.css             teléfonos (≤ 800 px): vista 3D arriba y menú abajo; restos como hoja inferior
   public/models/            buggy_lunar.glb (LRV), mer.glb (Spirit/Opportunity, se despliega con sus animaciones),
                             perseverance.glb, ingenuity.glb — optimizados con gltf-transform (Draco + WebP 1024)

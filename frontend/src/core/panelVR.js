@@ -3,6 +3,7 @@
 // velocidad de la simulación y la guía de los mandos, que cambia cuando se pilota el LM a mano.
 import * as THREE from 'three';
 import { formatearMET } from '../mision/tiempo.js';
+import { t } from '../i18n/index.js';
 
 const W = 1024, H = 600;
 
@@ -55,7 +56,7 @@ export function crearPanelVR() {
             ctx.strokeStyle = V; ctx.lineWidth = 4; ctx.strokeRect(4, 4, W - 8, H - 8);
             const mision = (document.getElementById('titulo-panel')?.textContent ?? 'APSIS').split(' · ')[0];
             ctx.fillStyle = V; ctx.font = 'bold 38px Courier New, monospace';
-            ctx.fillText(`${mision} · ${s.fase.nombre.toUpperCase()}`.slice(0, 44), 28, 56);
+            ctx.fillText(`${mision} · ${t(s.fase.nombre).toUpperCase()}`.slice(0, 44), 28, 56);
             ctx.font = '32px Courier New, monospace';
             ctx.fillStyle = '#fff';
             ctx.fillText(formatearMET(s.t), 28, 104);
@@ -63,25 +64,25 @@ export function crearPanelVR() {
             // velocidad de la simulación, destacada un momento cuando cambia
             const reciente = ahora - tCambio < 1200;
             ctx.font = 'bold 34px Courier New, monospace';
-            const txtWarp = s.pausado ? 'PAUSA' : `×${s.warp}`;
+            const txtWarp = s.pausado ? t('PAUSA') : `×${s.warp}`;
             const xw = 560;
             ctx.fillStyle = reciente ? '#ffb020' : '#fff';
             ctx.fillText(`◀  ${txtWarp}  ▶`, xw, 104);
             ctx.font = '20px Courier New, monospace'; ctx.fillStyle = 'rgba(207,238,221,0.8)';
-            ctx.fillText(s.auto ? 'VELOCIDAD: MODO HISTORIA' : 'VELOCIDAD: MANUAL', xw, 132);
+            ctx.fillText(s.auto ? t('VELOCIDAD: MODO HISTORIA') : t('VELOCIDAD: MANUAL'), xw, 132);
 
             ctx.font = '30px Courier New, monospace'; ctx.fillStyle = V;
             if (s.lm) {
                 const l = s.lm;
                 ctx.fillText(`ALT ${l.alt.toFixed(0)} m   VV ${l.vv.toFixed(1)}   VH ${l.vh.toFixed(1)} m/s`, 28, 180);
-                ctx.fillText(`COMB ${l.fuelS.toFixed(0)} s   MODO ${l.modo}   ${l.rod ?? ''}   DIST ${l.dist.toFixed(0)} m`, 28, 224);
+                ctx.fillText(`${t('COMB')} ${l.fuelS.toFixed(0)} s   ${t('MODO')} ${l.modo}   ${l.rod ?? ''}   DIST ${l.dist.toFixed(0)} m`, 28, 224);
             } else if (s.tel) {
                 ctx.fillText(`ALT ${s.tel.alt.toFixed(s.tel.alt < 100 ? 1 : 0)} km   VEL ${s.tel.vel.toFixed(3)} km/s`, 28, 180);
-                if (s.tel.distLuna) ctx.fillText(`A LA LUNA ${Math.max(0, s.tel.distLuna).toFixed(0)} km`, 28, 224);
+                if (s.tel.distLuna) ctx.fillText(`${t('A LA LUNA')} ${Math.max(0, s.tel.distLuna).toFixed(0)} km`, 28, 224);
             }
             if (s.siguiente) {
                 ctx.fillStyle = '#ffb020';
-                ctx.fillText(`> ${s.siguiente.titulo} en ${formatearMET(s.siguiente.t - s.t).replace('T+', '')}`.slice(0, 54), 28, 276);
+                ctx.fillText(`> ${s.siguiente.titulo} ${t('en')} ${formatearMET(s.siguiente.t - s.t).replace('T+', '')}`.slice(0, 54), 28, 276);
             }
 
             // guía de los mandos
@@ -92,25 +93,25 @@ export function crearPanelVR() {
                 const cohete = document.getElementById('lz-cohete')?.textContent ?? '';
                 ctx.fillStyle = '#ffb020'; ctx.fillRect(20, 322, W - 40, 110);
                 ctx.fillStyle = '#140a00'; ctx.font = 'bold 44px Courier New, monospace';
-                ctx.fillText(`A o GATILLO IZQ · ¡LANZAR ${cohete}!`.slice(0, 40), 40, 392);
-                guia(470, [['STICK IZQ ↓', 'cambiar destino'], ['GATILLO IZQ', 'lanzar']]);
+                ctx.fillText(t('A o GATILLO IZQ · ¡LANZAR {cohete}!', { cohete }).slice(0, 40), 40, 392);
+                guia(470, [[t('STICK IZQ ↓'), t('cambiar destino')], [t('GATILLO IZQ'), t('lanzar')]]);
             } else if (s.inicio) {
                 ctx.fillStyle = '#fff'; ctx.font = 'bold 26px Courier New, monospace';
-                ctx.fillText('ELIGE DESTINO', 28, 348);
-                guia(400, [['GATILLO IZQ', 'la Luna · Apollo 11'], ['A', 'Marte · Spirit']]);
+                ctx.fillText(t('ELIGE DESTINO'), 28, 348);
+                guia(400, [[t('GATILLO IZQ'), t('la Luna · Apollo 11')], ['A', t('Marte · Spirit')]]);
             } else if (pilotando) {
                 ctx.fillStyle = '#ffb020'; ctx.font = 'bold 24px Courier New, monospace';
-                ctx.fillText('PILOTAJE MANUAL DEL LM', 28, 348);
-                guia(396, [['GATILLO DER', 'empuje'], ['STICK DER ←→', 'inclinar']]);
-                guia(442, [['STICK IZQ ↑↓', 'velocidad de descenso'], ['A', 'modo AUTO/P66/directo']]);
+                ctx.fillText(t('PILOTAJE MANUAL DEL LM'), 28, 348);
+                guia(396, [[t('GATILLO DER'), t('empuje')], [t('STICK DER ←→'), t('inclinar')]]);
+                guia(442, [[t('STICK IZQ ↑↓'), t('velocidad de descenso')], ['A', t('modo AUTO/P66/directo')]]);
             } else {
-                guia(352, [['STICK IZQ ←→', 'velocidad −/+'], ['↑↓', 'evento sig./ant.'], ['CLIC', 'pausa']]);
-                guia(398, [['STICK DER ←→', 'girar'], ['↑↓', 'acercar/alejar'], ['CLIC o B', 'vista']]);
-                guia(444, [['GATILLO IZQ', 'siguiente'], ['A', 'modo'], ['X', 'control de misión']]);
+                guia(352, [[t('STICK IZQ ←→'), t('velocidad −/+')], ['↑↓', t('evento sig./ant.')], [t('CLIC'), t('pausa')]]);
+                guia(398, [[t('STICK DER ←→'), t('girar')], ['↑↓', t('acercar/alejar')], [t('CLIC o B'), t('vista')]]);
+                guia(444, [[t('GATILLO IZQ'), t('siguiente')], ['A', t('modo')], ['X', t('control de misión')]]);
             }
             ctx.fillStyle = '#ff7a5c'; ctx.fillRect(20, 500, W - 40, 74);
             ctx.fillStyle = '#140604'; ctx.font = 'bold 30px Courier New, monospace';
-            ctx.fillText('Y  ·  SALIR DE VR (volver a la pantalla normal)', 40, 548);
+            ctx.fillText(t('Y  ·  SALIR DE VR (volver a la pantalla normal)'), 40, 548);
             tex.needsUpdate = true;
         },
     };

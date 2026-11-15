@@ -1,7 +1,7 @@
 // Destino LUNA: Apollo 11 completo (lanzamiento -> órbita -> TLI -> Luna -> alunizaje -> restos).
 // Al llegar al espacio (~100 km) la vista pasa a la sala de control con la trayectoria hacia la Luna.
 import * as THREE from 'three';
-import datos from '../data/apollo11.json';
+import datosES from '../data/apollo11.json';
 import { Cronologia } from '../mision/cronologia.js';
 import { RelojMision } from '../mision/reloj.js';
 import { cargarEfemerides } from '../mision/efemerides.js';
@@ -17,8 +17,10 @@ import { EscenaSuperficie } from '../escenas/superficie.js';
 import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
 import { sonido, CONTEO_T0 } from '../core/audio.js';
 import { crearModoRestos } from './restos.js';
+import { t as tr, localizar } from '../i18n/index.js';
 
 const $ = (id) => document.getElementById(id);
+const datos = localizar(datosES);
 const FIN_PLATAFORMA = 75;      // s: a partir de aquí el ascenso se sigue en la escena a escala real
 const EN_EL_ESPACIO = 215;      // s: ~100 km de altura -> vista de la sala de control
 const BANNERS = new Set(['despegue', 'sepS1', 'les', 'sepS2', 'orbita', 'tli', 'tliFin', 'acople', 'extraccion', 'honda', 'equigravisfera', 'loi1', 'loi2', 'desacople', 'doi', 'pdi', 'p64', 'paso', 'despegueLunar']);
@@ -29,7 +31,7 @@ export async function crearMision(base) {
     const reloj = new RelojMision(crono);
     reloj.limite = getASegundos(datos.fin_simulacion);
 
-    base.progreso(0.08, 'Efemérides SPICE (Luna y Sol)…');
+    base.progreso(0.08, tr('Efemérides SPICE (Luna y Sol)…'));
     const efem = await cargarEfemerides();
     hud.fuente(efem.origen);
     const tray = new Trayectoria(datos, efem);
@@ -37,13 +39,13 @@ export async function crearMision(base) {
     base.progreso(0.25, 'Saturn V…');
     const [saturno, lmPila] = await Promise.all([crearSaturno(), crearLM()]);
     const nave = new NaveApollo(saturno, lmPila, crono);
-    base.progreso(0.45, 'La Luna (luna1.glb)…');
+    base.progreso(0.45, tr('La Luna (luna1.glb)…'));
     const luna = await crearLuna();
-    base.progreso(0.65, 'Escenas…');
+    base.progreso(0.65, tr('Escenas…'));
     const espacio = new EscenaEspacio(ctx);
     const superficie = new EscenaSuperficie(ctx);
     await espacio.cargar(nave, luna);
-    base.progreso(0.85, 'Mar de la Tranquilidad…');
+    base.progreso(0.85, tr('Mar de la Tranquilidad…'));
     await superficie.cargar();
     Object.defineProperty(ctx, 'entrada', { get: () => base.entrada });
 
@@ -106,7 +108,7 @@ export async function crearMision(base) {
         activa.entrar(t);
         if (base.vista === 'escena') base.panelVR.colocarEn(activa.rig);
         controles();
-        $('btn-camara').textContent = 'CÁMARA: AUTO';
+        $('btn-camara').textContent = tr('CÁMARA: AUTO');
     }
     function cambiarEscena(e, t) {
         if (pendiente) return;
@@ -161,7 +163,7 @@ export async function crearMision(base) {
         masRapido: () => reloj.cambiarWarp(1),
         masLento: () => reloj.cambiarWarp(-1),
         historia: () => reloj.modoHistoria(),
-        camara: () => { $('btn-camara').textContent = `CÁMARA: ${String(activa.cambiarCamara()).toUpperCase()}`; },
+        camara: () => { $('btn-camara').textContent = `${tr('CÁMARA')}: ${tr(String(activa.cambiarCamara()).toUpperCase())}`; },
         sala: () => vistaSala(base.vista !== 'sala'),
         modo: () => { if (estado === 'preparacion') { $('btn-lanzar').click(); return; } if (activa === superficie) superficie.cambiarModo(); },
         reintentar: () => { if (activa === superficie) superficie.iniciar('P64'); },
@@ -187,7 +189,7 @@ export async function crearMision(base) {
             hud.el.log.innerHTML = '';
             $('titulo-panel').textContent = 'APOLLO 11 · FLIGHT DYNAMICS';
             hud.registrar('[SYS] Apollo 11 · Saturn V AS-506 · LC-39A · 16 JUL 1969');
-            hud.registrar(`[SYS] Velocidad tras la TLI calculada: ${Math.hypot(...tray.v1).toFixed(2)} km/s (real: 10,83 km/s).`);
+            hud.registrar(`[SYS] ${tr('Velocidad tras la TLI calculada: {v} km/s (real: 10,83 km/s).', { v: Math.hypot(...tray.v1).toFixed(2) })}`);
             reloj.t = crono.inicio;
             reloj.pausado = true;
             plataforma.preparacion = true;
@@ -212,10 +214,10 @@ export async function crearMision(base) {
             }
             base.pantallaCompleta(true);
             pantalla = pantallaLanzamiento({
-                eyebrow: 'MISIÓN APOLLO 11 · SATURN V',
-                titulo: ['RUMBO A', 'LA LUNA'],
-                descripcion: 'Todo gran viaje empieza con un lanzamiento. 16 de julio de 1969: el Saturno V lleva a Armstrong, Aldrin y Collins al Mar de la Tranquilidad, donde aún sigue la etapa de descenso de Eagle.',
-                cohete: 'SATURN V', coheteSub: 'APOLLO LAUNCH VEHICLE', plataforma: 'COMPLEJO 39A · KENNEDY', mision: 'MISIÓN AS-506',
+                eyebrow: tr('MISIÓN APOLLO 11 · SATURN V'),
+                titulo: [tr('RUMBO A'), tr('LA LUNA')],
+                descripcion: tr('Todo gran viaje empieza con un lanzamiento. 16 de julio de 1969: el Saturno V lleva a Armstrong, Aldrin y Collins al Mar de la Tranquilidad, donde aún sigue la etapa de descenso de Eagle.'),
+                cohete: 'SATURN V', coheteSub: 'APOLLO LAUNCH VEHICLE', plataforma: tr('COMPLEJO 39A · KENNEDY'), mision: tr('MISIÓN AS-506'),
                 alLanzar: despegar,
                 alVolver: () => base.volverAlInicio(),
             });
@@ -264,7 +266,7 @@ export async function crearMision(base) {
                     espacio.ultimaFaseCam = null;
                     vistaSala(true);
                     sonido.reproducir('espacio');
-                    viajeComenzado('Control de Misión sigue la trayectoria hacia la Luna en la pantalla principal. Pulsa C para volver al cohete.');
+                    viajeComenzado(tr('Control de Misión sigue la trayectoria hacia la Luna en la pantalla principal. Pulsa C para volver al cohete.'));
                 }
             }
 

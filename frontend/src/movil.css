@@ -50,6 +50,7 @@
     /* ── portada y pantalla de lanzamiento: imagen arriba, menú en una hoja inferior ── */
     .topline { height: 56px !important; }
     .project-brand small { display: none; }
+    .selector-idioma { top: 14px; bottom: auto; right: 14px; }
     #pie-portada, .edge-text, #caption-destino, #lanzamiento .rocket-caption { display: none !important; }
     #inicio .hero-copy, #lanzamiento .hero-copy {
         position: absolute; top: auto !important; bottom: 0 !important; left: 0 !important; right: 0;

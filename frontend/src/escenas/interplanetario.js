@@ -7,6 +7,7 @@ import { Orbita } from '../core/orbita.js';
 import { crearEstrellas, crearMarcador, crearEtiqueta, texturaMarte } from '../modelos/efectos.js';
 import { lambert, kepler } from '../mision/trayectoria.js';
 import { sub, len, mul } from '../mision/vec.js';
+import { t as tr } from '../i18n/index.js';
 
 export const MU_SOL = 1.32712440018e11;   // km³/s²
 const U = 1e6;                            // km por unidad de escena
@@ -33,7 +34,7 @@ export class EscenaInterplanetaria {
         const sol = new THREE.Mesh(new THREE.SphereGeometry(4, 32, 16), new THREE.MeshBasicMaterial({ color: 0xffe9a8 }));
         const halo = crearMarcador(0xffd27a);
         halo.scale.setScalar(40);
-        this.scene.add(sol, halo, this._et('SOL', [0, 7, 0]));
+        this.scene.add(sol, halo, this._et(tr('SOL'), [0, 7, 0]));
 
         const tl = new THREE.TextureLoader();
         const tTierra = tl.load('/texturas/earth_atmos_2048.jpg'); tTierra.colorSpace = THREE.SRGBColorSpace;
@@ -41,12 +42,12 @@ export class EscenaInterplanetaria {
         this.marte = new THREE.Mesh(new THREE.SphereGeometry(1.6, 48, 24), new THREE.MeshStandardMaterial({ map: texturaMarte(), roughness: 0.95 }));
         this.brilloTierra = crearMarcador(0x6fa8ff); this.brilloTierra.scale.setScalar(14);
         this.brilloMarte = crearMarcador(0xff7a50); this.brilloMarte.scale.setScalar(12);
-        this.etTierra = crearEtiqueta('TIERRA'); this.etMarte = crearEtiqueta('MARTE', { color: '#ff8a5c' });
+        this.etTierra = crearEtiqueta(tr('TIERRA')); this.etMarte = crearEtiqueta(tr('MARTE'), { color: '#ff8a5c' });
         this.scene.add(this.tierra, this.marte, this.brilloTierra, this.brilloMarte, this.etTierra, this.etMarte);
 
         this.nave = crearMarcador(0xffffff);
         this.nave.scale.setScalar(6);
-        this.etNave = crearEtiqueta('NAVE', { color: '#ffb020' });
+        this.etNave = crearEtiqueta(tr('NAVE'), { color: '#ffb020' });
         this.scene.add(this.nave, this.etNave);
         this.lineas = new THREE.Group();
         this.scene.add(this.lineas);

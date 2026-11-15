@@ -14,8 +14,10 @@ import { Orbita } from '../core/orbita.js';
 import { crearEstrellas, crearEtiqueta, crearMarcador, texturaMarte } from '../modelos/efectos.js';
 import { crearModelo, crearModeloReal, precargarReales } from '../modelos/restos.js';
 import { Personaje } from '../modelos/personaje.js';
-import DATOS from '../data/restos.json';
+import DATOS_ES from '../data/restos.json';
+import { t as tr, localizar } from '../i18n/index.js';
 
+const DATOS = localizar(DATOS_ES);
 const R = 10;
 const RAD = Math.PI / 180;
 const COLOR = { abandonada: 0xffa23a, incierta: 0xff5c8a, activa: 0x58c46a, sitio: 0x4af626, mision: 0xffd23a, info: 0xb8c4c8 };
@@ -185,10 +187,10 @@ export class EscenaRestos {
             };
             const capsula = crearMarcador(0xffffff); capsula.scale.setScalar(0.7);
             const crucero = crearMarcador(0xff6a2a); crucero.scale.setScalar(0.6);
-            const etC = crearEtiqueta('ETAPA DE CRUCERO', { color: '#ff8a5c', tam: 22 });
+            const etC = crearEtiqueta(tr('ETAPA DE CRUCERO'), { color: '#ff8a5c', tam: 22 });
             etC.scale.multiplyScalar(0.42);
             const proxyC = new THREE.Mesh(new THREE.SphereGeometry(0.5, 8, 6), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false, colorWrite: false }));
-            proxyC.userData.info = { clase: 'transporte', nombre: 'Etapa de crucero', estado: 'destruida', texto: this.d.transporte.crucero };
+            proxyC.userData.info = { clase: 'transporte', nombre: tr('Etapa de crucero'), estado: 'destruida', texto: this.d.transporte.crucero };
             proxyC.position.copy(curvaCrucero.getPoint(1));
             etC.position.copy(curvaCrucero.getPoint(1)).multiplyScalar(1.07);
             g.add(capsula, crucero, etC, proxyC);
@@ -485,7 +487,7 @@ export class EscenaRestos {
             ray.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), this.camera);
             if (this.nivel === 'superficie' && this.zylo?.impacta(ray)) {
                 this.zylo.desaparecer();
-                this.ctx.hud.registrar('[??] Señal no identificada perdida.');
+                this.ctx.hud.registrar(tr('[??] Señal no identificada perdida.'));
                 return;
             }
             const lista = this.nivel === 'orbita' ? [this.planeta, ...this.pick] : this.pickSup;
@@ -549,7 +551,7 @@ export class EscenaRestos {
                 const cam = this.camera.getWorldPosition(new THREE.Vector3()).normalize();
                 const cand = this.marcas.filter((m) => m.s.superficie).map((m) => ({ m, c: m.dir.dot(cam) })).sort((a, b) => b.c - a.c)[0];
                 if (cand && cand.c > Math.cos(28 * RAD)) this.bajar(cand.m.s);
-                else if (!this.avisoMostrado) { this.avisoMostrado = true; this.ctx.hud.aviso('Acércate a un sitio marcado con ▲ (verde) para bajar a la superficie'); setTimeout(() => this.ctx.hud.aviso(null), 4000); }
+                else if (!this.avisoMostrado) { this.avisoMostrado = true; this.ctx.hud.aviso(tr('Acércate a un sitio marcado con ▲ (verde) para bajar a la superficie')); setTimeout(() => this.ctx.hud.aviso(null), 4000); }
                 if (cand && cand.c <= Math.cos(28 * RAD)) C.r = R * 1.22;
             }
         } else {

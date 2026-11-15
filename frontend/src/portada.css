@@ -114,3 +114,13 @@ body.lanzado #cielo-ref { opacity: 0; transition: opacity 2.5s; }
 .progress-line i { animation: none; transform: none; width: 0; transition: width .3s; }
 
 .credito-video { display: block; margin-top: 8px; font-size: 9px; letter-spacing: .06em; color: #8ca5ba; max-width: 560px; }
+
+/* selector de idioma: donde estaba "ARRASTRA PARA EXPLORAR" */
+.selector-idioma { position: absolute; right: clamp(22px,5.5vw,105px); bottom: 24px; left: auto !important; z-index: 38;
+  align-items: center; gap: 8px; font: 600 10px Montserrat, sans-serif; letter-spacing: .12em; color: #9ab0c3; }
+.selector-idioma select { font: 600 10px Montserrat, sans-serif; letter-spacing: .12em; color: #f9fbff; background: #0b1b2cd9;
+  border: 1px solid #66bdfb66; padding: 7px 26px 7px 10px; cursor: pointer; appearance: none; -webkit-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #9ddfff 50%), linear-gradient(135deg, #9ddfff 50%, transparent 50%);
+  background-position: calc(100% - 13px) 50%, calc(100% - 8px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.selector-idioma select:hover, .selector-idioma select:focus { border-color: #c2ecff; outline: none; }
+.selector-idioma option { background: #0b1b2c; color: #fff; }

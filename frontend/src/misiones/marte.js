@@ -1,7 +1,7 @@
 // Destino MARTE: un Delta II 7925 lanza un rover (Sojourner, Spirit, Opportunity) o el lander Phoenix.
 // Lanzamiento en la plataforma -> al llegar al espacio, la sala de control muestra el viaje
 // interplanetario (posiciones reales de SPICE + arco de Lambert) -> llegada y restos en Marte.
-import misiones from '../data/marte.json';
+import misionesES from '../data/marte.json';
 import respaldo from '../data/efemerides_marte.json';
 import { formatearMET } from '../mision/tiempo.js';
 import { monotona } from '../mision/vec.js';
@@ -14,28 +14,30 @@ import { EscenaInterplanetaria } from '../escenas/interplanetario.js';
 import { pantallaLanzamiento, viajeComenzado } from './lanzamiento.js';
 import { sonido } from '../core/audio.js';
 import { crearModoRestos } from './restos.js';
+import { t as tr, localizar } from '../i18n/index.js';
 
 const $ = (id) => document.getElementById(id);
-const PAD = { nombre: 'Complejo 17 · Cabo Cañaveral', lat: 28.447, lon: -80.565, azimut: 95 };
+const misiones = localizar(misionesES);
+const PAD = { nombre: tr('Complejo 17 · Cabo Cañaveral'), lat: 28.447, lon: -80.565, azimut: 95 };
 const EN_EL_ESPACIO = 205;   // s (~100 km en el perfil modelado)
 // Perfil de ascenso del Delta II: modelado (aproximado), no son datos de telemetría
 const ASC = [[0, 0, 0], [10, 0.12, 0], [20, 0.6, 0], [30, 1.5, 0.05], [45, 3.8, 0.6], [64, 9.5, 2.5], [90, 19, 8],
     [130, 40, 28], [170, 70, 62], [205, 100, 105], [240, 130, 150], [300, 170, 260]];
 const FASES = ['PRE_LANZAMIENTO', 'DESPEGUE', 'SEPARACION_GEM', 'EN_EL_ESPACIO', 'CRUCERO_A_MARTE', 'LLEGADA_A_MARTE', 'RESTOS'];
-const NOMBRE_FASE = { PRE_LANZAMIENTO: 'Cuenta regresiva', DESPEGUE: 'Despegue', SEPARACION_GEM: 'Propulsores GEM', EN_EL_ESPACIO: 'En el espacio', CRUCERO_A_MARTE: 'Crucero a Marte', LLEGADA_A_MARTE: 'Llegada a Marte', RESTOS: 'Lo que quedó allí' };
+const NOMBRE_FASE = Object.fromEntries(Object.entries({ PRE_LANZAMIENTO: 'Cuenta regresiva', DESPEGUE: 'Despegue', SEPARACION_GEM: 'Propulsores GEM', EN_EL_ESPACIO: 'En el espacio', CRUCERO_A_MARTE: 'Crucero a Marte', LLEGADA_A_MARTE: 'Llegada a Marte', RESTOS: 'Lo que quedó allí' }).map(([k, v]) => [k, tr(v)]));
 
 async function cargarTrack(id) {
     try {
-        return { datos: await getMarsTrack(id), origen: 'SPICE en vivo (backend)' };
+        return { datos: await getMarsTrack(id), origen: tr('SPICE en vivo (backend)') };
     } catch {
-        return { datos: respaldo[id], origen: 'SPICE precalculado (backend apagado)' };
+        return { datos: respaldo[id], origen: tr('SPICE precalculado (backend apagado)') };
     }
 }
 
 export async function crearMision(base, id = 'spirit') {
     const { renderer, hud, plataforma } = base;
     const m = misiones.misiones.find((x) => x.id === id) ?? misiones.misiones[1];
-    base.progreso(0.15, 'Efemérides de la Tierra y Marte…');
+    base.progreso(0.15, tr('Efemérides de la Tierra y Marte…'));
     const { datos, origen } = await cargarTrack(m.id);
     hud.fuente(origen);
     base.progreso(0.4, 'Delta II…');
@@ -70,20 +72,20 @@ export async function crearMision(base, id = 'spirit') {
         : t < EN_EL_ESPACIO + 3600 ? 'EN_EL_ESPACIO' : t < D ? 'CRUCERO_A_MARTE' : estado === 'restos' ? 'RESTOS' : 'LLEGADA_A_MARTE';
 
     const EVENTOS = [
-        [SECUENCIA_DELTA.ignicion, 'Ignición del RS-27', 'Motor principal de la primera etapa'],
-        [0, '¡Despegue!', `${m.nombre} rumbo a Marte`],
-        [SECUENCIA_DELTA.gem6Fin + 2, 'Separación de 6 propulsores GEM', 'ABANDONADOS: caen al Atlántico'],
-        [SECUENCIA_DELTA.gem3, 'Ignición de los 3 GEM restantes', 'Se encienden en vuelo'],
-        [SECUENCIA_DELTA.gem3Fin + 2, 'Separación de los últimos GEM', 'ABANDONADOS: caen al Atlántico'],
-        [EN_EL_ESPACIO, 'En el espacio', 'Control de Misión · trayectoria hacia Marte'],
-        [D, 'Llegada a Marte', `${m.sitio}`],
+        [SECUENCIA_DELTA.ignicion, tr('Ignición del RS-27'), tr('Motor principal de la primera etapa')],
+        [0, tr('¡Despegue!'), tr('{nombre} rumbo a Marte', { nombre: m.nombre })],
+        [SECUENCIA_DELTA.gem6Fin + 2, tr('Separación de 6 propulsores GEM'), tr('ABANDONADOS: caen al Atlántico')],
+        [SECUENCIA_DELTA.gem3, tr('Ignición de los 3 GEM restantes'), tr('Se encienden en vuelo')],
+        [SECUENCIA_DELTA.gem3Fin + 2, tr('Separación de los últimos GEM'), tr('ABANDONADOS: caen al Atlántico')],
+        [EN_EL_ESPACIO, tr('En el espacio'), tr('Control de Misión · trayectoria hacia Marte')],
+        [D, tr('Llegada a Marte'), `${m.sitio}`],
     ];
 
     function despegar() { estado = 'ascenso'; plataforma.preparacion = false; t = -10; tPrevio = t; pausado = false; }
 
     function aEspacio() {
         sonido.reproducir('espacio');
-        viajeComenzado(`Control de Misión sigue a ${m.rover} rumbo a Marte en la pantalla principal.`);
+        viajeComenzado(tr('Control de Misión sigue a {rover} rumbo a Marte en la pantalla principal.', { rover: m.rover }));
         estado = 'crucero';
         activa = inter;
         tCrucero = 0;
@@ -117,18 +119,18 @@ export async function crearMision(base, id = 'spirit') {
         el.innerHTML = '';
         const add = (tag, txt, cls) => { const e = document.createElement(tag); e.textContent = txt; if (cls) e.className = cls; el.append(e); return e; };
         add('h2', `${m.rover.toUpperCase()} · ${m.sitio.toUpperCase()}`);
-        add('p', `Llegada: ${fechaHora(Date.parse(m.llegada_utc)).slice(0, 11)} tras ${Math.round(D / 86400)} días de viaje.` +
-            (m.lat !== null ? ` Coordenadas: ${Math.abs(m.lat)}°${m.lat >= 0 ? 'N' : 'S'} ${Math.abs(m.lon)}°${m.lon >= 0 ? 'E' : 'O'}.` : ''));
+        add('p', tr('Llegada: {fecha} tras {dias} días de viaje.', { fecha: fechaHora(Date.parse(m.llegada_utc)).slice(0, 11), dias: Math.round(D / 86400) }) +
+            (m.lat !== null ? ` ${tr('Coordenadas')}: ${Math.abs(m.lat)}°${m.lat >= 0 ? 'N' : 'S'} ${Math.abs(m.lon)}°${m.lon >= 0 ? 'E' : 'O'}.` : ''));
         add('p', m.historia, 'historia');
-        add('h4', 'LO QUE SIGUE ALLÍ');
+        add('h4', tr('LO QUE SIGUE ALLÍ'));
         const ul = add('ul', '');
         for (const r of m.restos) { const li = document.createElement('li'); li.textContent = r; ul.append(li); }
-        add('p', `Último contacto: ${m.ultimo_contacto}. Abandonado, pero no olvidado.`);
+        add('p', tr('Último contacto: {fecha}. Abandonado, pero no olvidado.', { fecha: m.ultimo_contacto }));
         const b = add('div', ''); b.className = 'botones';
         const boton = (txt, f) => { const x = document.createElement('button'); x.textContent = txt; x.onclick = () => { el.classList.add('oculto'); f(); }; b.append(x); };
-        boton('Volver al inicio', () => base.volverAlInicio());
-        boton('Repetir el viaje', () => { estado = 'crucero'; t = EN_EL_ESPACIO; tCrucero = 0; eventosVistos = new Set([...eventosVistos].filter((x) => x <= EN_EL_ESPACIO)); });
-        boton('Seguir mirando', () => {});
+        boton(tr('Volver al inicio'), () => base.volverAlInicio());
+        boton(tr('Repetir el viaje'), () => { estado = 'crucero'; t = EN_EL_ESPACIO; tCrucero = 0; eventosVistos = new Set([...eventosVistos].filter((x) => x <= EN_EL_ESPACIO)); });
+        boton(tr('Seguir mirando'), () => {});
         el.classList.remove('oculto');
     }
 
@@ -153,7 +155,7 @@ export async function crearMision(base, id = 'spirit') {
         masRapido: () => { warpManual = Math.min(4e6, ((warpManual ?? warp()) || 1) * 3); },
         masLento: () => { warpManual = Math.max(1, ((warpManual ?? warp()) || 1) / 3); },
         historia: () => { warpManual = null; },
-        camara: () => { $('btn-camara').textContent = `CÁMARA: ${String(activa.cambiarCamara()).toUpperCase()}`; },
+        camara: () => { $('btn-camara').textContent = `${tr('CÁMARA')}: ${tr(String(activa.cambiarCamara()).toUpperCase())}`; },
         sala: () => vista(base.vista !== 'sala'),
     };
 
@@ -165,7 +167,7 @@ export async function crearMision(base, id = 'spirit') {
             hud.el.log.innerHTML = '';
             $('titulo-panel').textContent = `${m.rover.toUpperCase()} · FLIGHT DYNAMICS`;
             hud.registrar(`[SYS] ${m.nombre} · Delta II 7925 · ${m.plataforma}`);
-            hud.registrar(`[SYS] Transferencia de ${Math.round(D / 86400)} días · posiciones reales de la Tierra y Marte (SPICE)`);
+            hud.registrar(`[SYS] ${tr('Transferencia de {dias} días · posiciones reales de la Tierra y Marte (SPICE)', { dias: Math.round(D / 86400) })}`);
             plataforma.preparacion = true;
             plataforma.entrar(t);
             base.panelVR.colocarEn(plataforma.rig);
@@ -173,9 +175,9 @@ export async function crearMision(base, id = 'spirit') {
             base.pantallaCompleta(true);
             pantalla = pantallaLanzamiento({
                 eyebrow: `${m.nombre.toUpperCase()} · DELTA II`,
-                titulo: ['RUMBO A', 'MARTE'],
-                descripcion: `${fechaHora(lanz)} UTC. Un Delta II con nueve propulsores sólidos lleva a ${m.rover} hacia ${m.sitio}. ${m.historia}`,
-                cohete: 'DELTA II', coheteSub: 'DELTA 7925 · 9 GEM-40', plataforma: `${m.plataforma} · CABO CAÑAVERAL`, mision: m.rover.split(' ')[0].toUpperCase(),
+                titulo: [tr('RUMBO A'), tr('MARTE')],
+                descripcion: `${fechaHora(lanz)} UTC. ${tr('Un Delta II con nueve propulsores sólidos lleva a {rover} hacia {sitio}.', { rover: m.rover, sitio: m.sitio })} ${m.historia}`,
+                cohete: 'DELTA II', coheteSub: 'DELTA 7925 · 9 GEM-40', plataforma: `${m.plataforma} · ${tr('CABO CAÑAVERAL')}`, mision: m.rover.split(' ')[0].toUpperCase(),
                 alLanzar: despegar,
                 alVolver: () => base.volverAlInicio(),
             });
@@ -209,7 +211,7 @@ export async function crearMision(base, id = 'spirit') {
             for (const [te, titulo, texto] of EVENTOS) {
                 if (tAntes < te && t >= te && !eventosVistos.has(te)) {
                     eventosVistos.add(te);
-                    hud.registrar(`[${formatearMET(te)}] ${titulo} — ${texto}`, texto.startsWith('ABANDONADO') ? 'abandonado' : 'importante');
+                    hud.registrar(`[${formatearMET(te)}] ${titulo} — ${texto}`, /^ABANDON/.test(texto) ? 'abandonado' : 'importante');
                     hud.banner(titulo, texto);
                 }
             }
@@ -248,7 +250,7 @@ export async function crearMision(base, id = 'spirit') {
                 hud.actualizar(resumen);
                 if (!base.arrastrando) $('time-slider').value = Math.round((t < EN_EL_ESPACIO ? 0.15 * Math.max(0, t + 10) / (EN_EL_ESPACIO + 10) : 0.15 + 0.85 * (t - EN_EL_ESPACIO) / (D - EN_EL_ESPACIO)) * 1000);
                 estadoSala = {
-                    etapaActual: f, fases: FASES, tituloEtapas: 'VIAJE A MARTE',
+                    etapaActual: f, fases: FASES, tituloEtapas: tr('VIAJE A MARTE'),
                     altitud: Math.round(tel.alt), unidadAlt: 'km', velocidad: Math.round(tel.vel * 3600), unidadVel: 'km/h',
                     progreso: Math.round(Math.max(0, Math.min(1, t / D)) * 1000) / 10,
                     met: formatearMET(t), reloj: new Date(ms(t)).toISOString().slice(0, 19).replace('T', ' '),

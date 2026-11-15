@@ -3,6 +3,7 @@
 //   - apuntando con cualquiera de los dos mandos (rayo) y pulsando el gatillo, o
 //   - moviendo la selección con el joystick izquierdo y confirmando con A.
 import * as THREE from 'three';
+import { t } from '../i18n/index.js';
 
 const W = 1024, H = 720;
 const VERDE = '#4af626', AZUL = '#9ddfff';
@@ -35,15 +36,15 @@ export function crearMenuVR({ renderer, rig, padre, ancho = 0.75, opciones, alEl
         ctx.fillStyle = 'rgba(2,9,20,0.93)'; ctx.fillRect(0, 0, W, H);
         ctx.strokeStyle = '#66bdfb88'; ctx.lineWidth = 3; ctx.strokeRect(6, 6, W - 12, H - 12);
         ctx.fillStyle = '#fff'; ctx.font = 'bold 54px "Barlow Condensed", Impact, sans-serif';
-        ctx.fillText('APSIS · ELIGE TU DESTINO', 40, 82);
+        ctx.fillText(t('APSIS · ELIGE TU DESTINO'), 40, 82);
         ctx.fillStyle = '#8ca5ba'; ctx.font = '22px Montserrat, Arial, sans-serif';
         ctx.fillText('ABANDONED BUT NOT FORGOTTEN', 42, 118);
         // tarjeta de Marte (fondo)
         ctx.strokeStyle = '#ff9a7a88'; ctx.lineWidth = 2; ctx.strokeRect(520, 140, 478, 486);
         ctx.fillStyle = '#fff'; ctx.font = 'bold 44px "Barlow Condensed", Impact, sans-serif';
-        ctx.fillText('MARTE', 538, 192);
+        ctx.fillText(t('MARTE'), 538, 192);
         ctx.fillStyle = '#abc4d8'; ctx.font = '20px Montserrat, Arial, sans-serif';
-        ctx.fillText('Delta II · rovers y landers que siguen allí', 538, 222);
+        ctx.fillText(t('Delta II · rovers y landers que siguen allí'), 538, 222);
         botones.forEach((b, i) => {
             const activo = i === foco || sobre.includes(b);
             ctx.fillStyle = activo ? (b.o.grupo === 'luna' ? '#1d4a70' : '#5a2a1e') : 'rgba(11,27,44,0.85)';
@@ -53,15 +54,15 @@ export function crearMenuVR({ renderer, rig, padre, ancho = 0.75, opciones, alEl
             ctx.strokeRect(b.x, b.y, b.w, b.h);
             if (b.grande) {
                 ctx.fillStyle = '#9ddfff'; ctx.font = '20px Montserrat, Arial, sans-serif';
-                ctx.fillText('01 / DESTINO', b.x + 24, b.y + 40);
+                ctx.fillText(t('01 / DESTINO'), b.x + 24, b.y + 40);
                 ctx.fillStyle = '#fff'; ctx.font = 'bold 64px "Barlow Condensed", Impact, sans-serif';
                 ctx.fillText(b.o.titulo, b.x + 24, b.y + 200);
                 ctx.fillStyle = '#abc4d8'; ctx.font = '22px Montserrat, Arial, sans-serif';
                 ctx.fillText(b.o.sub, b.x + 24, b.y + 240);
-                ctx.fillText('Etapa de descenso de Eagle,', b.x + 24, b.y + 280);
-                ctx.fillText('sismómetro y retrorreflector.', b.x + 24, b.y + 310);
+                ctx.fillText(t('Etapa de descenso de Eagle,'), b.x + 24, b.y + 280);
+                ctx.fillText(t('sismómetro y retrorreflector.'), b.x + 24, b.y + 310);
                 ctx.fillStyle = activo ? '#fff' : AZUL; ctx.font = 'bold 26px Montserrat, Arial, sans-serif';
-                ctx.fillText('VIAJAR ↗', b.x + b.w - 150, b.y + b.h - 30);
+                ctx.fillText(t('VIAJAR ↗'), b.x + b.w - 150, b.y + b.h - 30);
             } else {
                 ctx.fillStyle = '#fff'; ctx.font = 'bold 30px Montserrat, Arial, sans-serif';
                 ctx.fillText(b.o.titulo, b.x + 22, b.y + 50);
@@ -70,7 +71,7 @@ export function crearMenuVR({ renderer, rig, padre, ancho = 0.75, opciones, alEl
             }
         });
         ctx.fillStyle = VERDE; ctx.font = '21px "Courier New", monospace';
-        ctx.fillText('Apunta y pulsa el GATILLO  ·  o STICK IZQ + A  ·  Y: salir de VR', 40, 676);
+        ctx.fillText(t('Apunta y pulsa el GATILLO  ·  o STICK IZQ + A  ·  Y: salir de VR'), 40, 676);
         tex.needsUpdate = true;
         sucio = false;
     }

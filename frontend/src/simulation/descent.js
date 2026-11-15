@@ -1,6 +1,7 @@
 // Descenso 2D del modulo lunar (sin red, corre a 60 fps).
 // x = distancia horizontal (m, positiva hacia el oeste = sentido de vuelo de Eagle; 0 = Base Tranquilidad)
 // y = altura sobre el nivel de referencia (m). El suelo real es terreno(x).
+import { t as tr } from '../i18n/index.js';
 export const G_MOON = 1.62;          // m/s^2
 export const MAX_THRUST = 45040;     // N (motor de descenso, empuje maximo)
 export const MIN_THROTTLE = 0.1;     // el DPS no baja del ~10 %
@@ -62,9 +63,9 @@ export function step(lm, controls, dt, { easy = false, suelo = sueloPlano, pelig
     const riesgo = peligro?.(lm.x);
     lm.status = ok && !riesgo ? "landed" : "crashed";
     lm.motivo = !ok
-      ? (Math.abs(lm.vy) > LIMITS.vy ? `velocidad vertical ${Math.abs(lm.vy).toFixed(1)} m/s` :
-         Math.abs(lm.vx) > LIMITS.vx ? `velocidad horizontal ${Math.abs(lm.vx).toFixed(1)} m/s` :
-         `inclinación ${(Math.abs(lm.angle) * 180 / Math.PI).toFixed(0)}°`)
+      ? (Math.abs(lm.vy) > LIMITS.vy ? `${tr('velocidad vertical')} ${Math.abs(lm.vy).toFixed(1)} m/s` :
+         Math.abs(lm.vx) > LIMITS.vx ? `${tr('velocidad horizontal')} ${Math.abs(lm.vx).toFixed(1)} m/s` :
+         `${tr('inclinación')} ${(Math.abs(lm.angle) * 180 / Math.PI).toFixed(0)}°`)
       : riesgo ?? "";
   }
   return lm;

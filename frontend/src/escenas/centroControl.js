@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { t } from '../i18n/index.js';
 
 // Reutilizado de nasa_space_apps: la pantalla gigante muestra la escena activa del simulador.
 export const pantallaGiganteTarget = new THREE.WebGLRenderTarget(1280, 720, { samples: 4 });
@@ -175,7 +176,7 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
     cita.ctx.fillText('“Houston, Tranquility Base here.', 512, 150);
     cita.ctx.fillText('The Eagle has landed.”', 512, 215);
     cita.ctx.font = '30px Georgia, serif';
-    cita.ctx.fillText('20 de julio de 1969', 512, 300);
+    cita.ctx.fillText(t('20 de julio de 1969'), 512, 300);
     cita.textura.needsUpdate = true;
     plano(4, 1.5, new THREE.MeshBasicMaterial({ map: cita.textura }), -8.15, 3.8, -3.5, Math.PI / 2);
 
@@ -286,7 +287,7 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
         ctx.fillStyle = '#041008'; ctx.fillRect(0, 0, 512, 384);
         ctx.strokeStyle = VERDE; ctx.lineWidth = 3; ctx.strokeRect(6, 6, 500, 372);
         ctx.fillStyle = VERDE; ctx.font = 'bold 24px Courier New, monospace'; ctx.textAlign = 'left';
-        ctx.fillText('TRAYECTORIA', 22, 40);
+        ctx.fillText(t('TRAYECTORIA'), 22, 40);
 
         const A = { x: 70, y: 290 }, B = { x: 440, y: 290 }, C = { x: 255, y: 90 };
         ctx.strokeStyle = '#1f6d14'; ctx.lineWidth = 1;
@@ -298,7 +299,7 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
         ctx.fillStyle = '#2b78ff'; ctx.beginPath(); ctx.arc(A.x, A.y, 30, 0, 7); ctx.fill();
         ctx.fillStyle = '#c9c9c9'; ctx.beginPath(); ctx.arc(B.x, B.y, 11, 0, 7); ctx.fill();
         ctx.fillStyle = VERDE; ctx.font = '18px Courier New, monospace'; ctx.textAlign = 'center';
-        ctx.fillText('TIERRA', A.x, A.y + 52); ctx.fillText('LUNA', B.x, B.y + 32);
+        ctx.fillText(t('TIERRA'), A.x, A.y + 52); ctx.fillText(t('LUNA'), B.x, B.y + 32);
 
         const p = Math.min(1, Math.max(0, estado.progreso / 100));
         const px = (1 - p) ** 2 * A.x + 2 * (1 - p) * p * C.x + p * p * B.x;
@@ -315,7 +316,7 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
         ctx.fillStyle = '#041008'; ctx.fillRect(0, 0, 512, 384);
         ctx.strokeStyle = VERDE; ctx.lineWidth = 3; ctx.strokeRect(6, 6, 500, 372);
         ctx.fillStyle = VERDE; ctx.font = 'bold 24px Courier New, monospace'; ctx.textAlign = 'left';
-        ctx.fillText(estado.tituloEtapas ?? 'SECUENCIA DE MISIÓN', 22, 40);
+        ctx.fillText(estado.tituloEtapas ?? t('SECUENCIA DE MISIÓN'), 22, 40);
         const lista = estado.fases ?? NOMBRES_ETAPAS;
         const actual = lista.indexOf(estado.etapaActual);
         const desde = Math.max(0, Math.min(lista.length - 8, actual - 3)); // ventana de 8 fases
@@ -325,7 +326,7 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
             const y = 82 + k * 38;
             if (i === actual) { ctx.fillStyle = '#17501a'; ctx.fillRect(16, y - 22, 480, 32); }
             ctx.fillStyle = i < actual ? '#2d8a1c' : i === actual ? '#ffb020' : '#3b6b34';
-            ctx.fillText(`${i < actual ? '✔' : i === actual ? '▶' : '·'} ${n.replace(/_/g, ' ')}`, 28, y);
+            ctx.fillText(`${i < actual ? '✔' : i === actual ? '▶' : '·'} ${t(n.replace(/_/g, ' '))}`, 28, y);
         });
         textura.needsUpdate = true;
     }
@@ -339,13 +340,13 @@ export function construirSala(sceneSala, NOMBRES_ETAPAS) {
             ctx.font = 'bold 40px Courier New, monospace'; ctx.fillText(estado.tituloMonitor, 30, 60);
             ctx.font = '16px Courier New, monospace'; ctx.fillText(estado.subtituloMonitor ?? '', 190, 58);
         } else {
-            ctx.font = 'bold 28px Courier New, monospace'; ctx.fillText('TELEMETRÍA HOUSTON', 30, 55);
+            ctx.font = 'bold 28px Courier New, monospace'; ctx.fillText(t('TELEMETRÍA HOUSTON'), 30, 55);
         }
         ctx.font = '22px Courier New, monospace';
-        ctx.fillText(`FASE: ${estado.etapaActual.replace(/_/g, ' ')}`, 30, 115);
-        ctx.fillText(`ALTITUD: ${estado.altitud.toLocaleString()} ${estado.unidadAlt ?? 'km'}`, 30, 165);
+        ctx.fillText(`${t('FASE')}: ${t(estado.etapaActual.replace(/_/g, ' '))}`, 30, 115);
+        ctx.fillText(`${t('ALTITUD')}: ${estado.altitud.toLocaleString()} ${estado.unidadAlt ?? 'km'}`, 30, 165);
         ctx.fillText(`VEL: ${estado.velocidad.toLocaleString()} ${estado.unidadVel ?? 'km/h'}`, 30, 215);
-        ctx.fillText(`PROGRESO: ${estado.progreso} %`, 30, 265);
+        ctx.fillText(`${t('PROGRESO')}: ${estado.progreso} %`, 30, 265);
         ctx.fillText(`MET: ${estado.met}`, 30, 315);
         ctx.fillStyle = 'rgba(0,0,0,0.25)'; // líneas de barrido
         for (let y = 0; y < canvas.height; y += 4) ctx.fillRect(0, y, canvas.width, 2);

@@ -23,12 +23,14 @@ import { crearModoCardboard } from './core/modoCardboard.js';
 import { construirSala, pantallaGiganteTarget } from './escenas/centroControl.js';
 import { EscenaPlataforma } from './escenas/plataforma.js';
 import { crearEstrellas, texturaMarte } from './modelos/efectos.js';
-import marte from './data/marte.json';
+import marteES from './data/marte.json';
 import { sonido } from './core/audio.js';
 import { Personaje } from './modelos/personaje.js';
 import { crearMenuVR } from './core/menuVR.js';
+import { t, localizar, traducirDOM, IDIOMAS, idioma, cambiarIdioma } from './i18n/index.js';
 
 const $ = (id) => document.getElementById(id);
+const marte = localizar(marteES);
 
 function progreso(f, txt) {
     $('carga').classList.remove('fuera');
@@ -37,6 +39,11 @@ function progreso(f, txt) {
 }
 
 async function iniciar() {
+    traducirDOM();
+    // selector de idioma (esquina inferior derecha de la portada)
+    const sel = $('sel-idioma');
+    for (const i of IDIOMAS) { const o = document.createElement('option'); o.value = i.id; o.textContent = `${i.corto} · ${i.nombre}`; o.selected = i.id === idioma; sel.append(o); }
+    sel.addEventListener('change', () => cambiarIdioma(sel.value));
     const contenedor = $('monitor-3d');
     const renderer = createRenderer(contenedor);
     const hud = crearHUD();
@@ -160,10 +167,10 @@ async function iniciar() {
     let conSonido = true;            // lo que quiere el usuario (botón ♪ VIDEO)
     let sonidoPermitido = false;     // el navegador ya dejó reproducir con sonido
     const btnVideo = $('btn-video-sonido');
-    const pintarBtnVideo = () => { btnVideo.querySelector('b').textContent = conSonido ? 'ON' : 'SILENCIO'; btnVideo.setAttribute('aria-pressed', String(conSonido)); };
+    const pintarBtnVideo = () => { btnVideo.querySelector('b').textContent = conSonido ? 'ON' : t('SILENCIO'); btnVideo.setAttribute('aria-pressed', String(conSonido)); };
     const CREDITOS = {
-        luna: 'Video: «The Apollo Program in 60 Seconds»',
-        marte: 'Video: «Mars Pathfinder – 20th Anniversary Special» (NASA/JPL) · Música: Scott Buckley – «Titan» (CC BY 4.0)',
+        luna: t('Video: «The Apollo Program in 60 Seconds»'),
+        marte: t('Video: «Mars Pathfinder – 20th Anniversary Special» (NASA/JPL) · Música: Scott Buckley – «Titan» (CC BY 4.0)'),
     };
     function reproducirVideo() {
         $('credito-video').textContent = CREDITOS[destinoPrevio] ?? '';
@@ -229,8 +236,8 @@ async function iniciar() {
     const inicio = $('inicio');
     const rovers = $('lista-rovers');
     const CAPTION = {
-        luna: ['LA LUNA', '384 400 KM DE LA TIERRA', 'APOLLO 11 · 1969'],
-        marte: ['MARTE', '55 A 400 MILLONES DE KM', 'ROVERS 1996 – 2007'],
+        luna: [t('LA LUNA'), t('384 400 KM DE LA TIERRA'), 'APOLLO 11 · 1969'],
+        marte: [t('MARTE'), t('55 A 400 MILLONES DE KM'), 'ROVERS 1996 – 2007'],
     };
     const caption = (d) => {
         const cambio = destinoPrevio !== d;
@@ -261,7 +268,7 @@ async function iniciar() {
     const menuVR = crearMenuVR({
         renderer, rig: rigSala, padre: sala.monitor, ancho: 0.74,
         opciones: [
-            { grupo: 'luna', id: 'luna', titulo: 'LA LUNA', sub: 'Apollo 11 · Saturn V · 1969' },
+            { grupo: 'luna', id: 'luna', titulo: t('LA LUNA'), sub: 'Apollo 11 · Saturn V · 1969' },
             ...marte.misiones.map((m) => ({ grupo: 'marte', id: m.id, titulo: m.rover.split(' ')[0].toUpperCase(), sub: m.lanzamiento_utc.slice(0, 4) })),
         ],
         alElegir: (o) => (o.grupo === 'luna' ? elegir('luna') : elegir('marte', o.id)),
@@ -276,7 +283,7 @@ async function iniciar() {
         $('lanzamiento').classList.add('oculto');
         inicio.classList.remove('oculto');
         document.body.classList.add('en-inicio');
-        $('mision-num').textContent = 'MISIÓN 001';
+        $('mision-num').textContent = t('MISIÓN 001');
         base.pantallaCompleta(true);
         panelVR.colocarEn(rigSala);
         ctrlSala.enabled = false;
@@ -291,7 +298,7 @@ async function iniciar() {
         camSala.fov = 60; camSala.updateProjectionMatrix();
         inicio.classList.add('oculto');
         document.body.classList.remove('en-inicio');
-        progreso(0.02, destino === 'luna' ? 'Preparando el Saturn V…' : 'Preparando el Delta II…');
+        progreso(0.02, destino === 'luna' ? t('Preparando el Saturn V…') : t('Preparando el Delta II…'));
         try {
             const mod = destino === 'luna' ? await import('./misiones/lunar.js') : await import('./misiones/marte.js');
             modo = await mod.crearMision(base, id);
@@ -299,7 +306,7 @@ async function iniciar() {
             modo.entrar();
         } catch (e) {
             console.error(e);
-            progreso(0, `Error al cargar: ${e.message}`);
+            progreso(0, `${t('Error al cargar')}: ${e.message}`);
         }
     }
 
@@ -352,8 +359,8 @@ async function iniciar() {
         esfera.material.map = mapas[destinoPrevio];
         esfera.rotation.y += dt * 0.15;
         sala.actualizar({
-            tituloMonitor: 'APSIS', subtituloMonitor: 'ABANDONED BUT NOT FORGOTTEN',
-            etapaActual: 'SELECCIÓN DE DESTINO', fases: ['SELECCIÓN DE DESTINO', 'LUNA · APOLLO 11', 'MARTE · DELTA II'], tituloEtapas: 'DESTINOS',
+            tituloMonitor: 'APSIS', subtituloMonitor: 'ABANDONED BUT NOT FORGOTTEN', traducirFases: true,
+            etapaActual: 'SELECCIÓN DE DESTINO', fases: ['SELECCIÓN DE DESTINO', 'LUNA · APOLLO 11', 'MARTE · DELTA II'], tituloEtapas: t('DESTINOS'),
             altitud: 0, velocidad: 0, progreso: 0, met: 'T-  :  :  ', reloj: new Date().toISOString().slice(0, 19).replace('T', ' '),
         });
         sala.animar(tReal);
@@ -385,7 +392,7 @@ async function iniciar() {
                 renderer.autoClear = true;
             }
         }
-        panelVR.actualizar({ inicio: true, t: 0, fase: { nombre: 'Elige destino' }, warp: 1, pausado: false }, false);   // en VR se ve el menú 3D
+        panelVR.actualizar({ inicio: true, t: 0, fase: { nombre: t('Elige destino') }, warp: 1, pausado: false }, false);   // en VR se ve el menú 3D
     });
 
     // Enlace directo: ?destino=luna|marte&mision=spirit  (y para la Luna, ?t=102:33:05)
@@ -399,5 +406,5 @@ async function iniciar() {
 
 iniciar().catch((e) => {
     console.error(e);
-    progreso(0, `Error al cargar: ${e.message}`);
+    progreso(0, `${t('Error al cargar')}: ${e.message}`);
 });

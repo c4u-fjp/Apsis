@@ -12,6 +12,7 @@ import { createMachine } from '../simulation/stateMachine.js';
 import { getSky, getSite } from '../api/client.js';
 import { isoUTC, formatearMET } from '../mision/tiempo.js';
 import { sonido } from '../core/audio.js';
+import { t as tr } from '../i18n/index.js';
 
 const LM_M = 1.38;
 const PIES = 3.28084;
@@ -72,7 +73,7 @@ export class EscenaSuperficie {
         this.modo = 'AUTO';
         this.vyCmd = -1;
         this.cam = 'auto';    // auto | cabina | suelo
-        this.maquina = createMachine((f) => this.ctx.hud.registrar(`[SYS] Estado del LM: ${f}`));
+        this.maquina = createMachine((f) => this.ctx.hud.registrar(`[SYS] ${tr('Estado del LM')}: ${f}`));
     }
 
     // ───────── terreno ─────────
@@ -92,9 +93,9 @@ export class EscenaSuperficie {
 
     peligro = (xs) => {
         const x = -xs;
-        if (Math.hypot(x - 400, 20) < 165) return 'Eagle se posó en el campo de rocas del cráter West';
+        if (Math.hypot(x - 400, 20) < 165) return tr('Eagle se posó en el campo de rocas del cráter West');
         const pend = Math.abs(this.altura(x + 1.5, 0) - this.altura(x - 1.5, 0)) / 3;
-        if (pend > 0.21) return `pendiente de ${(Math.atan(pend) * 180 / Math.PI).toFixed(0)}° en el borde de un cráter`;
+        if (pend > 0.21) return tr('pendiente de {g}° en el borde de un cráter', { g: (Math.atan(pend) * 180 / Math.PI).toFixed(0) });
         return null;
     };
 
@@ -293,7 +294,7 @@ export class EscenaSuperficie {
         }
         this.ctx.hud.el.lm.classList.remove('oculto');
         this._tactil(true);
-        this.ctx.hud.registrar(`[${formatearMET(this.t0 + this.tSim)}] Eagle a ${(this.lm.y).toFixed(0)} m de altura y ${Math.abs(this.lm.x).toFixed(0)} m de Base Tranquilidad.`, 'importante');
+        this.ctx.hud.registrar(`[${formatearMET(this.t0 + this.tSim)}] ${tr('Eagle a {h} m de altura y {d} m de Base Tranquilidad.', { h: (this.lm.y).toFixed(0), d: Math.abs(this.lm.x).toFixed(0) })}`, 'importante');
     }
 
     _estadoHistorico() {
@@ -315,7 +316,7 @@ export class EscenaSuperficie {
         if (nuevo === 'P66') this.vyCmd = Math.max(-5, Math.min(0.5, Math.round(this.lm.vy / 0.3) * 0.3));
         this.modo = nuevo;
         this.ctx.hud.aviso(null);
-        this.ctx.hud.registrar(`[${formatearMET(this.t0 + this.tSim)}] Modo de pilotaje: ${nuevo === 'AUTO' ? 'automático (P64/P65)' : nuevo === 'P66' ? 'semimanual P66 (velocidad de descenso)' : 'directo (empuje y actitud)'}`);
+        this.ctx.hud.registrar(`[${formatearMET(this.t0 + this.tSim)}] ${tr('Modo de pilotaje')}: ${tr(nuevo === 'AUTO' ? 'automático (P64/P65)' : nuevo === 'P66' ? 'semimanual P66 (velocidad de descenso)' : 'directo (empuje y actitud)')}`);
         return nuevo;
     }
 
@@ -360,22 +361,22 @@ export class EscenaSuperficie {
         const lm = this.lm, hud = this.ctx.hud, t = this.t0 + this.tSim, ev = this.ctx.crono.ev;
         const radar = lm.y - this.suelo(lm.x);
         const una = (id, f) => { if (!this.avisos.has(id)) { this.avisos.add(id); f(); } };
-        for (const id of ['a1201', 'a1202c', 'a1202d']) if (t >= ev[id]) una(id, () => { this.alarmaHasta = this.tSim + 4; hud.banner(`ALARMA ${id === 'a1201' ? '1201' : '1202'}`, 'Houston: "We\'re go on that alarm" — el computador descarta tareas y sigue guiando', 3000); });
-        if (t >= ev.p66 && this.modo === 'AUTO') una('p66', () => hud.aviso('P66 · Pulsa M (botón A en Quest) para tomar el control como Armstrong y pasar de largo el campo de rocas'));
+        for (const id of ['a1201', 'a1202c', 'a1202d']) if (t >= ev[id]) una(id, () => { this.alarmaHasta = this.tSim + 4; hud.banner(`${tr('ALARMA')} ${id === 'a1201' ? '1201' : '1202'}`, tr('Houston: "We\'re go on that alarm" — el computador descarta tareas y sigue guiando'), 3000); });
+        if (t >= ev.p66 && this.modo === 'AUTO') una('p66', () => hud.aviso(tr('P66 · Pulsa M (botón A en Quest) para tomar el control como Armstrong y pasar de largo el campo de rocas')));
         if (t >= ev.p66 + 18) una('p66fin', () => hud.aviso(null));
         // cantos de altitud de Aldrin (en pies, como en la grabación original)
         const pies = radar * PIES;
         for (const h of [750, 600, 400, 300, 200, 100, 75, 40, 20]) {
             if (pies <= h) una(`alt${h}`, () => {
-                const txt = `Aldrin: "${h} pies, bajando a ${Math.abs(lm.vy * PIES).toFixed(0)}${Math.abs(lm.vx) > 0.5 ? `, ${Math.abs(lm.vx * PIES).toFixed(0)} adelante` : ''}"`;
+                const txt = `Aldrin: "${tr('{h} pies, bajando a {v}', { h, v: Math.abs(lm.vy * PIES).toFixed(0) })}${Math.abs(lm.vx) > 0.5 ? `, ${tr('{v} adelante', { v: Math.abs(lm.vx * PIES).toFixed(0) })}` : ''}"`;
                 hud.registrar(`[${formatearMET(t)}] ${txt}`);
                 hud.banner(txt, '', 2200);
             });
         }
         const s = segundosCombustible(lm);
-        if (lm.fuel < 460) una('low', () => hud.registrar(`[${formatearMET(t)}] Luz de combustible bajo (5,6 %)`, 'importante'));
-        if (s < 80) una('60s', () => hud.banner('"60 SEGUNDOS"', 'Charlie Duke (CAPCOM): quedan 60 s para el límite "bingo"', 2500));
-        if (s < 50) una('30s', () => hud.banner('"30 SEGUNDOS"', '', 2500));
+        if (lm.fuel < 460) una('low', () => hud.registrar(`[${formatearMET(t)}] ${tr('Luz de combustible bajo (5,6 %)')}`, 'importante'));
+        if (s < 80) una('60s', () => hud.banner(tr('"60 SEGUNDOS"'), tr('Charlie Duke (CAPCOM): quedan 60 s para el límite "bingo"'), 2500));
+        if (s < 50) una('30s', () => hud.banner(tr('"30 SEGUNDOS"'), '', 2500));
         if (radar < SONDA_CONTACTO + 0.1) una('contacto', () => { this.contacto = true; hud.registrar(`[${formatearMET(t)}] Aldrin: "Contact light"`, 'importante'); });
     }
 
@@ -392,16 +393,16 @@ export class EscenaSuperficie {
             this.maquina.advance();
             sonido.reproducir('aterrizaje');
             sonido.reproducir('eagle', { retraso: 3.5 });   // "Houston, Tranquility Base here. The Eagle has landed."
-            hud.banner('THE EAGLE HAS LANDED', `"Houston, Tranquility Base here." · a ${dist.toFixed(0)} m de Base Tranquilidad · combustible: ${comb.toFixed(0)} s`, 9000);
-            hud.registrar(`[${formatearMET(t)}] ALUNIZAJE en ${formatearMET(t)} (histórico: ${formatearMET(crono.ev.alunizaje)}). Distancia a Base Tranquilidad: ${dist.toFixed(0)} m.`, 'importante');
+            hud.banner('THE EAGLE HAS LANDED', `"Houston, Tranquility Base here." · ${tr('a {d} m de Base Tranquilidad · combustible: {c} s', { d: dist.toFixed(0), c: comb.toFixed(0) })}`, 9000);
+            hud.registrar(`[${formatearMET(t)}] ${tr('ALUNIZAJE en {t} (histórico: {h}). Distancia a Base Tranquilidad: {d} m.', { t: formatearMET(t), h: formatearMET(crono.ev.alunizaje), d: dist.toFixed(0) })}`, 'importante');
             this._tactil(false);
             hud.el.lm.classList.add('oculto');
             // el reloj sigue el horario real a partir del alunizaje histórico
             reloj.saltarA(Math.max(t, crono.ev.alunizaje));
         } else {
             this.resultado = { ok: false, motivo: lm.motivo, t };
-            hud.banner('PÉRDIDA DEL VEHÍCULO', lm.motivo, 8000);
-            hud.registrar(`[${formatearMET(t)}] Contacto fuera de límites: ${lm.motivo}`, 'abandonado');
+            hud.banner(tr('PÉRDIDA DEL VEHÍCULO'), lm.motivo, 8000);
+            hud.registrar(`[${formatearMET(t)}] ${tr('Contacto fuera de límites')}: ${lm.motivo}`, 'abandonado');
             this._panelReintento();
         }
     }
@@ -409,13 +410,13 @@ export class EscenaSuperficie {
     _panelReintento() {
         const el = this.ctx.hud.el.epilogo;
         el.innerHTML = '';
-        const h = document.createElement('h2'); h.textContent = 'Eagle no sobrevivió al contacto';
-        const p = document.createElement('p'); p.textContent = `Motivo: ${this.lm.motivo}. Límites del tren de aterrizaje: 3 m/s vertical, 1,2 m/s horizontal, 12° de inclinación.`;
+        const h = document.createElement('h2'); h.textContent = tr('Eagle no sobrevivió al contacto');
+        const p = document.createElement('p'); p.textContent = `${tr('Motivo')}: ${this.lm.motivo}. ${tr('Límites del tren de aterrizaje: 3 m/s vertical, 1,2 m/s horizontal, 12° de inclinación.')}`;
         const b = document.createElement('div'); b.className = 'botones';
         const boton = (txt, f) => { const x = document.createElement('button'); x.textContent = txt; x.onclick = () => { el.classList.add('oculto'); f(); }; b.append(x); };
-        boton('Reintentar desde la P64', () => this.iniciar('P64'));
-        boton('Reintentar desde la P66', () => this.iniciar('P66'));
-        boton('Ver el alunizaje automático', () => { this.iniciar('P64'); this.saltarAlAlunizaje(); });
+        boton(tr('Reintentar desde la P64'), () => this.iniciar('P64'));
+        boton(tr('Reintentar desde la P66'), () => this.iniciar('P66'));
+        boton(tr('Ver el alunizaje automático'), () => { this.iniciar('P64'); this.saltarAlAlunizaje(); });
         el.append(h, p, b);
         el.classList.remove('oculto');
     }
@@ -425,27 +426,27 @@ export class EscenaSuperficie {
         const el = this.ctx.hud.el.epilogo;
         el.innerHTML = '';
         const add = (tag, txt, cls) => { const e = document.createElement(tag); e.textContent = txt; if (cls) e.className = cls; el.append(e); return e; };
-        add('h2', 'ABANDONADO, PERO NO OLVIDADO');
-        add('p', `21 de julio de 1969, 17:54 UTC: la etapa de ascenso de Eagle despega para reunirse con Columbia. La etapa de descenso sirvió de plataforma de lanzamiento y se queda en Base Tranquilidad.`);
+        add('h2', tr('ABANDONADO, PERO NO OLVIDADO'));
+        add('p', tr('21 de julio de 1969, 17:54 UTC: la etapa de ascenso de Eagle despega para reunirse con Columbia. La etapa de descenso sirvió de plataforma de lanzamiento y se queda en Base Tranquilidad.'));
         if (this.sitio?.story) add('p', `"${this.sitio.story}"`, 'historia');
-        add('h4', 'LO QUE SIGUE EN BASE TRANQUILIDAD');
+        add('h4', tr('LO QUE SIGUE EN BASE TRANQUILIDAD'));
         const ul = add('ul', '');
-        for (const h of this.sitio?.hardware ?? ['Etapa de descenso del LM', 'EASEP: sismómetro pasivo', 'Retrorreflector láser (LRRR)', 'Bandera y placa conmemorativa']) {
+        for (const h of this.sitio?.hardware ?? ['Etapa de descenso del LM', 'EASEP: sismómetro pasivo', 'Retrorreflector láser (LRRR)', 'Bandera y placa conmemorativa'].map((x) => tr(x))) {
             const li = document.createElement('li'); li.textContent = h; ul.append(li);
         }
-        add('h4', 'EL DESTINO DE CADA PIEZA');
+        add('h4', tr('EL DESTINO DE CADA PIEZA'));
         const ul2 = add('ul', '');
         for (const a of datos.abandonados) { const li = document.createElement('li'); li.textContent = `${a.objeto}: ${a.destino}`; ul2.append(li); }
         if (this.resultado && !this.resultado.historico) {
-            add('h4', 'TU ALUNIZAJE');
-            add('p', this.resultado.ok ? `A ${this.resultado.dist.toFixed(0)} m de Base Tranquilidad con ${this.resultado.comb.toFixed(0)} s de combustible (Armstrong: ~45 s).` : '—');
+            add('h4', tr('TU ALUNIZAJE'));
+            add('p', this.resultado.ok ? tr('A {d} m de Base Tranquilidad con {c} s de combustible (Armstrong: ~45 s).', { d: this.resultado.dist.toFixed(0), c: this.resultado.comb.toFixed(0) }) : '—');
         }
-        add('p', `Hoy (${new Date().getFullYear()}), ${new Date().getFullYear() - 1969} años después, la etapa de descenso sigue allí y el retrorreflector todavía devuelve los pulsos láser que se disparan desde la Tierra.`);
+        add('p', tr('Hoy ({anio}), {n} años después, la etapa de descenso sigue allí y el retrorreflector todavía devuelve los pulsos láser que se disparan desde la Tierra.', { anio: new Date().getFullYear(), n: new Date().getFullYear() - 1969 }));
         const b = add('div', ''); b.className = 'botones';
         const boton = (txt, f) => { const x = document.createElement('button'); x.textContent = txt; x.onclick = () => { el.classList.add('oculto'); f(); }; b.append(x); };
-        boton('Repetir el alunizaje', () => { this.ctx.reloj.saltarA(this.ctx.crono.ev.p64); this.iniciar('P64'); });
-        boton('Volver al inicio', () => this.ctx.reiniciar());
-        boton('Seguir mirando', () => {});
+        boton(tr('Repetir el alunizaje'), () => { this.ctx.reloj.saltarA(this.ctx.crono.ev.p64); this.iniciar('P64'); });
+        boton(tr('Volver al inicio'), () => this.ctx.reiniciar());
+        boton(tr('Seguir mirando'), () => {});
         el.classList.remove('oculto');
     }
 

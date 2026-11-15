@@ -100,3 +100,15 @@ calcular desde `t` (la física del alunizaje) se reinicia en `entrar(t)`.
 - Superficie (`escenas/restos.js → _colocarZylo`): 60 % de las visitas ronda un resto al azar; `?zylo` lo fuerza.
 - Un clic sobre él lo hace desaparecer.
 
+## Idiomas (src/i18n)
+El texto base está en **español** y sirve de clave. `t('Cuenta regresiva')` devuelve la traducción del idioma
+activo (o el español si falta). En las escenas y misiones se importa como `tr` porque `t` es el tiempo de misión.
+- Interfaz: `src/i18n/en.js`. Variables entre llaves: `t('Llegada en {dias} días', { dias })`.
+- Datos (`src/data/*.json`): `localizar(datos)` al importarlos; traducciones en `src/i18n/en.datos.json`.
+  Los campos de código (`id`, `tipo`, `estado`…) nunca se traducen.
+- HTML estático: `traducirDOM()` al arrancar (textos, `title`, `aria-label`).
+- El selector (abajo a la derecha de la portada) guarda la elección y recarga la página. También `?lang=en`.
+- `tests/i18n.test.js` falla si un `t('…')` o un texto de los datos no tiene traducción. En desarrollo,
+  `apsisFaltan()` en la consola lista lo que se mostró sin traducir.
+- Idioma nuevo: crea `xx.js` y `xx.datos.json`, y añádelo a `IDIOMAS` y `DICCIONARIOS` en `src/i18n/index.js`.
+

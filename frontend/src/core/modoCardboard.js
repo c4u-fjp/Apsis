@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect.js';
+import { t } from '../i18n/index.js';
 
 const ZEE = new THREE.Vector3(0, 0, 1);
 const Q_X90 = new THREE.Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5));
@@ -67,7 +68,7 @@ export function crearModoCardboard(motor, { alEntrar, alSalir } = {}) {
 
     const boton = document.createElement('button');
     boton.id = 'btn-cardboard';
-    boton.textContent = 'MODO CARDBOARD';
+    boton.textContent = t('MODO CARDBOARD');
     boton.style.cssText = 'position:absolute;bottom:20px;left:calc(50% + 90px);width:170px;padding:12px 6px;' +
         'font:0.8rem "Courier New",monospace;color:#4af626;background:rgba(5,10,6,.85);' +
         'border:1px solid #1a3a22;cursor:pointer;z-index:999';
