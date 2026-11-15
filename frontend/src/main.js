@@ -1,3 +1,4 @@
+import './i18n/index.js';
 // Abandoned but not Forgotten · Apsis
 //
 // Flujo: sala de Control de Misión (elegir destino) -> pantalla de lanzamiento (Saturn V o Delta II)
