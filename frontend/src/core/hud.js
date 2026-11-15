@@ -1,18 +1,15 @@
 // Panel de telemetría y registro de eventos (evolución de nasa_space_apps/core/hud.js).
 import { formatearMET, relojGMT } from '../mision/tiempo.js';
-import { t, isEnglish } from '../i18n/index.js';
 
-const MESES = isEnglish
-    ? ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
-    : ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+const MESES = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
 export function fechaHora(ms) {
     const d = new Date(ms), p = (n) => String(n).padStart(2, '0');
     return `${p(d.getUTCDate())} ${MESES[d.getUTCMonth()]} ${d.getUTCFullYear()} ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())}`;
 }
 
 const $ = (id) => document.getElementById(id);
-const set = (el, v) => { const shown = t(v); if (el && el.textContent !== shown) el.textContent = shown; };
-const num = (v, d = 0) => v.toLocaleString(isEnglish ? 'en-US' : 'es-MX', { minimumFractionDigits: d, maximumFractionDigits: d });
+const set = (el, v) => { if (el && el.textContent !== v) el.textContent = v; };
+const num = (v, d = 0) => v.toLocaleString('es-MX', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 export function crearHUD() {
     const el = {
